@@ -1,0 +1,135 @@
+---
+title: "Day 12 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(igraph)
+library(ggraph)
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+#input<-read_lines("Day12Sample1.txt")
+input<-read_lines("Day12Sample2.txt")
+#input<-read_lines("Day12Sample3.txt")
+
+```
+
+##Part 1
+
+Search - 
+
+First, put all of the input into a df
+
+```{r}
+df<-as.data.frame(matrix(nrow=0,ncol=2))
+for(i in 1:length(input)){
+  x<-unlist(str_split(input[i],"-"))
+  df<-rbind(df,c(x))
+  df<-rbind(df,c(x[2],x[1]))}
+colnames(df)<-c("b","e")
+df<-df%>% rowwise%>%filter(b!="end",e!="start")
+```
+
+
+Then search
+```{r}
+findpaths<-function(df){
+  allpaths<-dict()
+  st<-stack()
+  ### pushing path, last visited, visited small caves
+  x<-list("start","start",c())
+  st$push(x)
+  pathcount<-0
+  while(st$size()>0){
+    curr<-st$pop()
+    ### if at the end, then stop
+    if(curr[[2]]=="end"){
+      pathcount<-pathcount+1
+      allpaths$set(curr[[1]],curr)
+      next}
+    ### otherwise, get list of places you can go from here.
+    smdf<-df %>% rowwise %>% filter(b==curr[[2]],!(e %in% curr[[3]]))
+    if(nrow(smdf)>0){
+      for(i in 1:nrow(smdf)){
+        nextone<-smdf$e[i]
+        smallcaves<-curr[[3]]
+        if(any(str_detect(nextone,letters))){smallcaves<-c(smallcaves,nextone)}
+        st$push(list(str_c(curr[[1]],";",nextone),
+                     nextone,
+                     smallcaves))}}}
+list(allpaths,pathcount)}
+
+```
+
+```{r}
+part1<-findpaths(df)
+part1[[2]]
+```
+```{r,echo=FALSE}
+gr<-graph_from_data_frame(df,directed=FALSE)
+
+
+ggraph(gr, layout = 'kk') + 
+  geom_edge_link()+
+  geom_node_label(aes(label=name))
+
+```
+
+
+##Part 2
+This will be much the same, but with a small tweak - setting a flag to say if we've been to a small cave twice
+
+Then search
+```{r}
+doublesmall<-function(df){
+  allpaths<-dict()
+  st<-stack()
+  ### pushing path, last visited, visited small caves, and a flag to say we haven't visited
+  ### any of the small caves twice
+  x<-list("start","start",c(),0)
+  st$push(x)
+  pathcount<-0
+  while(st$size()>0){
+    curr<-st$pop()
+    ### if at the end, then stop
+    if(curr[[2]]=="end"){
+      pathcount<-pathcount+1
+      allpaths$set(curr[[1]],curr)
+      next}
+    ### otherwise, get list of places you can go from here.
+    smdf<-df %>% rowwise %>% filter(b==curr[[2]])
+    ### if have visited a small cave twice, then, filter out the small caves
+    if(curr[[4]]==1){smdf<-smdf %>% rowwise %>% filter(!(e %in% curr[[3]]))}
+    if(nrow(smdf)>0){
+      for(i in 1:nrow(smdf)){
+        nextone<-smdf$e[i]
+        smallcaves<-curr[[3]]
+        ### if we're visiting a cave twice, flip the flag so that we won't do that with a second
+        ### small cave
+        if(nextone%in%smallcaves){
+          flg<-1}else{flg<-curr[[4]]}
+        ### if this is the second one, no need to re add it to the list of small caves
+        if(any(str_detect(nextone,letters))&&
+           !(nextone %in% smallcaves)){smallcaves<-c(smallcaves,nextone)}
+        st$push(list(str_c(curr[[1]],";",nextone),
+                     nextone,
+                     smallcaves,
+                     flg))}}
+    }
+list(allpaths,pathcount)}
+
+```
+
+```{r}
+part2<-doublesmall(df)
+part2[[2]]
+```
+

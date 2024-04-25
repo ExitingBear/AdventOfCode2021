@@ -1,0 +1,100 @@
+---
+title: "Day 15 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+library(ggplot2)
+library(reshape2)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day15Sample.txt")
+```
+
+```{r}
+risk<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){risk[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+```
+
+```{r}
+lowestrisk<-function(riskm,sx,sy,ex,ey){
+  beenthere<-dict()
+  pq<-priority_queue()
+  pq$push(c(sx,sy,0,priority=0))
+  while(pq$size()>0){
+    curr<-pq$pop()
+    ### if at the end, stop
+    if(all(curr[1:2]==c(ex:ey))){return(curr[3])}
+    ### if been there, stop
+    if(beenthere$has(curr[1:2])){next}
+    ### add to dictionary
+    beenthere$set(curr[1:2],curr[3])
+    ### left
+    if(curr[1]>1){
+      nxtx<-curr[1]-1
+      nxty<-curr[2]
+      nxtr<-riskm[nxty,nxtx]+curr[3]
+      pri<-nxtr+sum(abs(c(ex,ey)-c(nxtx,nxty)))
+      pq$push(c(nxtx,nxty,nxtr),-pri)}
+    ### right
+    if(curr[1]<ncol(riskm)){
+      nxtx<-curr[1]+1
+      nxty<-curr[2]
+      nxtr<-riskm[nxty,nxtx]+curr[3]
+      pri<-nxtr+sum(abs(c(ex,ey)-c(nxtx,nxty)))
+      pq$push(c(nxtx,nxty,nxtr),-pri)}
+    ### up
+    if(curr[2]>1){
+      nxtx<-curr[1]
+      nxty<-curr[2]-1
+      nxtr<-riskm[nxty,nxtx]+curr[3]
+      pri<-nxtr+sum(abs(c(ex,ey)-c(nxtx,nxty)))
+      pq$push(c(nxtx,nxty,nxtr),-pri)}
+    if(curr[2]<nrow(riskm)){
+      nxtx<-curr[1]
+      nxty<-curr[2]+1
+      nxtr<-riskm[nxty,nxtx]+curr[3]
+      pri<-nxtr+sum(abs(c(ex,ey)-c(nxtx,nxty)))
+      pq$push(c(nxtx,nxty,nxtr),-pri)}}
+  ### if nothing goes wrong, should exit above.
+  ### else
+beenthere}
+```
+
+
+```{r}
+lowestrisk(risk,1,1,ncol(risk),nrow(risk))
+```
+## Part 2
+First, make the bigger cave
+Then, just run it again.
+Maybe?
+
+So, first, make the bigger cave:
+
+```{r}
+### hard coding to 5 times as big, because there's no reason not to.
+bigcave<-risk
+### repeat going to
+for(i in 1:4){bigcave<-cbind(bigcave,risk+i)}
+### x is a placeholder, not really needed, but it makes expanding down easy
+x<-bigcave
+for(i in 1:4){bigcave<-rbind(bigcave,x+i)}
+### if the value is more than 9, subtract 9.
+bigcave[]<-vapply(bigcave,function(x){if(x>9){return(x<-x-9)}else{return(x)}},numeric(1))
+```
+
+Then rerun with the big cave
+```{r}
+lowestrisk(bigcave,1,1,ncol(bigcave),nrow(bigcave))
+```
+
+

@@ -1,0 +1,86 @@
+---
+title: "Day 10 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day10Sample.txt")
+chunks<-input
+```
+
+## Part 1
+
+For both part 1 & part 2, first need to reduce
+```{r}
+red<-function(st){
+  stillmore<-TRUE
+  while(stillmore){
+    l<-nchar(st)
+    st<-str_remove(st,"<>")
+    st<-str_remove(st,"\\(\\)")
+    st<-str_remove(st,"\\[\\]")
+    st<-str_remove(st,"\\{\\}")
+    if(nchar(st)==l){stillmore<-FALSE}}
+st}
+```
+
+
+
+```{r}
+chunks<-sapply(chunks,function(x){red(x)})
+```
+Then separate into groups, incomplete & corrupted
+```{r}
+iorc<-sapply(chunks,function(x){
+  a<-if(str_detect(x,"<\\)|<\\]|<\\}|\\(>|\\(\\]|\\(\\}|\\[>|\\[\\)|\\[\\}|\\{>|\\{\\]|\\{\\)")){"corrupt"
+    }else{"incomplete"}
+a})
+incomplete<-chunks[which(iorc=="incomplete")]
+corrupt<-chunks[which(iorc=="corrupt")]
+```
+
+
+Looking at the corrupt chunks - find the first mismatched pair & assign points (this could have been done in a single step, but it was not.)
+```{r}
+part1<-sapply(corrupt,function(x){
+  if(str_detect(x,"<\\)|\\[\\)|\\{\\)")){a<-3
+  }else if(str_detect(x,"<\\]|\\(\\]|\\{\\]")){a<-57
+  }else if(str_detect(x,"<\\}|\\[\\}|\\(\\}")){a<-1197
+  }else if(str_detect(x,"\\{>|\\[>|\\(>")){a<-25137
+  }else{a<-NA}
+a})
+
+if(all(!is.na(part1))){part1<-sum(part1)}
+part1
+```
+
+## Part 2
+Because this is incomplete, start from the right and work back to the left to get the score.
+```{r}
+part2<-sapply(incomplete,function(x){
+  i<-nchar(x)
+  score<-0
+  while(i>0){
+    c<-str_sub(x,i,i)
+    if(c=="<"){c<-4
+    }else if(c=="{"){c<-3
+    }else if(c=="["){c<-2
+    }else if(c=="("){c<-1}else{c<-NA}
+    score<-5*score+c
+    i<-i-1}
+    score})
+part2
+part2<-median(part2)
+part2
+```
+

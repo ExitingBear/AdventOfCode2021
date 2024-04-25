@@ -1,0 +1,130 @@
+---
+title: "Day 14 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+
+## Part 1
+Start by reading in the polymer and then 
+
+```{r}
+polymer<-read_lines("Day14Sample.txt",n_max=1)
+input<-read_lines("Day14Sample.txt",skip=2)
+
+dct<-dict()
+for(i in 1:length(input)){
+  x<-unlist(str_split(input[i]," -> "))
+  dct$set(x[1],x[2])}
+```
+
+Then create the string:
+```{r}
+
+bigpolymer<-function(p,d){
+  bp<-str_sub(p,1,1)
+  for(i in 2:nchar(p)){
+    ### take the character before and this character
+    x<-str_sub(p,i-1,i)
+    ### get the insertion
+    y<-d$get(x)
+    ### append the insertion and the new character
+    bp<-str_c(bp,y,str_sub(p,i,i))}
+  bp}
+```
+
+```{r}
+### run 10 times
+for(i in 1:10){
+  polymer<-bigpolymer(polymer,dct)
+  bp<-unlist(str_split(polymer,""))}
+  ct<-sort(table(bp))
+  ct
+  part1<-ct[length(ct)]-ct[1]
+  part1
+
+```
+
+##Part 2
+Because I am stupid, I tried brute force and that didn't work, so went back to the drawing board and looked at it again (and read hints in reddit).
+Each pair produces two pair.  So, all that really needs to be done is to keep track of which pairs (and how much of each) you have to figure out which pairs (and how much of each) you'll have after an expansion.
+
+Then, after figuring out how much of each pair, figure out how much of each element (sum of all of the pairs that contain any given element over 2 for all the central elements.  Plus one for the end elements.)
+Then just count the elements.
+
+So, this needs a new dictionary
+```{r}
+pairdic<-dict()
+for(i in 1:length(input)){
+  x<-unlist(str_split(input[i]," -> "))
+  left<-str_c(str_sub(x[1],1,1),x[2])
+  right<-str_c(x[2],str_sub(x[1],2,2))
+  pairdic$set(x[1],c(left,right))
+}
+```
+
+And then the *new* function
+
+```{r}
+reallybigpoly<-function(p,d,rps){
+  ### separate the polymer into pairs, make a dataframe (is a dataframe a good idea?
+  ### probablyl not, but I can tweak it easier than I can a list)
+  df<-as.data.frame(matrix(nrow=0,ncol=2))
+  colnames(df)<-c("pair","count")
+  for(i in 2:nchar(p)){
+    df<-rbind(df,list(pair=str_sub(p,i-1,i),cnt=1))}
+  ###repeat as many times as needed
+  for(i in 1:rps){
+    ### make a new dataframe to hold the information
+    ndf<-as.data.frame(matrix(nrow=0,ncol=2))
+    for(j in 1:nrow(df)){
+      ### grab a row
+      x<-df[j,]
+      ### get what that row's pairs split to
+      inspairs<-d$get(x$pair)
+      ndf<-rbind(ndf,list(pair=inspairs[1],cnt=x$cnt),list(pair=inspairs[2],cnt=x$cnt))}
+  ###  copy the new data frame over the old data frame
+  df<-ndf
+  df <- df %>% group_by(pair) %>% summarize(cnt=sum(cnt))}
+  ### create a count of how much there is of each element
+  outdf<-as.data.frame(matrix(nrow=0,ncol=2))
+  colnames(outdf)<-c("element","cnt")
+  for(k in 1:nrow(df)){
+    ### get the row
+    x<-df[k,]
+    outdf<-rbind(outdf,
+                 list(element=str_sub(x$pair,1,1),cnt=x$cnt),
+                 list(element=str_sub(x$pair,2,2),cnt=x$cnt))}
+  ### group that by element
+  outdf <- outdf %>% group_by(element) %>% summarize(cnt=sum(cnt))%>%
+  ### divide the number by 2 and round up (to account for the end pieces,
+  ### which will have an odd count because they're not in two sides of a pair)
+    mutate(cnt=ceiling(cnt/2))
+  
+  range(outdf$cnt)}
+
+
+```
+
+```{r}
+### reset the polymer after part 1
+#polymer<-read_lines("../../AoCData/AOC2021/Day14.txt",n_max=1)
+polymer<-read_lines("Day14Sample.txt",n_max=1)
+part1<-reallybigpoly(polymer,pairdic,10)
+part1<-part1[2]-part1[1]
+part1
+part2<-reallybigpoly(polymer,pairdic,40)
+part2<-part2[2]-part2[1]
+part2
+
+```
+

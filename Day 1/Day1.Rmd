@@ -1,0 +1,39 @@
+---
+title: "Day 1 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(igraph)
+library(ggplot2)
+library(rgl)
+library(ggraph)
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-as.numeric(read_lines("Day1Sample.txt"))
+```
+
+## Part 1
+Just run through and count if it's less than the one after it or not
+```{r}
+part1<-sapply(2:length(input),function(x){
+  if(input[x]>input[x-1]){1}else{0}})
+part1<-sum(part1)
+part1
+```
+## Part 2
+Just run through and count if it's less than the one after it or not
+```{r}
+part2<-sapply(4:length(input),function(x){
+  if(sum(input[x:(x-2)])>sum(input[(x-1):(x-3)])){1}else{0}})
+part2<-sum(part2)
+part2
+```

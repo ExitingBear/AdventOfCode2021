@@ -1,0 +1,114 @@
+---
+title: "Day 11 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+library(igraph)
+library(ggplot2)
+library(rgl)
+library(ggraph)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day11Sample2.txt")
+octopi<-matrix(0,ncol=nchar(input[1]),nrow=length(input))
+for(i in 1:length(input)){octopi[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+```
+
+## Part 1
+I think I need a function that takes in an element and then returns what it will be if its neighbors explode:
+
+```{r}
+### this takes in the x,y, a version, and a pre-flash version surrounded by an edge of 0's
+### this way, no need to figure out corners & edges
+flash<-function(x0,y0,plain,edged){
+  ### if it is either 10 or already flashed, stay at 0.
+  if(plain[y0,x0]==0 || plain[y0,x0]>=10){plain[y0,x0]<-0
+  }else{
+    ### shift down and to the right for the slightly bigger edged version
+    x<-x0+1
+    y<-y0+1
+    ### see if any of the neighbors are flashing
+    or<-c(edged[y-1,x-1],edged[y-1,x],edged[y-1,x+1],edged[y,x-1],
+          edged[y,x+1],edged[y+1,x-1],edged[y+1,x],edged[y+1,x+1])
+   ### update the ones that are being flashed on
+  plain[y0,x0]<-plain[y0,x0]+length(which(or>=10))}
+plain}
+```
+
+I think what I want to do is to make a function that takes in the octopus map & then spits out a new one:
+
+```{r}
+eightstep<-function(x,f=0){
+  flashcount<-f
+  ### add 1
+  x<-x+1
+  ### so long as at least something is ready to flash
+  while(any(x>=10)){
+    ### create a version edged by 0s
+    edgex<-matrix(0,ncol=ncol(x)+2,nrow=nrow(x)+2)
+    edgex[2:(nrow(x)+1),2:(ncol(x)+1)]<-x
+    ### update element by element
+    for(i in 1:ncol(x)){
+      for(j in 1:nrow(x)){
+        x<-flash(i,j,x,edgex)}}}
+  ### count the number that are 0's (flashed)
+  flashcount<-flashcount+length(which(x==0))
+  list(flashcount,x)}
+```
+
+
+And this, which runs multistep many, many times.
+
+```{r}
+multistep<-function(m,rps){
+  ###start with number of flashes 0
+  f<-0
+  ### repeat,
+  for(i in 1:rps){
+    z<-eightstep(m,f)
+    m<-z[[2]]
+    f<-z[[1]]}
+list(f,m)}
+
+```
+
+
+
+```{r}
+p1<-multistep(octopi,100)
+part1<-p1[[1]]
+part1
+
+```
+### Part 2
+Do a slight change to multistep to stop when everything flashes 0
+```{r}
+flashall<-function(m){
+  ### count the number of times this is being run
+  ct<-0
+  keepgoing<-TRUE
+  while(keepgoing){
+    ### run eightstep, add 1 to the counter
+    z<-eightstep(m,0)
+    m<-z[[2]]
+    ### if everything is a 0, then stop.
+    if(z[[1]]==(ncol(m)*nrow(m))){keepgoing<-FALSE}
+    ct<-ct+1}
+list(ct,m)}
+
+```
+
+
+```{r}
+part2<-flashall(octopi)[[1]]
+part2
+```

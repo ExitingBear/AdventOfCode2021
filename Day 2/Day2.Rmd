@@ -1,0 +1,65 @@
+---
+title: "Day 2 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day2Sample.txt")
+```
+
+## Part 1
+Create the function that runs through the instructions
+
+```{r}
+piloting<-function(instructions=input,st=c(0,0)){
+  for(j in 1:length(instructions)){
+    inst<-str_split(instructions[j]," ")
+    i<-inst[[1]][1]
+    n<-as.numeric(inst[[1]][2])
+    switch(i,
+           "forward"=st<-st+c(n,0),
+           "up"=st<-st+c(0,-n),
+           "down"=st<-st+c(0,n),
+           cat("something went wrong\n"))}
+  st}
+```
+
+
+```{r}
+part1<-piloting()
+part1<-part1[1]*part1[2]
+part1
+```
+## Part 2
+Change the function a bit by adding the instructions for aiming
+
+```{r}
+aiming<-function(instructions=input,st=c(0,0,0)){
+  for(j in 1:length(instructions)){
+    inst<-str_split(instructions[j]," ")
+    i<-inst[[1]][1]
+    n<-as.numeric(inst[[1]][2])
+    switch(i,
+           "forward"=st<-st+c(n,n*st[3],0),
+           "up"=st<-st+c(0,0,-n),
+           "down"=st<-st+c(0,0,n),
+           cat("something went wrong\n"))}
+  st}
+```
+
+
+```{r}
+part2<-aiming()
+part2<-part2[1]*part2[2]
+part2
+```

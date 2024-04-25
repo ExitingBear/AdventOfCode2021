@@ -1,0 +1,42 @@
+---
+title: "Day XX Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+library(igraph)
+library(ggplot2)
+library(rgl)
+library(ggraph)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("DayXXSample.txt")
+#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+
+```
+
+
+
+```{r,echo=FALSE}
+basicgraph<-ggplot()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position="none")+
+  scale_y_reverse()+
+  coord_fixed()
+```
+
