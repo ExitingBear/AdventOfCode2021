@@ -1,0 +1,74 @@
+---
+title: "Day 3 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+
+## Part 1
+Read this into a matrix
+
+```{r}
+input<-read_lines("Day3Sample.txt")
+diagnosticreport<-matrix(0,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){diagnosticreport[i,]<-as.numeric(unlist(str_split(input[i],"")))}
+```
+
+For each column, check to see if it is mostly 1s or mostly 0s.
+
+```{r}
+eprate<-sapply(1:ncol(diagnosticreport),function(x){
+  x<-sum(diagnosticreport[,x])
+  if(x>=(nrow(diagnosticreport)/2)){x<-1}else{x<-0}})
+garate<-rep(1,ncol(diagnosticreport))-eprate
+eprate<-strtoi(str_flatten(eprate),base=2)
+garate<-strtoi(str_flatten(garate),base=2)
+part1<-eprate*garate
+part1
+```
+## Part2
+First, find the oxygen rating
+
+```{r}
+oxyrat<-diagnosticreport
+
+i<-1
+keepgoing<-TRUE
+while(is.matrix(oxyrat)&&i<=ncol(oxyrat)){
+  x<-sum(oxyrat[,i])
+  if(x>=(nrow(oxyrat)/2)){x<-1}else{x<-0}
+  oxyrat<-oxyrat[oxyrat[,i]==x,]
+  i<-i+1}
+oxyrat
+```
+
+
+```{r}
+co2scrub<-diagnosticreport
+
+i<-1
+keepgoing<-TRUE
+while(is.matrix(co2scrub)&&i<=ncol(co2scrub)){
+  x<-sum(co2scrub[,i])
+  if(x>=(nrow(co2scrub)/2)){x<-0}else{x<-1}
+  co2scrub<-co2scrub[co2scrub[,i]==x,]
+  i<-i+1}
+co2scrub
+```
+```{r}
+oxyrat<-strtoi(str_flatten(oxyrat),base=2)
+co2scrub<-strtoi(str_flatten(co2scrub),base=2)
+part2<-oxyrat*co2scrub
+part2
+```
+
+

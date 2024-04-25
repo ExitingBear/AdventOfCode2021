@@ -1,0 +1,48 @@
+---
+title: "Day 7 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day7Sample.txt")
+crabs<-as.numeric(unlist(str_split(input,",")))
+```
+
+
+##Part 1
+
+Because you don't actually need to say the position, just the amount of fuel spent
+
+```{r}
+### the number must be between the min & max - so 
+fuel<-sapply(min(crabs):max(crabs),function(x){
+  ### this is the distance between x&the crabs, sum them all
+  x<-sum(abs(crabs-x))
+x})
+```
+
+```{r}
+part1<-min(fuel)
+part1
+```
+
+##Part 2
+Is much the same, but the formula is a little different.
+```{r}
+### the number must be between the min & max - so 
+fuel<-sapply(min(crabs):max(crabs),function(x){
+  y<-abs(crabs-x)
+  sum((y^2+y)/2)})
+part2<-min(fuel)
+part2
+```

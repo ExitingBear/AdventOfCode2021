@@ -1,0 +1,190 @@
+---
+title: "Day 8 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day8Sample.txt")
+```
+
+## Part 1
+For this focus only on the last 4 clusters in each line and finding which has a length of 2,3,4, or 7.
+
+```{r}
+part1<-sapply(input, function(x){
+  x<-tail(unlist(str_split(x," ")),4)
+  x<-nchar(x)
+  x<-length(which(x %in% c(2,3,4,7)))
+  x})
+
+part1<-sum(part1)
+part1
+```
+## Part 2
+
+This breaks up the line:
+
+
+```{r}
+breaktheline<-function(ln){
+  ln<-unlist(str_split(ln," "))
+### remove the pipe - don't need it.  It's always the 11th thing
+ln<-ln[-11]
+ln<-lapply(ln,function(x){
+sort(unlist(str_split(x,"")))})
+ln}
+btl<-breaktheline(input[1])
+```
+
+
+
+decrypt() takes in a broken line and tries to figure out what the final four characters are:
+
+
+```{r}
+decrypt<-function(bl){
+  lns<-sapply(bl,length)
+  a<-rep(NA,length(bl))
+  ## find 1s
+  a[which(lns==2)]<-1
+  one<-unlist(bl[which(lns==2)][1])
+  ## find 7s
+  a[which(lns==3)]<-7
+  seven<-unlist(bl[which(lns==3)][1])
+  ## find 4s
+  a[which(lns==4)]<-4
+  four<-unlist(bl[which(lns==4)][1])
+  ## find 8s
+  a[which(lns==7)]<-8
+  two<-c()
+  five<-c()
+  six<-c()
+  nine<-c()
+  ##########
+  # stop as soon as the final 4 have values
+  i<-14
+  while(any(is.na(a[11:14]))){
+    if(i==0){i<-14}
+    if(is.na(a[i])){
+      ### start writing rules - there's no good way to explain this one.
+      ### if we already know what 2s look like
+      if(length(two)>0&&is.na(a[i])){
+        if(all(two %in% bl[[i]])){
+          if(lns[i]==5){a[i]<-2
+          i<-i-1
+          next}else{a[i]<-9
+          i<-i-1
+          next}}}
+      ### if we already knows what 5s look like
+      if(length(five)>0&&is.na(a[i])){
+        if(all(five %in% bl[[i]])){
+          if(lns[i]==5){a[i]<-5
+          i<-i-1
+          next}}}
+      ### if we already know sixes
+      if(length(six)>0&&is.na(a[i])){
+        if(all(bl[[i]] %in% six)){
+          if(lns[i]==5){a[i]<-5
+          five<-unlist(bl[[i]])
+          i<-i-1
+          next}else{a[i]<-6
+          i<-i-1
+          next}}}
+      ### if we already know nines
+      if(length(nine)>0&&is.na(a[i])){
+        if(all(bl[[i]] %in% six)){
+          if(lns[i]==5){a[i]<-2
+          two<-unlist(bl[[1]])
+          i<-i-1
+          next}else{a[i]<-9
+          i<-i-1
+          next}}}
+      ### ones
+      if(length(one)>0){
+        if(lns[i]==5){
+          if(all(one %in% bl[[i]])){a[i]<-3
+          i<-i-1
+          next}else{
+            if(length(five)>0||length(nine)>0){
+              if(all(bl[[i]]%in%five)||all(bl[[i]]%in%nine)){
+                a[i]<-5
+                five<-bl[[i]]
+                i<-i-1
+                next}else{
+                  a[i]<-2
+                  two<-bl[[i]]
+                  i<-i-1
+                  next}}}
+        }else if(lns[i]==6){
+          if(!all(one %in% bl[[i]])){a[i]<-6
+          six<-unlist(bl[[i]])
+          i<-i-1
+          next}else if(length(four)>0){
+            if(all(four%in%bl[[i]])){
+              a[i]<-9
+              nine<-bl[[i]]
+              i<-i-1
+              next}else{
+                a[i]<-0
+                zero<-bl[[i]]
+                i<-i-1
+                next}}}}
+      ### if there's a seven
+      if(length(seven)>0){
+        if(lns[i]==5){
+          if(all(seven %in% bl[[i]])){a[i]<-3
+          i<-i-1
+          next}else{
+            if(length(five)>0||length(nine)>0){
+              if(all(bl[[i]]%in%five)||all(bl[[i]]%in%nine)){
+                a[i]<-5
+                five<-bl[[i]]
+                i<-i-1
+                next}else{
+                  a[i]<-2
+                  two<-bl[[i]]
+                  i<-i-1
+                  next}}}
+        }else if(lns[i]==6){
+          if(!all(seven %in% bl[[i]])){a[i]<-6
+          six<-unlist(bl[[i]])
+          i<-i-1
+          next}else if(length(four)>0){
+            if(all(four%in%bl[[i]])){
+              a[i]<-9
+              nine<-bl[[i]]
+              i<-i-1
+              next}else{
+                a[i]<-0
+                zero<-bl[[i]]
+                i<-i-1
+                next}}}}
+      if(is.na(a[i])){i<-i-1}}else{i<-i-1}
+    if(i==0){i<-14}}
+  str_flatten(a[11:14])}
+```
+
+So, part 2 is the following:
+
+```{r}
+part2<-sapply(input,function(x){
+  x<-breaktheline(x)
+  x<-decrypt(x)
+as.numeric(x)})
+part2
+sum(part2)
+```
+
+
+
+

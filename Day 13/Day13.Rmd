@@ -1,0 +1,99 @@
+---
+title: "Day 13 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+library(ggplot2)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day13Sample.txt")
+
+```
+
+##Part 1
+
+I'm going to try to do this without actually graphing anything until the end, starting with bringing the points into a df and the instructions into a vector alternating direction & fold line
+```{r}
+bl<-which(input=="")
+dotlist<-as.data.frame(matrix(ncol=2,nrow=0))
+for(i in 1:(bl-1)){
+  x<-as.numeric(unlist(str_split(input[i],",")))
+  dotlist<-rbind(dotlist,c(x))}
+colnames(dotlist)<-c("x","y")
+### get rid of "fold along"
+instructions<-c()
+for(i in (bl+1):length(input)){
+  instructions<-unlist(str_split(str_remove(c(instructions,input[i]),"fold along "),"="))}
+```
+
+
+
+
+```{r}
+### 1 because stopping at the first instruction
+for(i in 1:1){
+  ### change the fold line to a number
+  fl<-as.numeric(instructions[i+1])
+  if(instructions[i]=="y"){
+    ### get the list of lines that will be folded
+    cr<-which(dotlist$y>fl)
+    ### "fold" the line - everything will be at 2*foldline - its original place
+    dotlist[cr,] <- dotlist[cr,] %>% rowwise %>%
+      mutate(y=(2*fl)-y)
+  }else{
+    cr<-which(dotlist$x>fl)
+    dotlist[cr,] <- dotlist[cr,] %>% rowwise %>%
+      mutate(x=(2*fl)-x)}
+  ### remove overlapping dots
+  dotlist<-unique(dotlist)}
+  
+nrow(dotlist)
+```
+### Part 2
+continue, not stopping at the first instruction
+
+```{r}
+### 1 because stopping at the first instruction
+for(i in seq(from=1,to=length(instructions),by=2)){
+  ### change the fold line to a number
+  fl<-as.numeric(instructions[i+1])
+  if(instructions[i]=="y"){
+    ### get the list of lines that will be folded
+    cr<-which(dotlist$y>fl)
+    ### "fold" the line - everything will be at 2*foldline - its original place
+    dotlist[cr,] <- dotlist[cr,] %>% rowwise %>%
+      mutate(y=(2*fl)-y)
+  }else{
+    cr<-which(dotlist$x>fl)
+    dotlist[cr,] <- dotlist[cr,] %>% rowwise %>%
+      mutate(x=(2*fl)-x)}
+  ### remove overlapping dots
+  dotlist<-unique(dotlist)}
+
+
+### graph it
+ basicgraph<-ggplot(data=dotlist,aes(x=x,y=y))+
+   geom_point()+
+   theme(axis.text.x = element_blank(),
+         axis.ticks.x = element_blank(),
+         axis.text.y = element_blank(),
+         axis.ticks.y = element_blank(),
+         axis.title.y = element_blank(),
+         axis.title.x = element_blank(),
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank(),
+         legend.position="none")+
+   scale_y_reverse()+
+   coord_fixed()
+ basicgraph
+```
+

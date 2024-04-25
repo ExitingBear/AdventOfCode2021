@@ -1,0 +1,60 @@
+---
+title: "Day 6 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day6Sample.txt")
+input<-as.numeric(unlist(str_split(input,",")))
+```
+
+##Part 1
+
+The easiest way to do this might be to just keep track of how many lanternfish are in each date - 
+So, make a quick vector for lanternfish (I do need to go from 0-9 rather than 1-8)
+
+```{r}
+### so, for example, lanternfish[3] has the number of lanternfish that have a timer of 2
+lanternfish<-sapply(1:9,function(x){length(which(input==(x-1)))})
+```
+
+then make a quick function that takes in the lanternfish vector & turns out where it will be in a day:
+
+```{r}
+nowfish<-function(lf,d){
+  ###as it turns out, I will get an integer overflow error without this
+  lf<-as.numeric(lf)
+  for(i in 1:d){
+    ### get the fish at timer 0
+    x<-lf[1]
+    ### move all the fish down one, and add new to the end, to start their cycles at 9
+    lf<-c(lf[-1],x)
+    ### add the 0's back to 7.
+    lf[7]<-lf[7]+x}
+  lf}
+```
+
+```{r}
+part1<-nowfish(lanternfish,18)
+part1<-sum(part1)
+part1
+```
+##Part 2
+
+```{r}
+part2<-nowfish(lanternfish,256)
+part2<-sum(part2)
+part2
+#26984457539
+```
+

@@ -1,0 +1,93 @@
+---
+title: "Day 17 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+library(ggplot2)
+options(scipen = 999)
+```
+
+```{r}
+targetx<-287:309
+targety<- -76:-48
+```
+
+## Part 1
+Is a math problem (probably?).
+And I'm going to brute force it anyway.
+Because the target is below 0, the lowest y can be is min(target) and the highest it can be is negative min(target), because it will go up, it will come down at the same speed it had going up, and overshoot the target.
+
+```{r}
+updown<-as.data.frame(matrix(ncol=4,nrow=0))
+
+for(i in min(targety):(-min(targety)+1)){
+  t<-1
+  deltay<-i
+  y<-0
+  h<-0
+  while(y>=min(targety)){
+    y<-y+deltay
+    if(deltay==0){h<-y}
+    if(y>=min(targety)&&y<=max(targety)){
+      updown<-rbind(updown,c(i,t,y,h))}
+    deltay<-deltay-1
+    t<-t+1}}
+colnames(updown)<-c("starty","ty","y","h")
+updown
+```
+
+As "h" is the highest point in those trajectories, max(h) is the highest point
+```{r}
+updown[which(updown$h==max(updown$h)),]
+```
+But only if there's something that will be in the X target range at time t.
+
+So, find viable starting xs.
+The max that startx can be is going to be the max(targetx) - otherwise, it will just overshoot the target on the first step.
+So, (because the target is close enough), it's possible to try every number from 1 to the far edge of the target
+
+```{r}
+sideways<-as.data.frame(matrix(ncol=3,nrow=0))
+
+for(i in 1:max(targetx)){
+  t<-1
+  deltax<-i
+  x<-0
+  while(x<max(targetx)&&t<=max(updown$ty)){
+    x<-x+deltax
+    if(x>=min(targetx)&&x<=max(targetx)){
+      sideways<-rbind(sideways,c(i,t,x))}
+    if(deltax>0){deltax<-deltax-1}
+    t<-t+1}}
+colnames(sideways)<-c("startx","tx","x")
+sideways
+```
+
+Then join the two frames.  Because x just stops going forward when it hits time, it's a valid spot so long as ty>=tx
+
+```{r}
+allpasses<-cross_join(sideways,updown) %>% 
+  filter(ty==tx)
+```
+This gives the list of target crossing - the highest height for that target crossing.
+
+```{r}
+part1<-max(allpasses$h)
+part1
+```
+
+## Part 2
+Part 2 needs to find all of the potential starting x,y pairs - which can be had from part 1.  But the in part 1 counted crossings.  If the probe was in the target area two times, it is counted twice in part 1.  So we need to pull the unique start combinations
+```{r}
+part2<-unique(allpasses%>%select(startx,starty))
+part2<-nrow(part2)
+part2
+```
+

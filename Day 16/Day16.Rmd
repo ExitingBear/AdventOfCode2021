@@ -1,0 +1,348 @@
+---
+title: "Day 16 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day16Sample.txt")
+```
+
+## Part 1
+
+First, a binary to decimal converter (will be needed later)
+```{r}
+b2d<-function(s){
+  x<-0
+  for(i in 1:nchar(s)){
+    x<-2*x+as.numeric(str_sub(s,i,i))}
+  x}
+```
+
+
+
+First, convert the input to binary
+
+```{r}
+expanded<-sapply(input,function(x){
+  z<-c("")
+  for(i in 1:nchar(x)){
+    y<-switch(str_sub(x,i,i),
+              "0"="0000",
+              "1"="0001",
+              "2"="0010",
+              "3"="0011",
+              "4"="0100",
+              "5"="0101",
+              "6"="0110",
+              "7"="0111",
+              "8"="1000",
+              "9"="1001",
+              "A"="1010",
+              "B"="1011",
+              "C"="1100",
+              "D"="1101",
+              "E"="1110",
+              "F"="1111",
+              cat("something went wrong"))
+    z<-str_c(z,y)}
+  z})
+
+```
+
+Then parse this thing
+
+First a function for when type = 4 (100 binary)
+
+```{r}
+type4<-function(st){
+  litnum<-""
+  keepgoing<-TRUE
+  while(keepgoing){
+    ### check the first character
+    f<-str_sub(st,1,1)
+    ### add next 4 characters to the number
+    litnum<-str_c(litnum,str_sub(st,2,5))
+    ### remove those from st
+    st<-str_sub(st,6)
+    ### if the first character was a 0, stop. Otherwise repeat
+    if(f==0){keepgoing<-FALSE}}
+  litnum<-b2d(litnum)
+  ### return the number & the remainder of the string
+  return(list(litnum,st))}
+```
+
+A function for when when the length type id=15
+
+```{r}
+operator0<-function(st){
+  ### find how many characters are in the packet
+  l<-b2d(str_sub(st,1,15))
+  ### update the string
+  st<-str_sub(st,16)
+  #### get the packet's characters
+  sp<-str_sub(st,1,l)
+  ### update the string
+  st<-str_sub(st,l+1)
+  ### return the packet - run to the end of the packet.
+  return(list(parseit(sp),st))}
+```
+
+A function for when the length type id=11
+
+```{r}
+operator1<-function(st){
+  ### find out how many repeats
+  l<-b2d(str_sub(st,1,11))
+  ### update the string
+  st<-str_sub(st,12)
+  ### run *exactly* that many packets
+  subpackets<-list()
+  for(i in 1:l){
+    x<-singlesubp(st)
+    ### add that single subpacket to the list
+    subpackets<-c(subpackets,list(x[[1]]))
+    ### update st
+    st<-x[[2]]}
+  ### return the list of subpackets
+  return(list(subpackets,st))}
+  
+  
+```
+
+Then a function to run exactly one packet
+```{r}
+singlesubp<-function(st){
+  ### get version number
+  v<-str_sub(st,1,3)
+  v<-b2d(v)
+  v<-str_c("v=",v)
+  ### get type
+  t<-str_sub(st,4,6)
+  st<-str_sub(st,7)
+  ### if type is 100 - run the type function & get packets
+  if(t=="100"){
+    x<-type4(st)
+    sbp<-list(v,t,x[[1]])
+    st<-x[[2]]
+  }else{
+    ### get the indicator
+    i<-str_sub(st,1,1)
+    st<-str_sub(st,2)
+    if(i==0){
+    ### if the indicator is 0, run operator 0 function
+      x<-operator0(st)
+      sbp<-list(v,t,x[[1]])
+      st<-x[[2]]
+    }else{
+      ### if the indicator is 1, run the operator1 function
+      x<-operator1(st)
+      sbp<-list(v,t,x[[1]])
+      st<-x[[2]]
+      }
+    }
+  list(sbp,st)}
+
+```
+
+
+Then a function that keeps running them over and over and over.
+
+```{r}
+parseit<-function(st){
+  ### if it's an empty string, then I do nothing.
+  if(nchar(st)==0){}
+  ### if there's no 1's, do nothing
+  if(str_detect(st,"1",negate=TRUE)){}
+  ### while there's string left, I need to create subpackets, unless I don't.
+  subpackets<-list()
+  ### create a packet
+  while(nchar(st)>0&str_detect(st,"1")){
+    x<-singlesubp(st)
+    subpackets<-c(subpackets,list(x[[1]]))
+    st<-x[[2]]}
+subpackets}
+```
+
+
+For a single answer
+```{r}
+# p1<-parseit(expanded)
+### unlist the list - just to find the v's
+# p1<-unlist(p1)
+### anything that has "v=" find the number associated with it.  Those are my versions
+# part1<-sum(sapply(p1[which(str_detect(p1,"v="))],function(x){as.numeric(str_remove(x,"v="))}))
+# part1
+```
+
+```{r}
+part1<-sapply(expanded,function(x){
+  y<-parseit(x)
+  y<-unlist(y)
+  y<-sapply(y[which(str_detect(y,"v="))],function(z){as.numeric(str_remove(z,"v="))})
+  y<-sum(y)
+  y})
+part1
+```
+
+
+
+
+## Part 2
+
+Start by writing a bin2dec style function, because one of my binary numbers is too long for the one that comes in the package.
+
+```{r}
+b2d<-function(s){
+  x<-0
+  for(i in 1:nchar(s)){
+    x<-2*x+as.numeric(str_sub(s,i,i))}
+  x}
+```
+
+
+
+Then *slightly* changing the functions.   This time, instead of just doing a list, they'll return an actual number based on being a literal or an operation
+
+
+
+```{r}
+type4_2<-function(st){
+  litnum<-""
+  keepgoing<-TRUE
+  while(keepgoing){
+    ### check the first character
+    f<-str_sub(st,1,1)
+    ### add next 4 characters to the number
+    litnum<-str_c(litnum,str_sub(st,2,5))
+    ### remove those from st
+    st<-str_sub(st,6)
+    ### if the first character was a 0, stop. Otherwise repeat
+    if(f==0){keepgoing<-FALSE}}
+  qqq<-litnum
+  litnum<-b2d(litnum)
+  if(is.na(litnum)){cat("!!!!!! H!H!H!HH!H",qqq,"\n")}
+  ### return the number & the remainder of the string
+  return(list(as.numeric(litnum),st))}
+```
+
+A function for when when the length type id=15
+
+```{r}
+operator0_2<-function(st){
+  ### find how many characters are in the packet
+  l<-b2d(str_sub(st,1,15))
+  ### update the string
+  st<-str_sub(st,16)
+  #### get the packet's characters
+  sp<-str_sub(st,1,l)
+  ### update the string
+  st<-str_sub(st,l+1)
+  ### return the packet - run to the end of the packet.
+  return(list(parseit_2(sp),st))}
+```
+
+A function for when the length type id=11
+
+```{r}
+operator1_2<-function(st){
+  ### find out how many repeats
+  l<-b2d(str_sub(st,1,11))
+  ### update the string
+  st<-str_sub(st,12)
+  ### run *exactly* that many packets
+  subpackets<-list()
+  for(i in 1:l){
+    x<-singlesubp_2(st)
+    ### add that single subpacket to the list
+    subpackets<-c(subpackets,list(x[[1]]))
+    ### update st
+    st<-x[[2]]}
+  ### return the list of subpackets
+  return(list(subpackets,st))}
+  
+  
+```
+
+Then a function to run exactly one packet
+```{r}
+singlesubp_2<-function(st){
+  ### get version number
+  v<-str_sub(st,1,3)
+  v<-b2d(v)
+  v<-str_c("v=",v)
+  ### get type
+  t<-str_sub(st,4,6)
+  st<-str_sub(st,7)
+  ### if type is 100 - run the type function & get packets.
+  switch(t,
+         "000"=oper<-"sum",
+         "001"=oper<-"prod",
+         "010"=oper<-"min",
+         "011"=oper<-"max",
+         "100"=oper<-"nada",
+         "101"=oper<-">",
+         "110"=oper<-"<",
+         "111"=oper<-"==",
+         cat("something went wrong\n"))
+  if(t=="100"){
+    x<-type4_2(st)
+    ### if t=100 return the number
+    sbp<-x[[1]]
+    st<-x[[2]]
+  }else{
+    ### get the indicator
+    i<-str_sub(st,1,1)
+    st<-str_sub(st,2)
+    if(i==0){
+    ### if the indicator is 0, run operator 0 function
+      x<-operator0_2(st)
+      ### spb - run the operation
+      sbp<-as.numeric(do.call(oper,x[[1]]))
+      st<-x[[2]]
+    }else{
+      ### if the indicator is 1, run the operator1 function
+      x<-operator1_2(st)
+      ### spb - run the operation the "as numeric" makes TRUE=1,FALSE=0
+      sbp<-as.numeric(do.call(oper,x[[1]]))
+      st<-x[[2]]
+      }}
+  list(sbp,st)}
+
+```
+
+
+Then a function that keeps running them over and over and over.
+
+```{r}
+parseit_2<-function(st){
+  ### if it's an empty string, then I do nothing.
+  if(nchar(st)==0){}
+  ### if there's no 1's, do nothing
+  if(str_detect(st,"1",negate=TRUE)){}
+  ### while there's string left, I need to create subpackets, unless I don't.
+  subpackets<-list()
+  ### create a packet
+  while(nchar(st)>0&str_detect(st,"1")){
+    x<-singlesubp_2(st)
+    subpackets<-c(subpackets,list(x[[1]]))
+    st<-x[[2]]}
+subpackets}
+```
+
+
+
+```{r}
+part2<-sapply(expanded,function(x){parseit_2(x)})
+part2
+```
+

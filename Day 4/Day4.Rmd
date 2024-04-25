@@ -1,0 +1,99 @@
+---
+title: "Day 4 Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(readr)
+library(collections)
+options(scipen = 999)
+```
+
+```{r}
+input<-read_lines("Day4Sample.txt")
+
+```
+
+## Part 1
+I think this is all about setup - probably.
+
+First, pull the called numbers
+
+```{r}
+called<-as.numeric(unlist(str_split(input[1],",")))
+input<-input[-c(1,2)]
+input<-str_trim(str_squish(input))
+```
+
+Create a list of matrices
+```{r}
+
+bingocards<-lapply(seq(from=1,to=length(input),by=6),function(x){
+  m<-matrix(0,ncol=5,nrow=5)
+  for(j in 0:4){
+    y<-as.numeric(unlist(str_split(input[x+j]," ")))
+    m[j+1,]<-y}
+  m})
+
+
+```
+
+Then, for each card, figure out when each piece is going to get called:
+```{r}
+bingocalled<-lapply(bingocards,function(x){
+  ### create a 5x5 matrix
+  bc<-matrix(0,ncol=5,nrow=5)
+  ### put the value in where it is called
+  bc[]<-vapply(x,function(y){which(called==y)},numeric(1))
+  bc})
+```
+next, figure out when each card will win:
+
+```{r}
+bingowin<-sapply(bingocalled,function(x){
+  ### not a generic function, because bingo cards are 5x5
+  ### find the max of each row & column, row or column could win
+  w<-c(apply(x,2,max),apply(x,1,max))
+  ### the card will win when the first row or column could win
+  w<-min(w)
+  w})
+```
+
+then (for each card) figure out the sum of the unmarked numbers when it wins
+
+```{r}
+unmarked<-sapply(1:length(bingocards),function(x){
+  card<-bingocards[[x]]
+  called<-bingocalled[[x]]
+  win<-bingowin[[x]]
+  sc<-matrix(0,ncol=5,nrow=5)
+  for(i in 1:5){
+    for(j in 1:5){
+      sc[i,j]<-if(called[i,j]<=win){0}else{card[i,j]}}}
+  sc<-sum(sc)
+  sc})
+  
+```
+
+finally, the score for each is number called * the sum of the unmarked numbers
+
+```{r}
+bingoscore<-called[bingowin]*unmarked
+bingoscore
+### and the winner is the score which corresponds to the lowest win
+part1<-bingoscore[which(bingowin==min(bingowin))]
+part1
+```
+
+## Part 2
+So, because we know the scores for all the boards and the order in which they will win, we can just go straight to part 2
+
+```{r}
+part2<-bingoscore[which(bingowin==max(bingowin))]
+part2
+```
+
