@@ -11,7 +11,7 @@
 
 
 
-<title>Day 17 Notebook</title>
+<title>Day 18 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 17 Notebook</h1>
+<h1 class="title toc-ignore">Day 18 Notebook</h1>
 
 </div>
 
@@ -1756,143 +1756,214 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFyZ2V0eDwtMjA6MzBcbnRhcmdldHk8LSAtNTotMTBcbmBgYCJ9 -->
-<pre class="r"><code>targetx&lt;-20:30
-targety&lt;- -5:-10</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5wdXQ8LXJlYWRfbGluZXMoXCJEYXkxOFNhbXBsZTIudHh0XCIpXG5gYGAifQ== -->
+<pre class="r"><code>input&lt;-read_lines(&quot;Day18Sample2.txt&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="part-1" class="section level2">
 <h2>Part 1</h2>
-<p>Is a math problem (probably?). And I’m going to brute force it
-anyway. Because the target is below 0, the lowest y can be is
-min(target) and the highest it can be is negative min(target), because
-it will go up, it will come down at the same speed it had going up, and
-overshoot the target.</p>
+<p>So, we’ll need a bunch of functions</p>
+<p>Add</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSlcblxuZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXtcbiAgdDwtMVxuICBkZWx0YXk8LWlcbiAgeTwtMFxuICBoPC0wXG4gIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7XG4gICAgeTwteStkZWx0YXlcbiAgICBpZihkZWx0YXk9PTApe2g8LXl9XG4gICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpe1xuICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9XG4gICAgZGVsdGF5PC1kZWx0YXktMVxuICAgIHQ8LXQrMX19XG5jb2xuYW1lcyh1cGRvd24pPC1jKFwic3RhcnR5XCIsXCJ0eVwiLFwieVwiLFwiaFwiKVxudXBkb3duXG5gYGAifQ== -->
-<pre class="r"><code>updown&lt;-as.data.frame(matrix(ncol=4,nrow=0))
-
-for(i in min(targety):(-min(targety)+1)){
-  t&lt;-1
-  deltay&lt;-i
-  y&lt;-0
-  h&lt;-0
-  while(y&gt;=min(targety)){
-    y&lt;-y+deltay
-    if(deltay==0){h&lt;-y}
-    if(y&gt;=min(targety)&amp;&amp;y&lt;=max(targety)){
-      updown&lt;-rbind(updown,c(i,t,y,h))}
-    deltay&lt;-deltay-1
-    t&lt;-t+1}}
-colnames(updown)&lt;-c(&quot;starty&quot;,&quot;ty&quot;,&quot;y&quot;,&quot;h&quot;)
-updown</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MjQsIm5jb2wiOjQsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzI0IMOXIDRdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnIyVHpVckRRQkRIdDBsYTIwQnJ3UjV5OEZCQ0R4NXNrS3JnUVhBUjZRT0lRcTlyRzl0aTNKUmsvYnI1WnZhUitnVFZUZnJmWUVhS2VIRmgrYzNPN0h6dHNOZFhvMk4zNURMR2JPYllGck9yV21UVjI1dGgvNHd4eDlLSENuTllJK09ydnJTbkJVZnZsdDdlc3NmeXRmVEJMcmdQZW1BSGJJTjFrSlg1c1NxVHJvdFZtUng2am5nYzhUbnljZVRucUllalB1NFhJZk0rYU56ZldPU2xyQk8yQ1R1RXREN1V4Zkd1L0FBOEJJL0FBWGhTN3VQUDgvQ0puZXJOL2Q2Vzg3WTRQckY3eE40bDkzcmxQdGcvcngvek5mTXo4ekh6Q01CVDhCeThCSWZ2aUZqNk9GVXBIc05VQyszTUFtVXRWU0pSYnpoWmhWUXBoQmtKMDBqaWw4Q0VhbVpPeU9iUmZPTklwQ2FmVWJvVG9VUnduMmgvZlZvVGw1MTRvZWF4MUU1VzlzTnJ4TG1TRU1YdWs4d3FtZlRIc3lmNTBCOFFzNzJRMHl4bnJ0cXNKbVR2bSt4c3FyQSs0VjR6YnhQSzZWeUdwcDFJM0lXUmlUd0pueUcyOUh2a3p4RXNrcmxVcGsrdFRRTVZLMkZjM0hFY0dVM2VPVnQvQVlLYzBWSDJCQUFBIn0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"-10","2":"1","3":"-10","4":"0"},{"1":"-9","2":"1","3":"-9","4":"0"},{"1":"-8","2":"1","3":"-8","4":"0"},{"1":"-7","2":"1","3":"-7","4":"0"},{"1":"-6","2":"1","3":"-6","4":"0"},{"1":"-5","2":"1","3":"-5","4":"0"},{"1":"-4","2":"2","3":"-9","4":"0"},{"1":"-3","2":"2","3":"-7","4":"0"},{"1":"-2","2":"2","3":"-5","4":"0"},{"1":"-2","2":"3","3":"-9","4":"0"},{"1":"-1","2":"3","3":"-6","4":"0"},{"1":"-1","2":"4","3":"-10","4":"0"},{"1":"0","2":"4","3":"-6","4":"0"},{"1":"0","2":"5","3":"-10","4":"0"},{"1":"1","2":"5","3":"-5","4":"1"},{"1":"1","2":"6","3":"-9","4":"1"},{"1":"2","2":"7","3":"-7","4":"3"},{"1":"3","2":"9","3":"-9","4":"6"},{"1":"4","2":"10","3":"-5","4":"10"},{"1":"5","2":"12","3":"-6","4":"15"},{"1":"6","2":"14","3":"-7","4":"21"},{"1":"7","2":"16","3":"-8","4":"28"},{"1":"8","2":"18","3":"-9","4":"36"},{"1":"9","2":"20","3":"-10","4":"45"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[24]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>As “h” is the highest point in those trajectories, max(h) is the
-highest point</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duW3doaWNoKHVwZG93biRoPT1tYXgodXBkb3duJGgpKSxdXG5gYGAifQ== -->
-<pre class="r"><code>updown[which(updown$h==max(updown$h)),]</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVF5MjdDTUJEY09FNHFJcFVpY2VtNTZqVzUwRU9QUFZSOFFFVWxyaVp4SVdwcVI0NXA0Y2FuOFdYUWRlSkY0RWhSWm1ZenM0K1A5K1VzVzJZQUVBT1BHY1FKUWtnK0YvUDhGWUF6SkJGd0dMbnZEbithSXVENGpwM3c5Z1QwRFB6bGxoK2ZnL3I4NE9sTmNLTEVqK3dRVFByd1FVdzdLNHpkZThZdUtMcUFUUkF6TXZxdm9Lajd2Z0R3R1BZcUc5RlJMeEt6U2xoUmZCbjBJanNGbGp2ZDJsb3JOREczZlJxWUl4TUlEMXZscHFqeWNyTlYzL2tzS01ldFdydWVmc0RvYXRocnpJY3AyTm5iVTdxTFZPdGFTVnFuRVN2WlVISWxmejBjNHkzNlV4U3RxWldsUFZIdENxdXRJRXRXNm9hVWZuTTQvUU96TnA2R0VnSUFBQT09In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"20","3":"-10","4":"45","_rn_":"24"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>But only if there’s something that will be in the X target range at
-time t.</p>
-<p>So, find viable starting xs. The max that startx can be is going to
-be the max(targetx) - otherwise, it will just overshoot the target on
-the first step. So, (because the target is close enough), it’s possible
-to try every number from 1 to the far edge of the target</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lkZXdheXM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9Myxucm93PTApKVxuXG5mb3IoaSBpbiAxOm1heCh0YXJnZXR4KSl7XG4gIHQ8LTFcbiAgZGVsdGF4PC1pXG4gIHg8LTBcbiAgd2hpbGUoeDxtYXgodGFyZ2V0eCkmJnQ8PW1heCh1cGRvd24kdHkpKXtcbiAgICB4PC14K2RlbHRheFxuICAgIGlmKHg+PW1pbih0YXJnZXR4KSYmeDw9bWF4KHRhcmdldHgpKXtcbiAgICAgIHNpZGV3YXlzPC1yYmluZChzaWRld2F5cyxjKGksdCx4KSl9XG4gICAgaWYoZGVsdGF4PjApe2RlbHRheDwtZGVsdGF4LTF9XG4gICAgdDwtdCsxfX1cbmNvbG5hbWVzKHNpZGV3YXlzKTwtYyhcInN0YXJ0eFwiLFwidHhcIixcInhcIilcbnNpZGV3YXlzXG5gYGAifQ== -->
-<pre class="r"><code>sideways&lt;-as.data.frame(matrix(ncol=3,nrow=0))
-
-for(i in 1:max(targetx)){
-  t&lt;-1
-  deltax&lt;-i
-  x&lt;-0
-  while(x&lt;max(targetx)&amp;&amp;t&lt;=max(updown$ty)){
-    x&lt;-x+deltax
-    if(x&gt;=min(targetx)&amp;&amp;x&lt;=max(targetx)){
-      sideways&lt;-rbind(sideways,c(i,t,x))}
-    if(deltax&gt;0){deltax&lt;-deltax-1}
-    t&lt;-t+1}}
-colnames(sideways)&lt;-c(&quot;startx&quot;,&quot;tx&quot;,&quot;x&quot;)
-sideways</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NTYsIm5jb2wiOjMsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzU2IMOXIDNdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnMyVnpVN0NRQkNBaDVhaU5BRko5T0RCZ3pIR0dDT05DbW9WL3c3R0J6Q2FjRjJoSXJGdVNic29SeC9aSjBDMzJ4a2lrelNlQURkcHZwbnB6dTdNZG1aN2Y5dHV1RzBYQUd3bzJoYllqaGJCZVh5NHEvc0FSVXNyQlNoQ09lVklUMW8xTXdHcSt2RnYxc0dNaFhIam4zQXpoMXVNMjhnZHhsM2tIbklmNlNHYnlHUGtDZklVNlNQUGtPZklGdklDZVltOEFoclpkMXhET3o5WG5nZVAvNis0RDVDSHlDTmtnK1ZWUXk0Nmp1V2NlTGlkZE1qUmMzajlOUnNDZlVkZUovTW0xU1hWSWErL2VaSGlvVDdBZXAvMENla3ROcC9zMUZjOEQrcWZtZlhqMUlYclNQRVdKRnFvZ2JtZWpiR1VLQkdyRVdyV1JFcHY1eW52Y2h4OWVMUkNKWjM3bWUzQjczV25FNHFFdGlHajJ4VktlTSt4OXRmYW1Ma3NSUVBWajZSMnN0SWZRb2s1RjJKbVdCbktOSkp1dmZNeWxLLzFKbnR0RDJRdjNkT1lzbEZCMmY4bDIxa1UxamU2bCtoSUF0bnJ5NERTQ2NWVEVOTEszZUFkeGFvK0QzTWMzaUR1UzBWNWFtdmlxVWdKY25FN1VVZ1drem1NZndDZ2UwTHZKUWNBQUE9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["startx"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["tx"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"6","2":"5","3":"20"},{"1":"6","2":"6","3":"21"},{"1":"6","2":"7","3":"21"},{"1":"6","2":"8","3":"21"},{"1":"6","2":"9","3":"21"},{"1":"6","2":"10","3":"21"},{"1":"6","2":"11","3":"21"},{"1":"6","2":"12","3":"21"},{"1":"6","2":"13","3":"21"},{"1":"6","2":"14","3":"21"},{"1":"6","2":"15","3":"21"},{"1":"6","2":"16","3":"21"},{"1":"6","2":"17","3":"21"},{"1":"6","2":"18","3":"21"},{"1":"6","2":"19","3":"21"},{"1":"6","2":"20","3":"21"},{"1":"7","2":"4","3":"22"},{"1":"7","2":"5","3":"25"},{"1":"7","2":"6","3":"27"},{"1":"7","2":"7","3":"28"},{"1":"7","2":"8","3":"28"},{"1":"7","2":"9","3":"28"},{"1":"7","2":"10","3":"28"},{"1":"7","2":"11","3":"28"},{"1":"7","2":"12","3":"28"},{"1":"7","2":"13","3":"28"},{"1":"7","2":"14","3":"28"},{"1":"7","2":"15","3":"28"},{"1":"7","2":"16","3":"28"},{"1":"7","2":"17","3":"28"},{"1":"7","2":"18","3":"28"},{"1":"7","2":"19","3":"28"},{"1":"7","2":"20","3":"28"},{"1":"8","2":"3","3":"21"},{"1":"8","2":"4","3":"26"},{"1":"8","2":"5","3":"30"},{"1":"9","2":"3","3":"24"},{"1":"9","2":"4","3":"30"},{"1":"10","2":"3","3":"27"},{"1":"11","2":"2","3":"21"},{"1":"11","2":"3","3":"30"},{"1":"12","2":"2","3":"23"},{"1":"13","2":"2","3":"25"},{"1":"14","2":"2","3":"27"},{"1":"15","2":"2","3":"29"},{"1":"20","2":"1","3":"20"},{"1":"21","2":"1","3":"21"},{"1":"22","2":"1","3":"22"},{"1":"23","2":"1","3":"23"},{"1":"24","2":"1","3":"24"},{"1":"25","2":"1","3":"25"},{"1":"26","2":"1","3":"26"},{"1":"27","2":"1","3":"27"},{"1":"28","2":"1","3":"28"},{"1":"29","2":"1","3":"29"},{"1":"30","2":"1","3":"30"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[56]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Then join the two frames. Because x just stops going forward when it
-hits time, it’s a valid spot so long as ty&gt;=tx</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxscGFzc2VzPC1jcm9zc19qb2luKHNpZGV3YXlzLHVwZG93bikgJT4lIFxuICBmaWx0ZXIodHk9PXR4KVxuYGBgIn0= -->
-<pre class="r"><code>allpasses&lt;-cross_join(sideways,updown) %&gt;% 
-  filter(ty==tx)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc25haWxhZGQ8LWZ1bmN0aW9uKGEsYil7XG4gIHNhPC1zdHJfYyhcIltcIixhLFwiLFwiLGIsXCJdXCIpXG5zYX1cbmBgYCJ9 -->
+<pre class="r"><code>snailadd&lt;-function(a,b){
+  sa&lt;-str_c(&quot;[&quot;,a,&quot;,&quot;,b,&quot;]&quot;)
+sa}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>This gives the list of target crossing - the highest height for that
-target crossing.</p>
+<p>Snail reduce: if there’s an opportunity to explode or split, take it
+and repeat</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LW1heChhbGxwYXNzZXMkaClcbnBhcnQxXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-max(allpasses$h)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc25haWxyZWR1Y2U8LWZ1bmN0aW9uKGEpe1xuICAjI3doaWxlIGNhbiBlaXRoZXIgZXhwbG9kZSBvciByZWR1Y2VcbiAgaWYoc3RyX2RldGVjdChhLFwiWzAtOV1bMC05XStcIikpe2NhbnNwbGl0PC1UUlVFfWVsc2V7Y2Fuc3BsaXQ8LUZBTFNFfVxuICB3aGlsZShleHBsb3NpdmUoYSl8fGNhbnNwbGl0KXtcbiAgICAjIyMjIGV4cGxvZGUgYXMgbXVjaCBhcyBwb3NzaWJsZVxuICAgIHdoaWxlKGV4cGxvc2l2ZShhKSl7XG4gICAgICBhPC1zbmFpbGV4cGxvZGUoYSlcbiAgICAgICNjYXQoXCJleHBsb2RlIHRvIFwiLGEsXCJcXG5cIilcbiAgICAgIH1cbiAgICAjIyMgc3BsaXQgb25jZSBpZiBwb3NzaWJsZVxuICAgIGlmKHN0cl9kZXRlY3QoYSxcIlswLTldWzAtOV0rXCIpKXtjYW5zcGxpdDwtVFJVRX1lbHNle2NhbnNwbGl0PC1GQUxTRX1cbiAgICBpZihjYW5zcGxpdCl7YTwtc25haWxzcGxpdChhKVxuICAgICNjYXQoXCJzcGxpdCB0byBcIixhLFwiXFxuXCIpXG4gICAgfVxuICAgICMjIyMgZmluZCBpZiB0aGVyZSBhcmUgbW9yZSBleHBsb3Npb25zIGFuZCBvciBzcGxpdHNcbiAgICBpZihzdHJfZGV0ZWN0KGEsXCJbMC05XVswLTldK1wiKSl7Y2Fuc3BsaXQ8LVRSVUV9ZWxzZXtjYW5zcGxpdDwtRkFMU0V9fVxuYX1cbmBgYCJ9 -->
+<pre class="r"><code>snailreduce&lt;-function(a){
+  ##while can either explode or reduce
+  if(str_detect(a,&quot;[0-9][0-9]+&quot;)){cansplit&lt;-TRUE}else{cansplit&lt;-FALSE}
+  while(explosive(a)||cansplit){
+    #### explode as much as possible
+    while(explosive(a)){
+      a&lt;-snailexplode(a)
+      #cat(&quot;explode to &quot;,a,&quot;\n&quot;)
+      }
+    ### split once if possible
+    if(str_detect(a,&quot;[0-9][0-9]+&quot;)){cansplit&lt;-TRUE}else{cansplit&lt;-FALSE}
+    if(cansplit){a&lt;-snailsplit(a)
+    #cat(&quot;split to &quot;,a,&quot;\n&quot;)
+    }
+    #### find if there are more explosions and or splits
+    if(str_detect(a,&quot;[0-9][0-9]+&quot;)){cansplit&lt;-TRUE}else{cansplit&lt;-FALSE}}
+a}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>explosive: checks to see if there’s a pair that can explode</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXhwbG9zaXZlPC1mdW5jdGlvbihhKXtcbiAgIyMjIGZpbmQgYWxsIHNpbXBsZSBwYWlyc1xuICBwcnM8LXN0cl9sb2NhdGVfYWxsKGEsXCJcXFxcW1swLTldKyxbMC05XStcXFxcXVwiKVxuICB5PC1GQUxTRVxuICAjIyMgaWYgdGhlcmUncyBhdCBsZWFzdCBvbmUgc2ltcGxlIHBhaXIsXG4gIGlmKGxlbmd0aChwcnMpPjApe3k8LXNhcHBseShwcnNbWzFdXVssMV0sZnVuY3Rpb24oeCl7XG4gICAgIyMjIGNvdW50IHRoZSBbJ3MgJiBdJ3MgdG8gdGhlIGxlZnRcbiAgICBsPC1zdHJfY291bnQoc3RyX3N1YihhLDEseCksXCJcXFxcW1wiKVxuICAgIHI8LXN0cl9jb3VudChzdHJfc3ViKGEsMSx4KSxcIlxcXFxdXCIpXG4gICAgIyMjIGlmIHRoZXJlIGFyZSBtb3JlIHRoYW4gWyBvdXR3ZWlnaHNdIGJ5IDQsIHNvbWV0aGluZyBjYW4gZXhwbG9kZVxuICAgIGV4cTwtaWYoKGwtcik+NCl7VFJVRX1lbHNle0ZBTFNFfVxuICAgIGV4cX0pfVxuICBhPC0oYW55KHkpKVxuICBhfVxuYGBgIn0= -->
+<pre class="r"><code>explosive&lt;-function(a){
+  ### find all simple pairs
+  prs&lt;-str_locate_all(a,&quot;\\[[0-9]+,[0-9]+\\]&quot;)
+  y&lt;-FALSE
+  ### if there&#39;s at least one simple pair,
+  if(length(prs)&gt;0){y&lt;-sapply(prs[[1]][,1],function(x){
+    ### count the [&#39;s &amp; ]&#39;s to the left
+    l&lt;-str_count(str_sub(a,1,x),&quot;\\[&quot;)
+    r&lt;-str_count(str_sub(a,1,x),&quot;\\]&quot;)
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq&lt;-if((l-r)&gt;4){TRUE}else{FALSE}
+    exq})}
+  a&lt;-(any(y))
+  a}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Snail explode - explodes the right side, then the left side, then
+changes to 0.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc25haWxleHBsb2RlPC1mdW5jdGlvbihhKXtcbiAgIyMjIGZpbmQgdGhlIGZpcnN0IHBhaXIgdGhhdCBjYW4gZXhwbG9kZSAgKHNvIHllcywgcmVkbyBleHBsb3NpdmUsIGJhc2ljYWxseSlcbiAgcHJzPC1zdHJfbG9jYXRlX2FsbChhLFwiXFxcXFtbMC05XSssWzAtOV0rXFxcXF1cIilcbiAgeTwtc2FwcGx5KHByc1tbMV1dWywxXSxmdW5jdGlvbih4KXtcbiAgICAjIyMgY291bnQgdGhlIFsncyAmIF0ncyB0byB0aGUgbGVmdFxuICAgIGw8LXN0cl9jb3VudChzdHJfc3ViKGEsMSx4KSxcIlxcXFxbXCIpXG4gICAgcjwtc3RyX2NvdW50KHN0cl9zdWIoYSwxLHgpLFwiXFxcXF1cIilcbiAgICAjIyMgaWYgdGhlcmUgYXJlIG1vcmUgdGhhbiBbIG91dHdlaWdoc10gYnkgNCwgc29tZXRoaW5nIGNhbiBleHBsb2RlXG4gICAgZXhxPC1pZigobC1yKT40KXtUUlVFfWVsc2V7RkFMU0V9fSlcbiAgIyMjIGl0cyBsb2NhdGlvblxuICBleHBsb2RlbWVsb2NhdGlvbjwtcHJzW1sxXV1bbWluKHdoaWNoKHkpKSxdXG4gIGV4cGxvZGVtZXN0cmluZzwtc3RyX3N1YihhLGV4cGxvZGVtZWxvY2F0aW9uWzFdLGV4cGxvZGVtZWxvY2F0aW9uWzJdKVxuICAjIyMgaXRzIHZhbHVlc1xuICBleHBsb2RlbWV2YWx1ZTwtYXMubnVtZXJpYyh1bmxpc3Qoc3RyX3NwbGl0KHN0cl9zdWIoYSxleHBsb2RlbWVsb2NhdGlvblsxXSsxLGV4cGxvZGVtZWxvY2F0aW9uWzJdLTEpLFwiLFwiKSkpXG4gICMjIGZpbmQgdGhlIGZpcnN0IG51bWJlciB0byB0aGUgcmlnaHRcbiAgcmlnaHRudW12YWw8LU5BXG4gIHJpZ2h0bnVtcG9zPC1zdHJfbG9jYXRlX2FsbChzdHJfc3ViKGEsc3RhcnQ9ZXhwbG9kZW1lbG9jYXRpb25bMl0pLFwiWzAtOV0rXCIpW1sxXV1cbiAgaWYobnJvdyhyaWdodG51bXBvcyk+MCl7cmlnaHRudW1wb3M8LXJpZ2h0bnVtcG9zWzEsXStleHBsb2RlbWVsb2NhdGlvblsyXS0xXG4gIHJpZ2h0bnVtdmFsPC1hcy5udW1lcmljKHN0cl9zdWIoYSxyaWdodG51bXBvc1sxXSxyaWdodG51bXBvc1syXSkpXG4gIHN0cl9zdWIoYSxyaWdodG51bXBvc1sxXSxyaWdodG51bXBvc1syXSk8LXJpZ2h0bnVtdmFsK2V4cGxvZGVtZXZhbHVlWzJdXG4gIH1cbiAgIyMjIGZpbmQgdGhlIGZpcnN0IG51bWJlciB0byB0aGUgbGVmdFxuICBsZWZ0bnVtcG9zPC1zdHJfbG9jYXRlX2FsbChzdHJfc3ViKGEsMSxleHBsb2RlbWVsb2NhdGlvblsxXSksXCJbMC05XStcIilbWzFdXVxuICAjIyMgZmluZCBpdHMgcG9zaXRpb24gJiB2YWx1ZVxuICBsZWZ0bnVtcG9zPC1sZWZ0bnVtcG9zW25yb3cobGVmdG51bXBvcyksXVxuICBsZWZ0bnVtdmFsPC1hcy5udW1lcmljKHN0cl9zdWIoYSxsZWZ0bnVtcG9zWzFdLGxlZnRudW1wb3NbMl0pKVxuICAjIyMgYWRkIHRoZSBleHBsb2RlIG1lIHZhbHVlXG4gIGlmKCFpcy5uYShsZWZ0bnVtdmFsKSl7c3RyX3N1YihhLGxlZnRudW1wb3NbMV0sbGVmdG51bXBvc1syXSk8LWxlZnRudW12YWwrZXhwbG9kZW1ldmFsdWVbMV19XG4gICMjIyByZXBsYWNlIHdpdGggMCAtIG5lZWQgdG8gcmVmaW5kIHRoZSBleHBsb2RlbWVcbiAgcHJzPC1zdHJfbG9jYXRlX2FsbChhLFwiXFxcXFtbMC05XSssWzAtOV0rXFxcXF1cIilcbiAgeTwtc2FwcGx5KHByc1tbMV1dWywxXSxmdW5jdGlvbih4KXtcbiAgICAjIyMgY291bnQgdGhlIFsncyAmIF0ncyB0byB0aGUgbGVmdFxuICAgIGw8LXN0cl9jb3VudChzdHJfc3ViKGEsMSx4KSxcIlxcXFxbXCIpXG4gICAgcjwtc3RyX2NvdW50KHN0cl9zdWIoYSwxLHgpLFwiXFxcXF1cIilcbiAgICAjIyMgaWYgdGhlcmUgYXJlIG1vcmUgdGhhbiBbIG91dHdlaWdoc10gYnkgNCwgc29tZXRoaW5nIGNhbiBleHBsb2RlXG4gICAgZXhxPC1pZigobC1yKT40KXtUUlVFfWVsc2V7RkFMU0V9fSlcbiAgIyMjIGl0cyBsb2NhdGlvblxuICBleHBsb2RlbWVsb2NhdGlvbjwtcHJzW1sxXV1bbWluKHdoaWNoKHkpKSxdXG4gIHN0cl9zdWIoYSxleHBsb2RlbWVsb2NhdGlvblsxXSxleHBsb2RlbWVsb2NhdGlvblsyXSk8LVwiMFwiXG4gICMjIyByZXR1cm5cbiAgYX1cbmBgYCJ9 -->
+<pre class="r"><code>snailexplode&lt;-function(a){
+  ### find the first pair that can explode  (so yes, redo explosive, basically)
+  prs&lt;-str_locate_all(a,&quot;\\[[0-9]+,[0-9]+\\]&quot;)
+  y&lt;-sapply(prs[[1]][,1],function(x){
+    ### count the [&#39;s &amp; ]&#39;s to the left
+    l&lt;-str_count(str_sub(a,1,x),&quot;\\[&quot;)
+    r&lt;-str_count(str_sub(a,1,x),&quot;\\]&quot;)
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq&lt;-if((l-r)&gt;4){TRUE}else{FALSE}})
+  ### its location
+  explodemelocation&lt;-prs[[1]][min(which(y)),]
+  explodemestring&lt;-str_sub(a,explodemelocation[1],explodemelocation[2])
+  ### its values
+  explodemevalue&lt;-as.numeric(unlist(str_split(str_sub(a,explodemelocation[1]+1,explodemelocation[2]-1),&quot;,&quot;)))
+  ## find the first number to the right
+  rightnumval&lt;-NA
+  rightnumpos&lt;-str_locate_all(str_sub(a,start=explodemelocation[2]),&quot;[0-9]+&quot;)[[1]]
+  if(nrow(rightnumpos)&gt;0){rightnumpos&lt;-rightnumpos[1,]+explodemelocation[2]-1
+  rightnumval&lt;-as.numeric(str_sub(a,rightnumpos[1],rightnumpos[2]))
+  str_sub(a,rightnumpos[1],rightnumpos[2])&lt;-rightnumval+explodemevalue[2]
+  }
+  ### find the first number to the left
+  leftnumpos&lt;-str_locate_all(str_sub(a,1,explodemelocation[1]),&quot;[0-9]+&quot;)[[1]]
+  ### find its position &amp; value
+  leftnumpos&lt;-leftnumpos[nrow(leftnumpos),]
+  leftnumval&lt;-as.numeric(str_sub(a,leftnumpos[1],leftnumpos[2]))
+  ### add the explode me value
+  if(!is.na(leftnumval)){str_sub(a,leftnumpos[1],leftnumpos[2])&lt;-leftnumval+explodemevalue[1]}
+  ### replace with 0 - need to refind the explodeme
+  prs&lt;-str_locate_all(a,&quot;\\[[0-9]+,[0-9]+\\]&quot;)
+  y&lt;-sapply(prs[[1]][,1],function(x){
+    ### count the [&#39;s &amp; ]&#39;s to the left
+    l&lt;-str_count(str_sub(a,1,x),&quot;\\[&quot;)
+    r&lt;-str_count(str_sub(a,1,x),&quot;\\]&quot;)
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq&lt;-if((l-r)&gt;4){TRUE}else{FALSE}})
+  ### its location
+  explodemelocation&lt;-prs[[1]][min(which(y)),]
+  str_sub(a,explodemelocation[1],explodemelocation[2])&lt;-&quot;0&quot;
+  ### return
+  a}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Snail Split: if there’s a number &gt;=10, change it to
+[floor(x/2),ceiling(x/2)]</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc25haWxzcGxpdDwtZnVuY3Rpb24oYSl7XG4gICMjIyBmaW5kIGEgbnVtYmVyIGdyZWF0ZXIgdGhhbiAxMFxuICB4PC1zdHJfbG9jYXRlKGEsXCJbMC05XVswLTldK1wiKVxuICAjIyMgZ3JhYiBpdFxuICB5PC1hcy5udW1lcmljKHN0cl9zdWIoYSx4WzEsMV0seFsxLDJdKSlcbiAgIyMjIGNyZWF0ZSB0aGUgc3RyaW5nIHRoYXQgaXQgc3BsaXRzIHRvXG4gIHo8LXN0cl9jKFwiW1wiLGZsb29yKHkvMiksXCIsXCIsY2VpbGluZyh5LzIpLFwiXVwiKVxuICAjIyMgc3Vic3RpdHV0ZSB0aGF0IGJhY2sgaW50byB0aGUgc3RyaW5nXG4gIHN0cl9zdWIoYSx4WzEsMV0seFsxLDJdKTwtelxuICBhfVxuYGBgIn0= -->
+<pre class="r"><code>snailsplit&lt;-function(a){
+  ### find a number greater than 10
+  x&lt;-str_locate(a,&quot;[0-9][0-9]+&quot;)
+  ### grab it
+  y&lt;-as.numeric(str_sub(a,x[1,1],x[1,2]))
+  ### create the string that it splits to
+  z&lt;-str_c(&quot;[&quot;,floor(y/2),&quot;,&quot;,ceiling(y/2),&quot;]&quot;)
+  ### substitute that back into the string
+  str_sub(a,x[1,1],x[1,2])&lt;-z
+  a}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Snail Magnitude</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc25haWxtYWduaXR1ZGU8LWZ1bmN0aW9uKGEpe1xuICAjIyBpZiB0aGVyZSBhcmUgYW55IHRoaW5ncyBvZiB0aGUgZm9ybSBcIlthLGJdXCIgKG5vIG5lc3RzLClcbiAgd2hpbGUoc3RyX2RldGVjdChhLFwiXFxcXFtbMC05XSssWzAtOV0rXFxcXF1cIikpe1xuICAgICMjIyBmaW5kIHdoZXJlIHRoZXkgYXJlXG4gICAgeDwtc3RyX2xvY2F0ZShhLFwiXFxcXFtbMC05XSssWzAtOV0rXFxcXF1cIilcbiAgICAjIyMgcHVsbCB0aGF0XG4gICAgeTwtc3RyX3N1YihhLHhbMSwxXSx4WzEsMl0pXG4gICAgIyMjIG11bHRpcGx5IGEgYnkgMyAmIGIgYnkgMlxuICAgIHo8LWFzLm51bWVyaWModW5saXN0KHN0cl9zcGxpdChzdHJfcmVwbGFjZV9hbGwoeSxcIltcXFxcW1xcXFxdXVwiLFwiXCIpLFwiLFwiKSkpXG4gICAgejwtMyp6WzFdKzIqelsyXVxuICAgICMjIyBwbHVnIHRoYXQgaW50byBwbGFjZSB3aGVyZSB0aGUgbmVzdGVkIHZhbHVlIHdhc1xuICAgIHN0cl9zdWIoYSx4WzEsMV0seFsxLDJdKTwten1cbiAgIyMgcmV0dXJuIHRoZSBzaW5nbGUgbnVtYmVyIGxlZnQuXG4gIGF9XG5cbmBgYCJ9 -->
+<pre class="r"><code>snailmagnitude&lt;-function(a){
+  ## if there are any things of the form &quot;[a,b]&quot; (no nests,)
+  while(str_detect(a,&quot;\\[[0-9]+,[0-9]+\\]&quot;)){
+    ### find where they are
+    x&lt;-str_locate(a,&quot;\\[[0-9]+,[0-9]+\\]&quot;)
+    ### pull that
+    y&lt;-str_sub(a,x[1,1],x[1,2])
+    ### multiply a by 3 &amp; b by 2
+    z&lt;-as.numeric(unlist(str_split(str_replace_all(y,&quot;[\\[\\]]&quot;,&quot;&quot;),&quot;,&quot;)))
+    z&lt;-3*z[1]+2*z[2]
+    ### plug that into place where the nested value was
+    str_sub(a,x[1,1],x[1,2])&lt;-z}
+  ## return the single number left.
+  a}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>So to find the result:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWlucHV0WzFdXG5mb3IoaSBpbiAyOmxlbmd0aChpbnB1dCkpe1xuICBwYXJ0MTwtc25haWxhZGQocGFydDEsaW5wdXRbaV0pXG4gIHBhcnQxPC1zbmFpbHJlZHVjZShwYXJ0MSl9XG5wYXJ0MVxuYGBgIn0= -->
+<pre class="r"><code>part1&lt;-input[1]
+for(i in 2:length(input)){
+  part1&lt;-snailadd(part1,input[i])
+  part1&lt;-snailreduce(part1)}
 part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ1XG4ifQ== -->
-<pre><code>[1] 45</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiW1tbWzYsNl0sWzcsNl1dLFtbNyw3XSxbNywwXV1dLFtbWzcsN10sWzcsN11dLFtbNyw4XSxbOSw5XV1dXVwiXG4ifQ== -->
+<pre><code>[1] &quot;[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LXNuYWlsbWFnbml0dWRlKHBhcnQxKVxucGFydDFcbmBgYCJ9 -->
+<pre class="r"><code>part1&lt;-snailmagnitude(part1)
+part1</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiNDE0MFwiXG4ifQ== -->
+<pre><code>[1] &quot;4140&quot;</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="part-2" class="section level2">
 <h2>Part 2</h2>
-<p>Part 2 needs to find all of the potential starting x,y pairs - which
-can be had from part 1. But the in part 1 counted crossings. If the
-probe was in the target area two times, it is counted twice in part 1.
-So we need to pull the unique start combinations</p>
+<p>Again, when all else fails - brute force it.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDI8LXVuaXF1ZShhbGxwYXNzZXMlPiVzZWxlY3Qoc3RhcnR4LHN0YXJ0eSkpXG5wYXJ0MjwtbnJvdyhwYXJ0MilcbnBhcnQyXG5gYGAifQ== -->
-<pre class="r"><code>part2&lt;-unique(allpasses%&gt;%select(startx,starty))
-part2&lt;-nrow(part2)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDJkZjwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0yLG5yb3c9MCkpXG5mb3IoaSBpbiAxOmxlbmd0aChpbnB1dCkpe1xuICBmb3IoaiBpbiAxOmxlbmd0aChpbnB1dCkpe1xuICAgIGlmKGkhPWope3BhcnQyZGY8LXJiaW5kKHBhcnQyZGYsbGlzdChpLGopKX19fVxuY29sbmFtZXMocGFydDJkZik8LWMoXCJhXCIsXCJiXCIpXG5gYGAifQ== -->
+<pre class="r"><code>part2df&lt;-as.data.frame(matrix(ncol=2,nrow=0))
+for(i in 1:length(input)){
+  for(j in 1:length(input)){
+    if(i!=j){part2df&lt;-rbind(part2df,list(i,j))}}}
+colnames(part2df)&lt;-c(&quot;a&quot;,&quot;b&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIzk0OCBpcyB0b28gbG93XG5wYXJ0MmRmIDwtIHBhcnQyZGYgJT4lIHJvd3dpc2UgJT4lXG4gIG11dGF0ZShtYWc9YXMubnVtZXJpYyhzbmFpbG1hZ25pdHVkZShzbmFpbHJlZHVjZShzbmFpbGFkZChpbnB1dFthXSxpbnB1dFtiXSkpKSkpXG5wYXJ0MjwtbWF4KHBhcnQyZGYkbWFnKVxucGFydDJcbmBgYCJ9 -->
+<pre class="r"><code>#948 is too low
+part2df &lt;- part2df %&gt;% rowwise %&gt;%
+  mutate(mag=as.numeric(snailmagnitude(snailreduce(snailadd(input[a],input[b])))))
+part2&lt;-max(part2df$mag)
 part2</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDExMlxuIn0= -->
-<pre><code>[1] 112</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM5OTNcbiJ9 -->
+<pre><code>[1] 3993</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0KbGlicmFyeShnZ3Bsb3QyKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQp0YXJnZXR4PC0yMDozMA0KdGFyZ2V0eTwtIC01Oi0xMA0KYGBgDQoNCiMjIFBhcnQgMQ0KSXMgYSBtYXRoIHByb2JsZW0gKHByb2JhYmx5PykuDQpBbmQgSSdtIGdvaW5nIHRvIGJydXRlIGZvcmNlIGl0IGFueXdheS4NCkJlY2F1c2UgdGhlIHRhcmdldCBpcyBiZWxvdyAwLCB0aGUgbG93ZXN0IHkgY2FuIGJlIGlzIG1pbih0YXJnZXQpIGFuZCB0aGUgaGlnaGVzdCBpdCBjYW4gYmUgaXMgbmVnYXRpdmUgbWluKHRhcmdldCksIGJlY2F1c2UgaXQgd2lsbCBnbyB1cCwgaXQgd2lsbCBjb21lIGRvd24gYXQgdGhlIHNhbWUgc3BlZWQgaXQgaGFkIGdvaW5nIHVwLCBhbmQgb3ZlcnNob290IHRoZSB0YXJnZXQuDQoNCmBgYHtyfQ0KdXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSkNCg0KZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXsNCiAgdDwtMQ0KICBkZWx0YXk8LWkNCiAgeTwtMA0KICBoPC0wDQogIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7DQogICAgeTwteStkZWx0YXkNCiAgICBpZihkZWx0YXk9PTApe2g8LXl9DQogICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpew0KICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9DQogICAgZGVsdGF5PC1kZWx0YXktMQ0KICAgIHQ8LXQrMX19DQpjb2xuYW1lcyh1cGRvd24pPC1jKCJzdGFydHkiLCJ0eSIsInkiLCJoIikNCnVwZG93bg0KYGBgDQoNCkFzICJoIiBpcyB0aGUgaGlnaGVzdCBwb2ludCBpbiB0aG9zZSB0cmFqZWN0b3JpZXMsIG1heChoKSBpcyB0aGUgaGlnaGVzdCBwb2ludA0KYGBge3J9DQp1cGRvd25bd2hpY2godXBkb3duJGg9PW1heCh1cGRvd24kaCkpLF0NCmBgYA0KQnV0IG9ubHkgaWYgdGhlcmUncyBzb21ldGhpbmcgdGhhdCB3aWxsIGJlIGluIHRoZSBYIHRhcmdldCByYW5nZSBhdCB0aW1lIHQuDQoNClNvLCBmaW5kIHZpYWJsZSBzdGFydGluZyB4cy4NClRoZSBtYXggdGhhdCBzdGFydHggY2FuIGJlIGlzIGdvaW5nIHRvIGJlIHRoZSBtYXgodGFyZ2V0eCkgLSBvdGhlcndpc2UsIGl0IHdpbGwganVzdCBvdmVyc2hvb3QgdGhlIHRhcmdldCBvbiB0aGUgZmlyc3Qgc3RlcC4NClNvLCAoYmVjYXVzZSB0aGUgdGFyZ2V0IGlzIGNsb3NlIGVub3VnaCksIGl0J3MgcG9zc2libGUgdG8gdHJ5IGV2ZXJ5IG51bWJlciBmcm9tIDEgdG8gdGhlIGZhciBlZGdlIG9mIHRoZSB0YXJnZXQNCg0KYGBge3J9DQpzaWRld2F5czwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0zLG5yb3c9MCkpDQoNCmZvcihpIGluIDE6bWF4KHRhcmdldHgpKXsNCiAgdDwtMQ0KICBkZWx0YXg8LWkNCiAgeDwtMA0KICB3aGlsZSh4PG1heCh0YXJnZXR4KSYmdDw9bWF4KHVwZG93biR0eSkpew0KICAgIHg8LXgrZGVsdGF4DQogICAgaWYoeD49bWluKHRhcmdldHgpJiZ4PD1tYXgodGFyZ2V0eCkpew0KICAgICAgc2lkZXdheXM8LXJiaW5kKHNpZGV3YXlzLGMoaSx0LHgpKX0NCiAgICBpZihkZWx0YXg+MCl7ZGVsdGF4PC1kZWx0YXgtMX0NCiAgICB0PC10KzF9fQ0KY29sbmFtZXMoc2lkZXdheXMpPC1jKCJzdGFydHgiLCJ0eCIsIngiKQ0Kc2lkZXdheXMNCmBgYA0KDQpUaGVuIGpvaW4gdGhlIHR3byBmcmFtZXMuICBCZWNhdXNlIHgganVzdCBzdG9wcyBnb2luZyBmb3J3YXJkIHdoZW4gaXQgaGl0cyB0aW1lLCBpdCdzIGEgdmFsaWQgc3BvdCBzbyBsb25nIGFzIHR5Pj10eA0KDQpgYGB7cn0NCmFsbHBhc3NlczwtY3Jvc3Nfam9pbihzaWRld2F5cyx1cGRvd24pICU+JSANCiAgZmlsdGVyKHR5PT10eCkNCmBgYA0KVGhpcyBnaXZlcyB0aGUgbGlzdCBvZiB0YXJnZXQgY3Jvc3NpbmcgLSB0aGUgaGlnaGVzdCBoZWlnaHQgZm9yIHRoYXQgdGFyZ2V0IGNyb3NzaW5nLg0KDQpgYGB7cn0NCnBhcnQxPC1tYXgoYWxscGFzc2VzJGgpDQpwYXJ0MQ0KYGBgDQoNCiMjIFBhcnQgMg0KUGFydCAyIG5lZWRzIHRvIGZpbmQgYWxsIG9mIHRoZSBwb3RlbnRpYWwgc3RhcnRpbmcgeCx5IHBhaXJzIC0gd2hpY2ggY2FuIGJlIGhhZCBmcm9tIHBhcnQgMS4gIEJ1dCB0aGUgaW4gcGFydCAxIGNvdW50ZWQgY3Jvc3NpbmdzLiAgSWYgdGhlIHByb2JlIHdhcyBpbiB0aGUgdGFyZ2V0IGFyZWEgdHdvIHRpbWVzLCBpdCBpcyBjb3VudGVkIHR3aWNlIGluIHBhcnQgMS4gIFNvIHdlIG5lZWQgdG8gcHVsbCB0aGUgdW5pcXVlIHN0YXJ0IGNvbWJpbmF0aW9ucw0KYGBge3J9DQpwYXJ0MjwtdW5pcXVlKGFsbHBhc3NlcyU+JXNlbGVjdChzdGFydHgsc3RhcnR5KSkNCnBhcnQyPC1ucm93KHBhcnQyKQ0KcGFydDINCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxOCBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiRGF5MThTYW1wbGUyLnR4dCIpDQpgYGANCg0KIyMgUGFydCAxDQpTbywgd2UnbGwgbmVlZCBhIGJ1bmNoIG9mIGZ1bmN0aW9ucw0KDQpBZGQNCmBgYHtyfQ0Kc25haWxhZGQ8LWZ1bmN0aW9uKGEsYil7DQogIHNhPC1zdHJfYygiWyIsYSwiLCIsYiwiXSIpDQpzYX0NCmBgYA0KDQpTbmFpbCByZWR1Y2U6DQppZiB0aGVyZSdzIGFuIG9wcG9ydHVuaXR5IHRvIGV4cGxvZGUgb3Igc3BsaXQsIHRha2UgaXQgYW5kIHJlcGVhdA0KYGBge3J9DQpzbmFpbHJlZHVjZTwtZnVuY3Rpb24oYSl7DQogICMjd2hpbGUgY2FuIGVpdGhlciBleHBsb2RlIG9yIHJlZHVjZQ0KICBpZihzdHJfZGV0ZWN0KGEsIlswLTldWzAtOV0rIikpe2NhbnNwbGl0PC1UUlVFfWVsc2V7Y2Fuc3BsaXQ8LUZBTFNFfQ0KICB3aGlsZShleHBsb3NpdmUoYSl8fGNhbnNwbGl0KXsNCiAgICAjIyMjIGV4cGxvZGUgYXMgbXVjaCBhcyBwb3NzaWJsZQ0KICAgIHdoaWxlKGV4cGxvc2l2ZShhKSl7DQogICAgICBhPC1zbmFpbGV4cGxvZGUoYSkNCiAgICAgICNjYXQoImV4cGxvZGUgdG8gIixhLCJcbiIpDQogICAgICB9DQogICAgIyMjIHNwbGl0IG9uY2UgaWYgcG9zc2libGUNCiAgICBpZihzdHJfZGV0ZWN0KGEsIlswLTldWzAtOV0rIikpe2NhbnNwbGl0PC1UUlVFfWVsc2V7Y2Fuc3BsaXQ8LUZBTFNFfQ0KICAgIGlmKGNhbnNwbGl0KXthPC1zbmFpbHNwbGl0KGEpDQogICAgI2NhdCgic3BsaXQgdG8gIixhLCJcbiIpDQogICAgfQ0KICAgICMjIyMgZmluZCBpZiB0aGVyZSBhcmUgbW9yZSBleHBsb3Npb25zIGFuZCBvciBzcGxpdHMNCiAgICBpZihzdHJfZGV0ZWN0KGEsIlswLTldWzAtOV0rIikpe2NhbnNwbGl0PC1UUlVFfWVsc2V7Y2Fuc3BsaXQ8LUZBTFNFfX0NCmF9DQpgYGANCg0KDQpleHBsb3NpdmU6DQpjaGVja3MgdG8gc2VlIGlmIHRoZXJlJ3MgYSBwYWlyIHRoYXQgY2FuIGV4cGxvZGUNCg0KYGBge3J9DQpleHBsb3NpdmU8LWZ1bmN0aW9uKGEpew0KICAjIyMgZmluZCBhbGwgc2ltcGxlIHBhaXJzDQogIHByczwtc3RyX2xvY2F0ZV9hbGwoYSwiXFxbWzAtOV0rLFswLTldK1xcXSIpDQogIHk8LUZBTFNFDQogICMjIyBpZiB0aGVyZSdzIGF0IGxlYXN0IG9uZSBzaW1wbGUgcGFpciwNCiAgaWYobGVuZ3RoKHBycyk+MCl7eTwtc2FwcGx5KHByc1tbMV1dWywxXSxmdW5jdGlvbih4KXsNCiAgICAjIyMgY291bnQgdGhlIFsncyAmIF0ncyB0byB0aGUgbGVmdA0KICAgIGw8LXN0cl9jb3VudChzdHJfc3ViKGEsMSx4KSwiXFxbIikNCiAgICByPC1zdHJfY291bnQoc3RyX3N1YihhLDEseCksIlxcXSIpDQogICAgIyMjIGlmIHRoZXJlIGFyZSBtb3JlIHRoYW4gWyBvdXR3ZWlnaHNdIGJ5IDQsIHNvbWV0aGluZyBjYW4gZXhwbG9kZQ0KICAgIGV4cTwtaWYoKGwtcik+NCl7VFJVRX1lbHNle0ZBTFNFfQ0KICAgIGV4cX0pfQ0KICBhPC0oYW55KHkpKQ0KICBhfQ0KYGBgDQoNCg0KDQoNClNuYWlsIGV4cGxvZGUgLSBleHBsb2RlcyB0aGUgcmlnaHQgc2lkZSwgdGhlbiB0aGUgbGVmdCBzaWRlLCB0aGVuIGNoYW5nZXMgdG8gMC4NCmBgYHtyfQ0Kc25haWxleHBsb2RlPC1mdW5jdGlvbihhKXsNCiAgIyMjIGZpbmQgdGhlIGZpcnN0IHBhaXIgdGhhdCBjYW4gZXhwbG9kZSAgKHNvIHllcywgcmVkbyBleHBsb3NpdmUsIGJhc2ljYWxseSkNCiAgcHJzPC1zdHJfbG9jYXRlX2FsbChhLCJcXFtbMC05XSssWzAtOV0rXFxdIikNCiAgeTwtc2FwcGx5KHByc1tbMV1dWywxXSxmdW5jdGlvbih4KXsNCiAgICAjIyMgY291bnQgdGhlIFsncyAmIF0ncyB0byB0aGUgbGVmdA0KICAgIGw8LXN0cl9jb3VudChzdHJfc3ViKGEsMSx4KSwiXFxbIikNCiAgICByPC1zdHJfY291bnQoc3RyX3N1YihhLDEseCksIlxcXSIpDQogICAgIyMjIGlmIHRoZXJlIGFyZSBtb3JlIHRoYW4gWyBvdXR3ZWlnaHNdIGJ5IDQsIHNvbWV0aGluZyBjYW4gZXhwbG9kZQ0KICAgIGV4cTwtaWYoKGwtcik+NCl7VFJVRX1lbHNle0ZBTFNFfX0pDQogICMjIyBpdHMgbG9jYXRpb24NCiAgZXhwbG9kZW1lbG9jYXRpb248LXByc1tbMV1dW21pbih3aGljaCh5KSksXQ0KICBleHBsb2RlbWVzdHJpbmc8LXN0cl9zdWIoYSxleHBsb2RlbWVsb2NhdGlvblsxXSxleHBsb2RlbWVsb2NhdGlvblsyXSkNCiAgIyMjIGl0cyB2YWx1ZXMNCiAgZXhwbG9kZW1ldmFsdWU8LWFzLm51bWVyaWModW5saXN0KHN0cl9zcGxpdChzdHJfc3ViKGEsZXhwbG9kZW1lbG9jYXRpb25bMV0rMSxleHBsb2RlbWVsb2NhdGlvblsyXS0xKSwiLCIpKSkNCiAgIyMgZmluZCB0aGUgZmlyc3QgbnVtYmVyIHRvIHRoZSByaWdodA0KICByaWdodG51bXZhbDwtTkENCiAgcmlnaHRudW1wb3M8LXN0cl9sb2NhdGVfYWxsKHN0cl9zdWIoYSxzdGFydD1leHBsb2RlbWVsb2NhdGlvblsyXSksIlswLTldKyIpW1sxXV0NCiAgaWYobnJvdyhyaWdodG51bXBvcyk+MCl7cmlnaHRudW1wb3M8LXJpZ2h0bnVtcG9zWzEsXStleHBsb2RlbWVsb2NhdGlvblsyXS0xDQogIHJpZ2h0bnVtdmFsPC1hcy5udW1lcmljKHN0cl9zdWIoYSxyaWdodG51bXBvc1sxXSxyaWdodG51bXBvc1syXSkpDQogIHN0cl9zdWIoYSxyaWdodG51bXBvc1sxXSxyaWdodG51bXBvc1syXSk8LXJpZ2h0bnVtdmFsK2V4cGxvZGVtZXZhbHVlWzJdDQogIH0NCiAgIyMjIGZpbmQgdGhlIGZpcnN0IG51bWJlciB0byB0aGUgbGVmdA0KICBsZWZ0bnVtcG9zPC1zdHJfbG9jYXRlX2FsbChzdHJfc3ViKGEsMSxleHBsb2RlbWVsb2NhdGlvblsxXSksIlswLTldKyIpW1sxXV0NCiAgIyMjIGZpbmQgaXRzIHBvc2l0aW9uICYgdmFsdWUNCiAgbGVmdG51bXBvczwtbGVmdG51bXBvc1tucm93KGxlZnRudW1wb3MpLF0NCiAgbGVmdG51bXZhbDwtYXMubnVtZXJpYyhzdHJfc3ViKGEsbGVmdG51bXBvc1sxXSxsZWZ0bnVtcG9zWzJdKSkNCiAgIyMjIGFkZCB0aGUgZXhwbG9kZSBtZSB2YWx1ZQ0KICBpZighaXMubmEobGVmdG51bXZhbCkpe3N0cl9zdWIoYSxsZWZ0bnVtcG9zWzFdLGxlZnRudW1wb3NbMl0pPC1sZWZ0bnVtdmFsK2V4cGxvZGVtZXZhbHVlWzFdfQ0KICAjIyMgcmVwbGFjZSB3aXRoIDAgLSBuZWVkIHRvIHJlZmluZCB0aGUgZXhwbG9kZW1lDQogIHByczwtc3RyX2xvY2F0ZV9hbGwoYSwiXFxbWzAtOV0rLFswLTldK1xcXSIpDQogIHk8LXNhcHBseShwcnNbWzFdXVssMV0sZnVuY3Rpb24oeCl7DQogICAgIyMjIGNvdW50IHRoZSBbJ3MgJiBdJ3MgdG8gdGhlIGxlZnQNCiAgICBsPC1zdHJfY291bnQoc3RyX3N1YihhLDEseCksIlxcWyIpDQogICAgcjwtc3RyX2NvdW50KHN0cl9zdWIoYSwxLHgpLCJcXF0iKQ0KICAgICMjIyBpZiB0aGVyZSBhcmUgbW9yZSB0aGFuIFsgb3V0d2VpZ2hzXSBieSA0LCBzb21ldGhpbmcgY2FuIGV4cGxvZGUNCiAgICBleHE8LWlmKChsLXIpPjQpe1RSVUV9ZWxzZXtGQUxTRX19KQ0KICAjIyMgaXRzIGxvY2F0aW9uDQogIGV4cGxvZGVtZWxvY2F0aW9uPC1wcnNbWzFdXVttaW4od2hpY2goeSkpLF0NCiAgc3RyX3N1YihhLGV4cGxvZGVtZWxvY2F0aW9uWzFdLGV4cGxvZGVtZWxvY2F0aW9uWzJdKTwtIjAiDQogICMjIyByZXR1cm4NCiAgYX0NCmBgYA0KDQpTbmFpbCBTcGxpdDoNCmlmIHRoZXJlJ3MgYSBudW1iZXIgPj0xMCwgY2hhbmdlIGl0IHRvIFtmbG9vcih4LzIpLGNlaWxpbmcoeC8yKV0NCmBgYHtyfQ0Kc25haWxzcGxpdDwtZnVuY3Rpb24oYSl7DQogICMjIyBmaW5kIGEgbnVtYmVyIGdyZWF0ZXIgdGhhbiAxMA0KICB4PC1zdHJfbG9jYXRlKGEsIlswLTldWzAtOV0rIikNCiAgIyMjIGdyYWIgaXQNCiAgeTwtYXMubnVtZXJpYyhzdHJfc3ViKGEseFsxLDFdLHhbMSwyXSkpDQogICMjIyBjcmVhdGUgdGhlIHN0cmluZyB0aGF0IGl0IHNwbGl0cyB0bw0KICB6PC1zdHJfYygiWyIsZmxvb3IoeS8yKSwiLCIsY2VpbGluZyh5LzIpLCJdIikNCiAgIyMjIHN1YnN0aXR1dGUgdGhhdCBiYWNrIGludG8gdGhlIHN0cmluZw0KICBzdHJfc3ViKGEseFsxLDFdLHhbMSwyXSk8LXoNCiAgYX0NCmBgYA0KDQoNClNuYWlsIE1hZ25pdHVkZQ0KYGBge3J9DQpzbmFpbG1hZ25pdHVkZTwtZnVuY3Rpb24oYSl7DQogICMjIGlmIHRoZXJlIGFyZSBhbnkgdGhpbmdzIG9mIHRoZSBmb3JtICJbYSxiXSIgKG5vIG5lc3RzLCkNCiAgd2hpbGUoc3RyX2RldGVjdChhLCJcXFtbMC05XSssWzAtOV0rXFxdIikpew0KICAgICMjIyBmaW5kIHdoZXJlIHRoZXkgYXJlDQogICAgeDwtc3RyX2xvY2F0ZShhLCJcXFtbMC05XSssWzAtOV0rXFxdIikNCiAgICAjIyMgcHVsbCB0aGF0DQogICAgeTwtc3RyX3N1YihhLHhbMSwxXSx4WzEsMl0pDQogICAgIyMjIG11bHRpcGx5IGEgYnkgMyAmIGIgYnkgMg0KICAgIHo8LWFzLm51bWVyaWModW5saXN0KHN0cl9zcGxpdChzdHJfcmVwbGFjZV9hbGwoeSwiW1xcW1xcXV0iLCIiKSwiLCIpKSkNCiAgICB6PC0zKnpbMV0rMip6WzJdDQogICAgIyMjIHBsdWcgdGhhdCBpbnRvIHBsYWNlIHdoZXJlIHRoZSBuZXN0ZWQgdmFsdWUgd2FzDQogICAgc3RyX3N1YihhLHhbMSwxXSx4WzEsMl0pPC16fQ0KICAjIyByZXR1cm4gdGhlIHNpbmdsZSBudW1iZXIgbGVmdC4NCiAgYX0NCg0KYGBgDQoNCg0KU28gdG8gZmluZCB0aGUgcmVzdWx0Og0KYGBge3J9DQpwYXJ0MTwtaW5wdXRbMV0NCmZvcihpIGluIDI6bGVuZ3RoKGlucHV0KSl7DQogIHBhcnQxPC1zbmFpbGFkZChwYXJ0MSxpbnB1dFtpXSkNCiAgcGFydDE8LXNuYWlscmVkdWNlKHBhcnQxKX0NCnBhcnQxDQpwYXJ0MTwtc25haWxtYWduaXR1ZGUocGFydDEpDQpwYXJ0MQ0KYGBgDQojIyBQYXJ0IDINCkFnYWluLCB3aGVuIGFsbCBlbHNlIGZhaWxzIC0gYnJ1dGUgZm9yY2UgaXQuDQoNCmBgYHtyfQ0KcGFydDJkZjwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0yLG5yb3c9MCkpDQpmb3IoaSBpbiAxOmxlbmd0aChpbnB1dCkpew0KICBmb3IoaiBpbiAxOmxlbmd0aChpbnB1dCkpew0KICAgIGlmKGkhPWope3BhcnQyZGY8LXJiaW5kKHBhcnQyZGYsbGlzdChpLGopKX19fQ0KY29sbmFtZXMocGFydDJkZik8LWMoImEiLCJiIikNCmBgYA0KDQoNCmBgYHtyfQ0KIzk0OCBpcyB0b28gbG93DQpwYXJ0MmRmIDwtIHBhcnQyZGYgJT4lIHJvd3dpc2UgJT4lDQogIG11dGF0ZShtYWc9YXMubnVtZXJpYyhzbmFpbG1hZ25pdHVkZShzbmFpbHJlZHVjZShzbmFpbGFkZChpbnB1dFthXSxpbnB1dFtiXSkpKSkpDQpwYXJ0MjwtbWF4KHBhcnQyZGYkbWFnKQ0KcGFydDINCmBgYA0KDQo=</div>
 
 
 
@@ -1939,7 +2010,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day17.Rmd");
+  window.initializeSourceEmbed("Day18.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 21 Notebook"
 output: html_notebook
 ---
 
@@ -10,33 +10,276 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+## Part 1
+A giant while loop because I am lazy
 
+```{r}
+### starting positions
+p1<-4
+p2<-8
+### scores
+s1<-0
+s2<-0
+### rolls
+r<-0
+### die
+d<-1
+### whose turn is it
+turn<-1
+### until either score >1000
+while(s1<1000&&s2<1000){
+  ### if it's the first players turn
+  if(turn==1){
+    ### "roll" the die three times and move
+    p1<-(p1+3*d+3)%%10
+    ### because the board only goes to 10, flip back to one
+    if(p1==0){p1<-10}
+    ### update the score based on the current position
+    s1<-s1+p1
+    ### make it the second players turn
+    turn<-2
+    ### putting in the else (rather than doing both back to back) in case player one wins
+    ### it's easier to figure out p2s score rather than having to undo it.
+  }else{
+    ### roll and move
+    p2<-(p2+3*d+3)%%10
+    if(p2==0){p2<-10}
+    ### update the score
+    s2<-s2+p2
+    ### switch to p1s turn
+    turn<-1}
+  ### update the number of rolls
+  r<-r+3
+  ### update the die
+  d<-d+3
+  if(d>100){d<-d-100}}
+
+
+part1<-(r*min(s1,s2))
+part1
+```
+## Part 2
+I think this is ... a giant search.
+
+```{r}
+pnext<-function(p,d){
+  p<-(p+d)%%10
+  if(p==0){p<-10}
+  p}
 ```
 
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+splitdice<-function(p1,p2,f){
+  ### create the universe pool
+  universepool<-dict()
+  ### create the queue
+  pq<-priority_queue()
+  ### create the current universe
+  ### universe = turn (1 or 2), player 1 position, player 1 score, player 2 position, player 2, score.
+  universe<-c(1,p1,0,p2,0)
+  ### add that universe to the universe pool
+  universepool$set(universe,1)
+  ### add that move to the queue
+  pq$push(universe,min(universe[c(3,5)]))
+  ### set starting scores of 0
+  p1win<-0
+  p2win<-0
+  counter<-1
+  ####as long as there's at least one universe in the queue- 
+  while(pq$size()>0){
+    # pop the queue
+    nowuniverse<-pq$pop()
+    ### check to see how many universes there are like this
+    howmany<-universepool$get(nowuniverse)
+    ### reset the universe counter for this state.
+    universepool$set(nowuniverse,0)
+    ### if 0, then nothing to see here
+    if(howmany==0){next}
+    ### check currentscores
+    nows1<-nowuniverse[3]
+    ### if s1>=21, then add to the win column and go to the next
+    if(nows1>=f){
+      p1win<-p1win+howmany
+      next}
+    ## check nows2
+    nows2<-nowuniverse[5]
+    ### same for 2
+    if(nows2>=f){
+      p2win<-p2win+howmany
+      next}
+    nowp1<-nowuniverse[2]
+    nowp2<-nowuniverse[4]
+    turn<-nowuniverse[1]
+    ### depending on whose turn it is, create the new universes
+    ### if turn = 1, do everything for player 1
+    if(turn==1){
+      ###3
+      ## figure out where the next step is
+      pos3<-pnext(nowp1,3)
+      ## figure out what the next universe is
+      nxt3<-c(2,pos3,nows1+pos3,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt3)){universepool$set(nxt3,0)}
+      universepool$set(nxt3,(universepool$get(nxt3)+howmany*1))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt3,-(min(nxt3[c(3,5)])))
+
+            ###4
+      ## figure out where the next step is
+      pos4<-pnext(nowp1,4)
+      ## figure out what the next universe is
+      nxt4<-c(2,pos4,nows1+pos4,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt4)){universepool$set(nxt4,0)}
+      universepool$set(nxt4,(universepool$get(nxt4)+howmany*3))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt4,-(min(nxt4[c(3,5)])))
+      
+      ###5
+      ## figure out where the next step is
+      pos5<-pnext(nowp1,5)
+      ## figure out what the next universe is
+      nxt5<-c(2,pos5,nows1+pos5,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt5)){universepool$set(nxt5,0)}
+      universepool$set(nxt5,(universepool$get(nxt5)+howmany*6))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt5,-(min(nxt5[c(3,5)])))
+      
+      ###6
+      ## figure out where the next step is
+      pos6<-pnext(nowp1,6)
+      ## figure out what the next universe is
+      nxt6<-c(2,pos6,nows1+pos6,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt6)){universepool$set(nxt6,0)}
+      universepool$set(nxt6,(universepool$get(nxt6)+howmany*7))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt6,-(min(nxt6[c(3,5)])))
+      
+      ###7
+      ## figure out where the next step is
+      pos7<-pnext(nowp1,7)
+      ## figure out what the next universe is
+      nxt7<-c(2,pos7,nows1+pos7,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt7)){universepool$set(nxt7,0)}
+      universepool$set(nxt7,(universepool$get(nxt7)+howmany*6))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt7,-(min(nxt7[c(3,5)])))
+      
+      ###8
+      ## figure out where the next step is
+      pos8<-pnext(nowp1,8)
+      ## figure out what the next universe is
+      nxt8<-c(2,pos8,nows1+pos8,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt8)){universepool$set(nxt8,0)}
+      universepool$set(nxt8,(universepool$get(nxt8)+howmany*3))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt8,-(min(nxt8[c(3,5)])))
+      
+      ###9
+      ## figure out where the next step is
+      pos9<-pnext(nowp1,9)
+      ## figure out what the next universe is
+      nxt9<-c(2,pos9,nows1+pos9,nowp2,nows2)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt9)){universepool$set(nxt9,0)}
+      universepool$set(nxt9,(universepool$get(nxt9)+howmany*1))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt9,-(min(nxt9[c(3,5)])))
+      
+      ###else if it's p2s turn  
+    }else{
+      ## figure out where the next step is
+      pos3<-pnext(nowp2,3)
+      ## figure out what the next universe is
+      nxt3<-c(1,nowp1,nows1,pos3,nows2+pos3)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt3)){universepool$set(nxt3,0)}
+      universepool$set(nxt3,(universepool$get(nxt3)+howmany*1))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt3,-(min(nxt3[c(3,5)])))
+      
+      ###4
+      ## figure out where the next step is
+      pos4<-pnext(nowp2,4)
+      ## figure out what the next universe is
+      nxt4<-c(1,nowp1,nows1,pos4,nows2+pos4)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt4)){universepool$set(nxt4,0)}
+      universepool$set(nxt4,(universepool$get(nxt4)+howmany*3))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt4,-(min(nxt4[c(3,5)])))
+      
+      ###5
+      ## figure out where the next step is
+      pos5<-pnext(nowp2,5)
+      ## figure out what the next universe is
+      nxt5<-c(1,nowp1,nows1,pos5,nows2+pos5)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt5)){universepool$set(nxt5,0)}
+      universepool$set(nxt5,(universepool$get(nxt5)+howmany*6))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt5,-(min(nxt5[c(3,5)])))
+      
+      ###6
+      ## figure out where the next step is
+      pos6<-pnext(nowp2,6)
+      ## figure out what the next universe is
+      nxt6<-c(1,nowp1,nows1,pos6,nows2+pos6)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt6)){universepool$set(nxt6,0)}
+      universepool$set(nxt6,(universepool$get(nxt6)+howmany*7))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt6,-(min(nxt6[c(3,5)])))
+      
+      ###7
+      ## figure out where the next step is
+      pos7<-pnext(nowp2,7)
+      ## figure out what the next universe is
+      nxt7<-c(1,nowp1,nows1,pos7,nows2+pos7)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt7)){universepool$set(nxt7,0)}
+      universepool$set(nxt7,(universepool$get(nxt7)+howmany*6))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt7,-(min(nxt7[c(3,5)])))
+      
+      ###8
+      ## figure out where the next step is
+      pos8<-pnext(nowp2,8)
+      ## figure out what the next universe is
+      nxt8<-c(1,nowp1,nows1,pos8,nows2+pos8)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt8)){universepool$set(nxt8,0)}
+      universepool$set(nxt8,(universepool$get(nxt8)+howmany*3))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt8,-(min(nxt8[c(3,5)])))
+      
+      ###9
+      ## figure out where the next step is
+      pos9<-pnext(nowp2,9)
+      ## figure out what the next universe is
+      nxt9<-c(1,nowp1,nows1,pos9,nows2+pos9)
+      ## add that to the dictionary  (create one if it doesn't exist)
+      if(!universepool$has(nxt9)){universepool$set(nxt9,0)}
+      universepool$set(nxt9,(universepool$get(nxt9)+howmany*1))
+      ## push with a priority of the negative min of the score.
+      pq$push(nxt9,-(min(nxt9[c(3,5)])))
+    }
+
+  }
+  return(c(p1win,p2win))}
+```
+
+```{r}
+part2<-max(splitdice(4,8,21))
+part2
 ```
 

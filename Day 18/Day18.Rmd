@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 18 Notebook"
 output: html_notebook
 ---
 
@@ -10,33 +10,177 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day18Sample2.txt")
+```
 
+## Part 1
+So, we'll need a bunch of functions
+
+Add
+```{r}
+snailadd<-function(a,b){
+  sa<-str_c("[",a,",",b,"]")
+sa}
+```
+
+Snail reduce:
+if there's an opportunity to explode or split, take it and repeat
+```{r}
+snailreduce<-function(a){
+  ##while can either explode or reduce
+  if(str_detect(a,"[0-9][0-9]+")){cansplit<-TRUE}else{cansplit<-FALSE}
+  while(explosive(a)||cansplit){
+    #### explode as much as possible
+    while(explosive(a)){
+      a<-snailexplode(a)
+      #cat("explode to ",a,"\n")
+      }
+    ### split once if possible
+    if(str_detect(a,"[0-9][0-9]+")){cansplit<-TRUE}else{cansplit<-FALSE}
+    if(cansplit){a<-snailsplit(a)
+    #cat("split to ",a,"\n")
+    }
+    #### find if there are more explosions and or splits
+    if(str_detect(a,"[0-9][0-9]+")){cansplit<-TRUE}else{cansplit<-FALSE}}
+a}
+```
+
+
+explosive:
+checks to see if there's a pair that can explode
+
+```{r}
+explosive<-function(a){
+  ### find all simple pairs
+  prs<-str_locate_all(a,"\\[[0-9]+,[0-9]+\\]")
+  y<-FALSE
+  ### if there's at least one simple pair,
+  if(length(prs)>0){y<-sapply(prs[[1]][,1],function(x){
+    ### count the ['s & ]'s to the left
+    l<-str_count(str_sub(a,1,x),"\\[")
+    r<-str_count(str_sub(a,1,x),"\\]")
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq<-if((l-r)>4){TRUE}else{FALSE}
+    exq})}
+  a<-(any(y))
+  a}
 ```
 
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+
+Snail explode - explodes the right side, then the left side, then changes to 0.
+```{r}
+snailexplode<-function(a){
+  ### find the first pair that can explode  (so yes, redo explosive, basically)
+  prs<-str_locate_all(a,"\\[[0-9]+,[0-9]+\\]")
+  y<-sapply(prs[[1]][,1],function(x){
+    ### count the ['s & ]'s to the left
+    l<-str_count(str_sub(a,1,x),"\\[")
+    r<-str_count(str_sub(a,1,x),"\\]")
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq<-if((l-r)>4){TRUE}else{FALSE}})
+  ### its location
+  explodemelocation<-prs[[1]][min(which(y)),]
+  explodemestring<-str_sub(a,explodemelocation[1],explodemelocation[2])
+  ### its values
+  explodemevalue<-as.numeric(unlist(str_split(str_sub(a,explodemelocation[1]+1,explodemelocation[2]-1),",")))
+  ## find the first number to the right
+  rightnumval<-NA
+  rightnumpos<-str_locate_all(str_sub(a,start=explodemelocation[2]),"[0-9]+")[[1]]
+  if(nrow(rightnumpos)>0){rightnumpos<-rightnumpos[1,]+explodemelocation[2]-1
+  rightnumval<-as.numeric(str_sub(a,rightnumpos[1],rightnumpos[2]))
+  str_sub(a,rightnumpos[1],rightnumpos[2])<-rightnumval+explodemevalue[2]
+  }
+  ### find the first number to the left
+  leftnumpos<-str_locate_all(str_sub(a,1,explodemelocation[1]),"[0-9]+")[[1]]
+  ### find its position & value
+  leftnumpos<-leftnumpos[nrow(leftnumpos),]
+  leftnumval<-as.numeric(str_sub(a,leftnumpos[1],leftnumpos[2]))
+  ### add the explode me value
+  if(!is.na(leftnumval)){str_sub(a,leftnumpos[1],leftnumpos[2])<-leftnumval+explodemevalue[1]}
+  ### replace with 0 - need to refind the explodeme
+  prs<-str_locate_all(a,"\\[[0-9]+,[0-9]+\\]")
+  y<-sapply(prs[[1]][,1],function(x){
+    ### count the ['s & ]'s to the left
+    l<-str_count(str_sub(a,1,x),"\\[")
+    r<-str_count(str_sub(a,1,x),"\\]")
+    ### if there are more than [ outweighs] by 4, something can explode
+    exq<-if((l-r)>4){TRUE}else{FALSE}})
+  ### its location
+  explodemelocation<-prs[[1]][min(which(y)),]
+  str_sub(a,explodemelocation[1],explodemelocation[2])<-"0"
+  ### return
+  a}
+```
+
+Snail Split:
+if there's a number >=10, change it to [floor(x/2),ceiling(x/2)]
+```{r}
+snailsplit<-function(a){
+  ### find a number greater than 10
+  x<-str_locate(a,"[0-9][0-9]+")
+  ### grab it
+  y<-as.numeric(str_sub(a,x[1,1],x[1,2]))
+  ### create the string that it splits to
+  z<-str_c("[",floor(y/2),",",ceiling(y/2),"]")
+  ### substitute that back into the string
+  str_sub(a,x[1,1],x[1,2])<-z
+  a}
+```
+
+
+Snail Magnitude
+```{r}
+snailmagnitude<-function(a){
+  ## if there are any things of the form "[a,b]" (no nests,)
+  while(str_detect(a,"\\[[0-9]+,[0-9]+\\]")){
+    ### find where they are
+    x<-str_locate(a,"\\[[0-9]+,[0-9]+\\]")
+    ### pull that
+    y<-str_sub(a,x[1,1],x[1,2])
+    ### multiply a by 3 & b by 2
+    z<-as.numeric(unlist(str_split(str_replace_all(y,"[\\[\\]]",""),",")))
+    z<-3*z[1]+2*z[2]
+    ### plug that into place where the nested value was
+    str_sub(a,x[1,1],x[1,2])<-z}
+  ## return the single number left.
+  a}
+
+```
+
+
+So to find the result:
+```{r}
+part1<-input[1]
+for(i in 2:length(input)){
+  part1<-snailadd(part1,input[i])
+  part1<-snailreduce(part1)}
+part1
+part1<-snailmagnitude(part1)
+part1
+```
+## Part 2
+Again, when all else fails - brute force it.
+
+```{r}
+part2df<-as.data.frame(matrix(ncol=2,nrow=0))
+for(i in 1:length(input)){
+  for(j in 1:length(input)){
+    if(i!=j){part2df<-rbind(part2df,list(i,j))}}}
+colnames(part2df)<-c("a","b")
+```
+
+
+```{r}
+#948 is too low
+part2df <- part2df %>% rowwise %>%
+  mutate(mag=as.numeric(snailmagnitude(snailreduce(snailadd(input[a],input[b])))))
+part2<-max(part2df$mag)
+part2
 ```
 

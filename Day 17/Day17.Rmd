@@ -15,8 +15,8 @@ options(scipen = 999)
 ```
 
 ```{r}
-targetx<-287:309
-targety<- -76:-48
+targetx<-20:30
+targety<- -5:-10
 ```
 
 ## Part 1

@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 22 Notebook"
 output: html_notebook
 ---
 
@@ -10,33 +10,139 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day22Sample2.txt")
+```
 
+## Part 1
+Under "things that might take too much memory, but what the hell."
+First, reparse the input so that it is of the form
+c(on,xmin,xmax,ymin,ymax,zmin,zmax)
+
+
+```{r}
+rebootstep<-lapply(input,function(x){
+  x<-str_squish(str_replace_all(x,"[x=|,y=|,z=|\\.\\.]"," "))
+  x<-str_replace(x,"on","1")
+  x<-str_replace(x,"off","0")
+  x<-as.numeric(unlist(str_split(x," ")))
+})
 ```
 
 
+The idea here is to take (up to) six whacks at the original, paring down to the part that gets change (if anything)
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+
+
+slice it does the whacking in a single dimension, separating left, middle, and right.
+
+```{r}
+sliceit<-function(block,inst){
+  if(block[1]>=inst[1]){l<-c(NA,NA)
+  }else{l<-c(block[1],min(block[2],(inst[1]-1)))}
+  if(block[1]>inst[2]||block[2]<inst[1]){m<-c(NA,NA)
+  }else{m<-c(max(block[1],inst[1]),min(block[2],inst[2]))}
+  if(block[2]<=inst[2]){h<-c(NA,NA)
+  }else{h<-c(max(inst[2]+1,block[1]),block[2])}
+c(l,m,h)}
+
+```
+
+chopblock does this in all dimensions.  It ends with up to seven updated (or not updated) new blocks.
+
+```{r}
+chopablock<-function(block,inst){
+  outlist<-list()
+  ### if this instruction is to turn something on and the block is already on, return the block.
+  if(block[1]==inst[1]){outlist<-c(outlist,list(block))
+  }else{
+    #otherwise slice x
+    x<-sliceit(block[2:3],inst[2:3])
+    if(!is.na(x[1])){
+      outlist<-c(outlist,list(c(block[1],x[1:2],block[4:7])))}
+    if(!is.na(x[5])){
+      outlist<-c(outlist,list(c(block[1],x[5:6],block[4:7])))}
+    if(is.na(x[3])){block<-NA}else{block<-c(block[1],x[3:4],block[4:7])}    
+    ### slice y
+    if(any(!is.na(block))){
+      y<-sliceit(block[4:5],inst[4:5])
+      if(!is.na(y[1])){
+        outlist<-c(outlist,list(c(block[1:3],y[1:2],block[6:7])))}
+      if(!is.na(y[5])){
+        outlist<-c(outlist,list(c(block[1:3],y[5:6],block[6:7])))}
+      if(is.na(y[3])){block<-NA}else{block<-c(block[1:3],y[3:4],block[6:7])}
+      ### if there is any block left, slice z
+      if(any(!is.na(block))){
+        z<-sliceit(block[6:7],inst[6:7])
+        if(!is.na(z[1])){
+          outlist<-c(outlist,list(c(block[1:5],z[1:2])))}
+        if(!is.na(z[5])){
+          outlist<-c(outlist,list(c(block[1:5],z[5:6])))}
+        if(is.na(z[3])){block<-NA}else{block<-c(block[1:5],z[3:4])}
+        ### assuming everything is sliced - add block
+        if(any(!is.na(block))){
+          block[1]<-1-block[1]
+        outlist<-c(outlist,list(block))}}}}
+outlist}
+```
+
+Now, we take our block (0,-50,50,-50,50,-50,50 ), and run it through instruction 1 to get a list of new blocks.  We run each of those blocks through inst 2 to get new blocks & so on & so on until we're out of instructions
+
+```{r}
+diceablock<-function(block, instructions){
+  outblocks<-list(block)
+  for(i in 1:length(instructions)){
+    outblocks <- sapply(outblocks,function(x){
+      ob<-chopablock(block=x,inst=instructions[[i]])
+      ob})
+    ### we need a list of vectors, so get a list of vectors
+    if(class(outblocks[[1]])=="list"){outblocks<-unlist(outblocks,recursive = FALSE)}}
+  outblocks}
+  
+```
+
+```{r}
+part1<-diceablock(c(0,-50,50,-50,50,-50,50),rebootstep)
+```
+
+Finally, we need to count how many are on:
+
+```{r}
+oncounter<-function(blocklist){
+ons<-0
+for(i in 1:length(blocklist)){
+  block<-blocklist[[i]]
+  if(block[1]==1){
+    tot<-prod(abs(block[c(2,4,6)]-block[c(3,5,7)])+c(1,1,1))
+    ons<-ons+tot}}
+ons}
+
+part1<-oncounter(part1)
+part1
+```
+## Part 2
+
+find the min & max of all dimensions to give the bounds of the block
+```{r}
+startingblock<-c(0,0,0,0,0,0)
+for(i in 1:length(rebootstep)){
+  x<-rebootstep[[i]]
+  startingblock<-c(min(startingblock[1],x[2]),max(startingblock[2],x[3]),
+                   min(startingblock[3],x[4]),max(startingblock[4],x[5]),
+                   min(startingblock[5],x[6]),max(startingblock[6],x[7]))}
+startingblock<-c(0,startingblock)
+startingblock
+```
+
+Run with this bigger block.
+```{r}
+
+part2<-diceablock(startingblock,rebootstep)
+part2<-oncounter(part2)
+part2
+
 ```
 

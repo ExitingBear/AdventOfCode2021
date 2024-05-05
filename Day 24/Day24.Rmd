@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 24 Notebook"
 output: html_notebook
 ---
 
@@ -10,33 +10,130 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 options(scipen = 999)
 ```
 
-```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+```{r, eval=FALSE}
+input1<-read_lines("Day24Sample1.txt")
+input3<-read_lines("Day24Sample3.txt")
 
+inplines<-which(str_detect(input,"inp"))
 ```
 
 
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+In today's version of "making searches out of things that shouldn't be searches
+I tried to do this by hand (and eventually found a way to do it - thanks helpful internet post), but I kept getting lost - so, DFS our way through it, so it should be a little better than just trying to count down from 99,999,999,999.
+
+First, build something that takes in an instruction list, an "input" and starting values for all of the registers and returns ending values for all the registers
+
+```{r}
+aluproc<-function(instructions,starter,startw,startx,starty,startz){
+  regs<-dict()
+  ### set the registers
+  regs$set("w",startw)
+  regs$set("x",startx)
+  regs$set("y",starty)
+  regs$set("z",startz)
+  for(i in 1:length(instructions)){
+    inst<-instructions[i]
+    inst<-unlist(str_split(inst," "))
+    a<-inst[2]
+    if(length(inst)==3){
+      ### change b to a number by getting it from the register or converting ig.
+      b<-inst[3]
+      if(b%in%letters){b<-regs$get(b)}else{b<-as.numeric(b)}}
+    ### set up the functions
+    switch(inst[1],
+           "inp"={regs$set(a,starter)},
+           "add"={regs$set(a,regs$get(a)+b)},
+           "mul"={regs$set(a,regs$get(a)*b)},
+           ### do not divide by 0
+           "div"={if(b==0){return(NA)
+           }else{regs$set(a,regs$get(a)%/%b)}},
+           ### don't mod where the denominator is 0 or either is negative
+           "mod"={if(b<=0||regs$get(a)<0){return(NA)
+           }else{regs$set(a,regs$get(a)%%b)}},
+           "eql"={if(regs$get(a)==b){regs$set(a,1)}else{regs$set(a,0)}},
+           cat("***",inst[1],"\n","something went wrong\n"))}
+  ### in something VERY SPECIFIC TO THIS DATA -  the answer won't work unless certain conditions are met - 
+  ### if row 5 is div z 26, then end z MUST be less than start z
+  if(instructions[5]=="div z 26"&& (regs$get("z")>startz)){return(NA)}
+  return(c(regs$get("w"),regs$get("x"),regs$get("y"),regs$get("z")))}
+```
+
+
+So, how to make this into a highly specialized search
+
+```{r}
+findlowest<-function(allinstructions){
+  s<-stack()
+  ### this will count down from 9-1
+  sapply(1:9,function(x){
+    a<-list(list(c(x)),0,0,0,0)
+    s$push(a)})
+  beenthere<-dict()
+  while(s$size()>0){
+    now<-s$pop()
+    module<-length(now[[1]])
+    modrun<-aluproc(allinstructions[((module-1)*18+1):(module*18)],unlist(tail(now[[1]],1)),now[[2]],now[[3]],now[[4]],now[[5]])
+    if(length(modrun)==1){next}
+    if(modrun[4]>(26^3)){next}
+    if(module<14){
+      sapply(1:9,function(x){
+        nxt<-list(c(now[[1]],x),modrun[1],modrun[2],modrun[3],modrun[4] )
+        s$push(nxt)})
+    }else{
+      if(modrun[4]==0){return(list(now[[1]],modrun))}}}
+  return("huh")}
+  
+```
+
+
+leaving eval on false because it shows my data
+
+```{r, eval=FALSE}
+### with my input this takes 3.5 hours to run.  But it does run.
+p1<-findlowest(input)
+part1<-p1[[1]]
+part1
+part1<-as.numeric(str_flatten(part1))
+part1
+```
+
+
+## Part 2
+
+Do the opposite, 1-9 rather than 9-1
+
+```{r}
+findhighest<-function(allinstructions){
+  s<-stack()
+  #counts up from 1->9
+  sapply(9:1,function(x){
+    a<-list(list(c(x)),0,0,0,0)
+    s$push(a)})
+  beenthere<-dict()
+  while(s$size()>0){
+    now<-s$pop()
+    module<-length(now[[1]])
+    modrun<-aluproc(allinstructions[((module-1)*18+1):(module*18)],unlist(tail(now[[1]],1)),now[[2]],now[[3]],now[[4]],now[[5]])
+    if(length(modrun)==1){next}
+    if(modrun[4]>(26^3)){next}
+    if(module<14){
+      sapply(9:1,function(x){
+        nxt<-list(c(now[[1]],x),modrun[1],modrun[2],modrun[3],modrun[4] )
+        s$push(nxt)})
+    }else{
+      if(modrun[4]==0){return(list(now[[1]],modrun))}}}
+  return("no solution\n")}
+  
+```
+
+```{r, eval=FALSE}
+p2<-findhighest(input)
+part2<-p2[[1]]
+part2<-as.numeric(str_flatten(part2))
+part2
 ```
 

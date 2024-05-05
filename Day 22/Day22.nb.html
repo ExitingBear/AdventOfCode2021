@@ -11,7 +11,7 @@
 
 
 
-<title>Day 17 Notebook</title>
+<title>Day 22 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 17 Notebook</h1>
+<h1 class="title toc-ignore">Day 22 Notebook</h1>
 
 </div>
 
@@ -1756,143 +1756,176 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFyZ2V0eDwtMjA6MzBcbnRhcmdldHk8LSAtNTotMTBcbmBgYCJ9 -->
-<pre class="r"><code>targetx&lt;-20:30
-targety&lt;- -5:-10</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5wdXQ8LXJlYWRfbGluZXMoXCJEYXkyMlNhbXBsZTIudHh0XCIpXG5gYGAifQ== -->
+<pre class="r"><code>input&lt;-read_lines(&quot;Day22Sample2.txt&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="part-1" class="section level2">
 <h2>Part 1</h2>
-<p>Is a math problem (probably?). And I’m going to brute force it
-anyway. Because the target is below 0, the lowest y can be is
-min(target) and the highest it can be is negative min(target), because
-it will go up, it will come down at the same speed it had going up, and
-overshoot the target.</p>
+<p>Under “things that might take too much memory, but what the hell.”
+First, reparse the input so that it is of the form
+c(on,xmin,xmax,ymin,ymax,zmin,zmax)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSlcblxuZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXtcbiAgdDwtMVxuICBkZWx0YXk8LWlcbiAgeTwtMFxuICBoPC0wXG4gIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7XG4gICAgeTwteStkZWx0YXlcbiAgICBpZihkZWx0YXk9PTApe2g8LXl9XG4gICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpe1xuICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9XG4gICAgZGVsdGF5PC1kZWx0YXktMVxuICAgIHQ8LXQrMX19XG5jb2xuYW1lcyh1cGRvd24pPC1jKFwic3RhcnR5XCIsXCJ0eVwiLFwieVwiLFwiaFwiKVxudXBkb3duXG5gYGAifQ== -->
-<pre class="r"><code>updown&lt;-as.data.frame(matrix(ncol=4,nrow=0))
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVib290c3RlcDwtbGFwcGx5KGlucHV0LGZ1bmN0aW9uKHgpe1xuICB4PC1zdHJfc3F1aXNoKHN0cl9yZXBsYWNlX2FsbCh4LFwiW3g9fCx5PXwsej18XFxcXC5cXFxcLl1cIixcIiBcIikpXG4gIHg8LXN0cl9yZXBsYWNlKHgsXCJvblwiLFwiMVwiKVxuICB4PC1zdHJfcmVwbGFjZSh4LFwib2ZmXCIsXCIwXCIpXG4gIHg8LWFzLm51bWVyaWModW5saXN0KHN0cl9zcGxpdCh4LFwiIFwiKSkpXG59KVxuYGBgIn0= -->
+<pre class="r"><code>rebootstep&lt;-lapply(input,function(x){
+  x&lt;-str_squish(str_replace_all(x,&quot;[x=|,y=|,z=|\\.\\.]&quot;,&quot; &quot;))
+  x&lt;-str_replace(x,&quot;on&quot;,&quot;1&quot;)
+  x&lt;-str_replace(x,&quot;off&quot;,&quot;0&quot;)
+  x&lt;-as.numeric(unlist(str_split(x,&quot; &quot;)))
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The idea here is to take (up to) six whacks at the original, paring
+down to the part that gets change (if anything)</p>
+<p>slice it does the whacking in a single dimension, separating left,
+middle, and right.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2xpY2VpdDwtZnVuY3Rpb24oYmxvY2ssaW5zdCl7XG4gIGlmKGJsb2NrWzFdPj1pbnN0WzFdKXtsPC1jKE5BLE5BKVxuICB9ZWxzZXtsPC1jKGJsb2NrWzFdLG1pbihibG9ja1syXSwoaW5zdFsxXS0xKSkpfVxuICBpZihibG9ja1sxXT5pbnN0WzJdfHxibG9ja1syXTxpbnN0WzFdKXttPC1jKE5BLE5BKVxuICB9ZWxzZXttPC1jKG1heChibG9ja1sxXSxpbnN0WzFdKSxtaW4oYmxvY2tbMl0saW5zdFsyXSkpfVxuICBpZihibG9ja1syXTw9aW5zdFsyXSl7aDwtYyhOQSxOQSlcbiAgfWVsc2V7aDwtYyhtYXgoaW5zdFsyXSsxLGJsb2NrWzFdKSxibG9ja1syXSl9XG5jKGwsbSxoKX1cblxuYGBgIn0= -->
+<pre class="r"><code>sliceit&lt;-function(block,inst){
+  if(block[1]&gt;=inst[1]){l&lt;-c(NA,NA)
+  }else{l&lt;-c(block[1],min(block[2],(inst[1]-1)))}
+  if(block[1]&gt;inst[2]||block[2]&lt;inst[1]){m&lt;-c(NA,NA)
+  }else{m&lt;-c(max(block[1],inst[1]),min(block[2],inst[2]))}
+  if(block[2]&lt;=inst[2]){h&lt;-c(NA,NA)
+  }else{h&lt;-c(max(inst[2]+1,block[1]),block[2])}
+c(l,m,h)}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>chopblock does this in all dimensions. It ends with up to seven
+updated (or not updated) new blocks.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hvcGFibG9jazwtZnVuY3Rpb24oYmxvY2ssaW5zdCl7XG4gIG91dGxpc3Q8LWxpc3QoKVxuICAjIyMgaWYgdGhpcyBpbnN0cnVjdGlvbiBpcyB0byB0dXJuIHNvbWV0aGluZyBvbiBhbmQgdGhlIGJsb2NrIGlzIGFscmVhZHkgb24sIHJldHVybiB0aGUgYmxvY2suXG4gIGlmKGJsb2NrWzFdPT1pbnN0WzFdKXtvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChibG9jaykpXG4gIH1lbHNle1xuICAgICNvdGhlcndpc2Ugc2xpY2UgeFxuICAgIHg8LXNsaWNlaXQoYmxvY2tbMjozXSxpbnN0WzI6M10pXG4gICAgaWYoIWlzLm5hKHhbMV0pKXtcbiAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGMoYmxvY2tbMV0seFsxOjJdLGJsb2NrWzQ6N10pKSl9XG4gICAgaWYoIWlzLm5hKHhbNV0pKXtcbiAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGMoYmxvY2tbMV0seFs1OjZdLGJsb2NrWzQ6N10pKSl9XG4gICAgaWYoaXMubmEoeFszXSkpe2Jsb2NrPC1OQX1lbHNle2Jsb2NrPC1jKGJsb2NrWzFdLHhbMzo0XSxibG9ja1s0OjddKX0gICAgXG4gICAgIyMjIHNsaWNlIHlcbiAgICBpZihhbnkoIWlzLm5hKGJsb2NrKSkpe1xuICAgICAgeTwtc2xpY2VpdChibG9ja1s0OjVdLGluc3RbNDo1XSlcbiAgICAgIGlmKCFpcy5uYSh5WzFdKSl7XG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGMoYmxvY2tbMTozXSx5WzE6Ml0sYmxvY2tbNjo3XSkpKX1cbiAgICAgIGlmKCFpcy5uYSh5WzVdKSl7XG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGMoYmxvY2tbMTozXSx5WzU6Nl0sYmxvY2tbNjo3XSkpKX1cbiAgICAgIGlmKGlzLm5hKHlbM10pKXtibG9jazwtTkF9ZWxzZXtibG9jazwtYyhibG9ja1sxOjNdLHlbMzo0XSxibG9ja1s2OjddKX1cbiAgICAgICMjIyBpZiB0aGVyZSBpcyBhbnkgYmxvY2sgbGVmdCwgc2xpY2UgelxuICAgICAgaWYoYW55KCFpcy5uYShibG9jaykpKXtcbiAgICAgICAgejwtc2xpY2VpdChibG9ja1s2OjddLGluc3RbNjo3XSlcbiAgICAgICAgaWYoIWlzLm5hKHpbMV0pKXtcbiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzE6NV0selsxOjJdKSkpfVxuICAgICAgICBpZighaXMubmEoels1XSkpe1xuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGMoYmxvY2tbMTo1XSx6WzU6Nl0pKSl9XG4gICAgICAgIGlmKGlzLm5hKHpbM10pKXtibG9jazwtTkF9ZWxzZXtibG9jazwtYyhibG9ja1sxOjVdLHpbMzo0XSl9XG4gICAgICAgICMjIyBhc3N1bWluZyBldmVyeXRoaW5nIGlzIHNsaWNlZCAtIGFkZCBibG9ja1xuICAgICAgICBpZihhbnkoIWlzLm5hKGJsb2NrKSkpe1xuICAgICAgICAgIGJsb2NrWzFdPC0xLWJsb2NrWzFdXG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KGJsb2NrKSl9fX19XG5vdXRsaXN0fVxuYGBgIn0= -->
+<pre class="r"><code>chopablock&lt;-function(block,inst){
+  outlist&lt;-list()
+  ### if this instruction is to turn something on and the block is already on, return the block.
+  if(block[1]==inst[1]){outlist&lt;-c(outlist,list(block))
+  }else{
+    #otherwise slice x
+    x&lt;-sliceit(block[2:3],inst[2:3])
+    if(!is.na(x[1])){
+      outlist&lt;-c(outlist,list(c(block[1],x[1:2],block[4:7])))}
+    if(!is.na(x[5])){
+      outlist&lt;-c(outlist,list(c(block[1],x[5:6],block[4:7])))}
+    if(is.na(x[3])){block&lt;-NA}else{block&lt;-c(block[1],x[3:4],block[4:7])}    
+    ### slice y
+    if(any(!is.na(block))){
+      y&lt;-sliceit(block[4:5],inst[4:5])
+      if(!is.na(y[1])){
+        outlist&lt;-c(outlist,list(c(block[1:3],y[1:2],block[6:7])))}
+      if(!is.na(y[5])){
+        outlist&lt;-c(outlist,list(c(block[1:3],y[5:6],block[6:7])))}
+      if(is.na(y[3])){block&lt;-NA}else{block&lt;-c(block[1:3],y[3:4],block[6:7])}
+      ### if there is any block left, slice z
+      if(any(!is.na(block))){
+        z&lt;-sliceit(block[6:7],inst[6:7])
+        if(!is.na(z[1])){
+          outlist&lt;-c(outlist,list(c(block[1:5],z[1:2])))}
+        if(!is.na(z[5])){
+          outlist&lt;-c(outlist,list(c(block[1:5],z[5:6])))}
+        if(is.na(z[3])){block&lt;-NA}else{block&lt;-c(block[1:5],z[3:4])}
+        ### assuming everything is sliced - add block
+        if(any(!is.na(block))){
+          block[1]&lt;-1-block[1]
+        outlist&lt;-c(outlist,list(block))}}}}
+outlist}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now, we take our block (0,-50,50,-50,50,-50,50 ), and run it through
+instruction 1 to get a list of new blocks. We run each of those blocks
+through inst 2 to get new blocks &amp; so on &amp; so on until we’re out
+of instructions</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGljZWFibG9jazwtZnVuY3Rpb24oYmxvY2ssIGluc3RydWN0aW9ucyl7XG4gIG91dGJsb2NrczwtbGlzdChibG9jaylcbiAgZm9yKGkgaW4gMTpsZW5ndGgoaW5zdHJ1Y3Rpb25zKSl7XG4gICAgb3V0YmxvY2tzIDwtIHNhcHBseShvdXRibG9ja3MsZnVuY3Rpb24oeCl7XG4gICAgICBvYjwtY2hvcGFibG9jayhibG9jaz14LGluc3Q9aW5zdHJ1Y3Rpb25zW1tpXV0pXG4gICAgICBvYn0pXG4gICAgIyMjIHdlIG5lZWQgYSBsaXN0IG9mIHZlY3RvcnMsIHNvIGdldCBhIGxpc3Qgb2YgdmVjdG9yc1xuICAgIGlmKGNsYXNzKG91dGJsb2Nrc1tbMV1dKT09XCJsaXN0XCIpe291dGJsb2NrczwtdW5saXN0KG91dGJsb2NrcyxyZWN1cnNpdmUgPSBGQUxTRSl9fVxuICBvdXRibG9ja3N9XG4gIFxuYGBgIn0= -->
+<pre class="r"><code>diceablock&lt;-function(block, instructions){
+  outblocks&lt;-list(block)
+  for(i in 1:length(instructions)){
+    outblocks &lt;- sapply(outblocks,function(x){
+      ob&lt;-chopablock(block=x,inst=instructions[[i]])
+      ob})
+    ### we need a list of vectors, so get a list of vectors
+    if(class(outblocks[[1]])==&quot;list&quot;){outblocks&lt;-unlist(outblocks,recursive = FALSE)}}
+  outblocks}
+  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LWRpY2VhYmxvY2soYygwLC01MCw1MCwtNTAsNTAsLTUwLDUwKSxyZWJvb3RzdGVwKVxuYGBgIn0= -->
+<pre class="r"><code>part1&lt;-diceablock(c(0,-50,50,-50,50,-50,50),rebootstep)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Finally, we need to count how many are on:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub25jb3VudGVyPC1mdW5jdGlvbihibG9ja2xpc3Qpe1xub25zPC0wXG5mb3IoaSBpbiAxOmxlbmd0aChibG9ja2xpc3QpKXtcbiAgYmxvY2s8LWJsb2NrbGlzdFtbaV1dXG4gIGlmKGJsb2NrWzFdPT0xKXtcbiAgICB0b3Q8LXByb2QoYWJzKGJsb2NrW2MoMiw0LDYpXS1ibG9ja1tjKDMsNSw3KV0pK2MoMSwxLDEpKVxuICAgIG9uczwtb25zK3RvdH19XG5vbnN9XG5cbnBhcnQxPC1vbmNvdW50ZXIocGFydDEpXG5wYXJ0MVxuYGBgIn0= -->
+<pre class="r"><code>oncounter&lt;-function(blocklist){
+ons&lt;-0
+for(i in 1:length(blocklist)){
+  block&lt;-blocklist[[i]]
+  if(block[1]==1){
+    tot&lt;-prod(abs(block[c(2,4,6)]-block[c(3,5,7)])+c(1,1,1))
+    ons&lt;-ons+tot}}
+ons}
 
-for(i in min(targety):(-min(targety)+1)){
-  t&lt;-1
-  deltay&lt;-i
-  y&lt;-0
-  h&lt;-0
-  while(y&gt;=min(targety)){
-    y&lt;-y+deltay
-    if(deltay==0){h&lt;-y}
-    if(y&gt;=min(targety)&amp;&amp;y&lt;=max(targety)){
-      updown&lt;-rbind(updown,c(i,t,y,h))}
-    deltay&lt;-deltay-1
-    t&lt;-t+1}}
-colnames(updown)&lt;-c(&quot;starty&quot;,&quot;ty&quot;,&quot;y&quot;,&quot;h&quot;)
-updown</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MjQsIm5jb2wiOjQsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzI0IMOXIDRdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnIyVHpVckRRQkRIdDBsYTIwQnJ3UjV5OEZCQ0R4NXNrS3JnUVhBUjZRT0lRcTlyRzl0aTNKUmsvYnI1WnZhUitnVFZUZnJmWUVhS2VIRmgrYzNPN0h6dHNOZFhvMk4zNURMR2JPYllGck9yV21UVjI1dGgvNHd4eDlLSENuTllJK09ydnJTbkJVZnZsdDdlc3NmeXRmVEJMcmdQZW1BSGJJTjFrSlg1c1NxVHJvdFZtUng2am5nYzhUbnljZVRucUllalB1NFhJZk0rYU56ZldPU2xyQk8yQ1R1RXREN1V4Zkd1L0FBOEJJL0FBWGhTN3VQUDgvQ0puZXJOL2Q2Vzg3WTRQckY3eE40bDkzcmxQdGcvcngvek5mTXo4ekh6Q01CVDhCeThCSWZ2aUZqNk9GVXBIc05VQyszTUFtVXRWU0pSYnpoWmhWUXBoQmtKMDBqaWw4Q0VhbVpPeU9iUmZPTklwQ2FmVWJvVG9VUnduMmgvZlZvVGw1MTRvZWF4MUU1VzlzTnJ4TG1TRU1YdWs4d3FtZlRIc3lmNTBCOFFzNzJRMHl4bnJ0cXNKbVR2bSt4c3FyQSs0VjR6YnhQSzZWeUdwcDFJM0lXUmlUd0pueUcyOUh2a3p4RXNrcmxVcGsrdFRRTVZLMkZjM0hFY0dVM2VPVnQvQVlLYzBWSDJCQUFBIn0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"-10","2":"1","3":"-10","4":"0"},{"1":"-9","2":"1","3":"-9","4":"0"},{"1":"-8","2":"1","3":"-8","4":"0"},{"1":"-7","2":"1","3":"-7","4":"0"},{"1":"-6","2":"1","3":"-6","4":"0"},{"1":"-5","2":"1","3":"-5","4":"0"},{"1":"-4","2":"2","3":"-9","4":"0"},{"1":"-3","2":"2","3":"-7","4":"0"},{"1":"-2","2":"2","3":"-5","4":"0"},{"1":"-2","2":"3","3":"-9","4":"0"},{"1":"-1","2":"3","3":"-6","4":"0"},{"1":"-1","2":"4","3":"-10","4":"0"},{"1":"0","2":"4","3":"-6","4":"0"},{"1":"0","2":"5","3":"-10","4":"0"},{"1":"1","2":"5","3":"-5","4":"1"},{"1":"1","2":"6","3":"-9","4":"1"},{"1":"2","2":"7","3":"-7","4":"3"},{"1":"3","2":"9","3":"-9","4":"6"},{"1":"4","2":"10","3":"-5","4":"10"},{"1":"5","2":"12","3":"-6","4":"15"},{"1":"6","2":"14","3":"-7","4":"21"},{"1":"7","2":"16","3":"-8","4":"28"},{"1":"8","2":"18","3":"-9","4":"36"},{"1":"9","2":"20","3":"-10","4":"45"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[24]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>As “h” is the highest point in those trajectories, max(h) is the
-highest point</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duW3doaWNoKHVwZG93biRoPT1tYXgodXBkb3duJGgpKSxdXG5gYGAifQ== -->
-<pre class="r"><code>updown[which(updown$h==max(updown$h)),]</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVF5MjdDTUJEY09FNHFJcFVpY2VtNTZqVzUwRU9QUFZSOFFFVWxyaVp4SVdwcVI0NXA0Y2FuOFdYUWRlSkY0RWhSWm1ZenM0K1A5K1VzVzJZQUVBT1BHY1FKUWtnK0YvUDhGWUF6SkJGd0dMbnZEbithSXVENGpwM3c5Z1QwRFB6bGxoK2ZnL3I4NE9sTmNLTEVqK3dRVFByd1FVdzdLNHpkZThZdUtMcUFUUkF6TXZxdm9Lajd2Z0R3R1BZcUc5RlJMeEt6U2xoUmZCbjBJanNGbGp2ZDJsb3JOREczZlJxWUl4TUlEMXZscHFqeWNyTlYzL2tzS01ldFdydWVmc0RvYXRocnpJY3AyTm5iVTdxTFZPdGFTVnFuRVN2WlVISWxmejBjNHkzNlV4U3RxWldsUFZIdENxdXRJRXRXNm9hVWZuTTQvUU96TnA2R0VnSUFBQT09In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"20","3":"-10","4":"45","_rn_":"24"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>But only if there’s something that will be in the X target range at
-time t.</p>
-<p>So, find viable starting xs. The max that startx can be is going to
-be the max(targetx) - otherwise, it will just overshoot the target on
-the first step. So, (because the target is close enough), it’s possible
-to try every number from 1 to the far edge of the target</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lkZXdheXM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9Myxucm93PTApKVxuXG5mb3IoaSBpbiAxOm1heCh0YXJnZXR4KSl7XG4gIHQ8LTFcbiAgZGVsdGF4PC1pXG4gIHg8LTBcbiAgd2hpbGUoeDxtYXgodGFyZ2V0eCkmJnQ8PW1heCh1cGRvd24kdHkpKXtcbiAgICB4PC14K2RlbHRheFxuICAgIGlmKHg+PW1pbih0YXJnZXR4KSYmeDw9bWF4KHRhcmdldHgpKXtcbiAgICAgIHNpZGV3YXlzPC1yYmluZChzaWRld2F5cyxjKGksdCx4KSl9XG4gICAgaWYoZGVsdGF4PjApe2RlbHRheDwtZGVsdGF4LTF9XG4gICAgdDwtdCsxfX1cbmNvbG5hbWVzKHNpZGV3YXlzKTwtYyhcInN0YXJ0eFwiLFwidHhcIixcInhcIilcbnNpZGV3YXlzXG5gYGAifQ== -->
-<pre class="r"><code>sideways&lt;-as.data.frame(matrix(ncol=3,nrow=0))
-
-for(i in 1:max(targetx)){
-  t&lt;-1
-  deltax&lt;-i
-  x&lt;-0
-  while(x&lt;max(targetx)&amp;&amp;t&lt;=max(updown$ty)){
-    x&lt;-x+deltax
-    if(x&gt;=min(targetx)&amp;&amp;x&lt;=max(targetx)){
-      sideways&lt;-rbind(sideways,c(i,t,x))}
-    if(deltax&gt;0){deltax&lt;-deltax-1}
-    t&lt;-t+1}}
-colnames(sideways)&lt;-c(&quot;startx&quot;,&quot;tx&quot;,&quot;x&quot;)
-sideways</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NTYsIm5jb2wiOjMsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzU2IMOXIDNdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnMyVnpVN0NRQkNBaDVhaU5BRko5T0RCZ3pIR0dDT05DbW9WL3c3R0J6Q2FjRjJoSXJGdVNic29SeC9aSjBDMzJ4a2lrelNlQURkcHZwbnB6dTdNZG1aN2Y5dHV1RzBYQUd3bzJoYllqaGJCZVh5NHEvc0FSVXNyQlNoQ09lVklUMW8xTXdHcSt2RnYxc0dNaFhIam4zQXpoMXVNMjhnZHhsM2tIbklmNlNHYnlHUGtDZklVNlNQUGtPZklGdklDZVltOEFoclpkMXhET3o5WG5nZVAvNis0RDVDSHlDTmtnK1ZWUXk0Nmp1V2NlTGlkZE1qUmMzajlOUnNDZlVkZUovTW0xU1hWSWErL2VaSGlvVDdBZXAvMENla3ROcC9zMUZjOEQrcWZtZlhqMUlYclNQRVdKRnFvZ2JtZWpiR1VLQkdyRVdyV1JFcHY1eW52Y2h4OWVMUkNKWjM3bWUzQjczV25FNHFFdGlHajJ4VktlTSt4OXRmYW1Ma3NSUVBWajZSMnN0SWZRb2s1RjJKbVdCbktOSkp1dmZNeWxLLzFKbnR0RDJRdjNkT1lzbEZCMmY4bDIxa1UxamU2bCtoSUF0bnJ5NERTQ2NWVEVOTEszZUFkeGFvK0QzTWMzaUR1UzBWNWFtdmlxVWdKY25FN1VVZ1drem1NZndDZ2UwTHZKUWNBQUE9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["startx"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["tx"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"6","2":"5","3":"20"},{"1":"6","2":"6","3":"21"},{"1":"6","2":"7","3":"21"},{"1":"6","2":"8","3":"21"},{"1":"6","2":"9","3":"21"},{"1":"6","2":"10","3":"21"},{"1":"6","2":"11","3":"21"},{"1":"6","2":"12","3":"21"},{"1":"6","2":"13","3":"21"},{"1":"6","2":"14","3":"21"},{"1":"6","2":"15","3":"21"},{"1":"6","2":"16","3":"21"},{"1":"6","2":"17","3":"21"},{"1":"6","2":"18","3":"21"},{"1":"6","2":"19","3":"21"},{"1":"6","2":"20","3":"21"},{"1":"7","2":"4","3":"22"},{"1":"7","2":"5","3":"25"},{"1":"7","2":"6","3":"27"},{"1":"7","2":"7","3":"28"},{"1":"7","2":"8","3":"28"},{"1":"7","2":"9","3":"28"},{"1":"7","2":"10","3":"28"},{"1":"7","2":"11","3":"28"},{"1":"7","2":"12","3":"28"},{"1":"7","2":"13","3":"28"},{"1":"7","2":"14","3":"28"},{"1":"7","2":"15","3":"28"},{"1":"7","2":"16","3":"28"},{"1":"7","2":"17","3":"28"},{"1":"7","2":"18","3":"28"},{"1":"7","2":"19","3":"28"},{"1":"7","2":"20","3":"28"},{"1":"8","2":"3","3":"21"},{"1":"8","2":"4","3":"26"},{"1":"8","2":"5","3":"30"},{"1":"9","2":"3","3":"24"},{"1":"9","2":"4","3":"30"},{"1":"10","2":"3","3":"27"},{"1":"11","2":"2","3":"21"},{"1":"11","2":"3","3":"30"},{"1":"12","2":"2","3":"23"},{"1":"13","2":"2","3":"25"},{"1":"14","2":"2","3":"27"},{"1":"15","2":"2","3":"29"},{"1":"20","2":"1","3":"20"},{"1":"21","2":"1","3":"21"},{"1":"22","2":"1","3":"22"},{"1":"23","2":"1","3":"23"},{"1":"24","2":"1","3":"24"},{"1":"25","2":"1","3":"25"},{"1":"26","2":"1","3":"26"},{"1":"27","2":"1","3":"27"},{"1":"28","2":"1","3":"28"},{"1":"29","2":"1","3":"29"},{"1":"30","2":"1","3":"30"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[56]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Then join the two frames. Because x just stops going forward when it
-hits time, it’s a valid spot so long as ty&gt;=tx</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxscGFzc2VzPC1jcm9zc19qb2luKHNpZGV3YXlzLHVwZG93bikgJT4lIFxuICBmaWx0ZXIodHk9PXR4KVxuYGBgIn0= -->
-<pre class="r"><code>allpasses&lt;-cross_join(sideways,updown) %&gt;% 
-  filter(ty==tx)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>This gives the list of target crossing - the highest height for that
-target crossing.</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LW1heChhbGxwYXNzZXMkaClcbnBhcnQxXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-max(allpasses$h)
+part1&lt;-oncounter(part1)
 part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ1XG4ifQ== -->
-<pre><code>[1] 45</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ3NDE0MFxuIn0= -->
+<pre><code>[1] 474140</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="part-2" class="section level2">
 <h2>Part 2</h2>
-<p>Part 2 needs to find all of the potential starting x,y pairs - which
-can be had from part 1. But the in part 1 counted crossings. If the
-probe was in the target area two times, it is counted twice in part 1.
-So we need to pull the unique start combinations</p>
+<p>find the min &amp; max of all dimensions to give the bounds of the
+block</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDI8LXVuaXF1ZShhbGxwYXNzZXMlPiVzZWxlY3Qoc3RhcnR4LHN0YXJ0eSkpXG5wYXJ0MjwtbnJvdyhwYXJ0MilcbnBhcnQyXG5gYGAifQ== -->
-<pre class="r"><code>part2&lt;-unique(allpasses%&gt;%select(startx,starty))
-part2&lt;-nrow(part2)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RhcnRpbmdibG9jazwtYygwLDAsMCwwLDAsMClcbmZvcihpIGluIDE6bGVuZ3RoKHJlYm9vdHN0ZXApKXtcbiAgeDwtcmVib290c3RlcFtbaV1dXG4gIHN0YXJ0aW5nYmxvY2s8LWMobWluKHN0YXJ0aW5nYmxvY2tbMV0seFsyXSksbWF4KHN0YXJ0aW5nYmxvY2tbMl0seFszXSksXG4gICAgICAgICAgICAgICAgICAgbWluKHN0YXJ0aW5nYmxvY2tbM10seFs0XSksbWF4KHN0YXJ0aW5nYmxvY2tbNF0seFs1XSksXG4gICAgICAgICAgICAgICAgICAgbWluKHN0YXJ0aW5nYmxvY2tbNV0seFs2XSksbWF4KHN0YXJ0aW5nYmxvY2tbNl0seFs3XSkpfVxuc3RhcnRpbmdibG9jazwtYygwLHN0YXJ0aW5nYmxvY2spXG5zdGFydGluZ2Jsb2NrXG5gYGAifQ== -->
+<pre class="r"><code>startingblock&lt;-c(0,0,0,0,0,0)
+for(i in 1:length(rebootstep)){
+  x&lt;-rebootstep[[i]]
+  startingblock&lt;-c(min(startingblock[1],x[2]),max(startingblock[2],x[3]),
+                   min(startingblock[3],x[4]),max(startingblock[4],x[5]),
+                   min(startingblock[5],x[6]),max(startingblock[6],x[7]))}
+startingblock&lt;-c(0,startingblock)
+startingblock</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdICAgICAgIDAgLTEyMDEwMCAgMTIwODc1IC0xMjQ1NjUgIDExODg1MyAtMTIxNzYyICAxMTkwNTRcbiJ9 -->
+<pre><code>[1]       0 -120100  120875 -124565  118853 -121762  119054</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Run with this bigger block.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wYXJ0MjwtZGljZWFibG9jayhzdGFydGluZ2Jsb2NrLHJlYm9vdHN0ZXApXG5wYXJ0Mjwtb25jb3VudGVyKHBhcnQyKVxucGFydDJcbmBgYCJ9 -->
+<pre class="r"><code>
+part2&lt;-diceablock(startingblock,rebootstep)
+part2&lt;-oncounter(part2)
 part2</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDExMlxuIn0= -->
-<pre><code>[1] 112</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI3NTg1MTQ5MzYyODIyMzVcbiJ9 -->
+<pre><code>[1] 2758514936282235</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0KbGlicmFyeShnZ3Bsb3QyKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQp0YXJnZXR4PC0yMDozMA0KdGFyZ2V0eTwtIC01Oi0xMA0KYGBgDQoNCiMjIFBhcnQgMQ0KSXMgYSBtYXRoIHByb2JsZW0gKHByb2JhYmx5PykuDQpBbmQgSSdtIGdvaW5nIHRvIGJydXRlIGZvcmNlIGl0IGFueXdheS4NCkJlY2F1c2UgdGhlIHRhcmdldCBpcyBiZWxvdyAwLCB0aGUgbG93ZXN0IHkgY2FuIGJlIGlzIG1pbih0YXJnZXQpIGFuZCB0aGUgaGlnaGVzdCBpdCBjYW4gYmUgaXMgbmVnYXRpdmUgbWluKHRhcmdldCksIGJlY2F1c2UgaXQgd2lsbCBnbyB1cCwgaXQgd2lsbCBjb21lIGRvd24gYXQgdGhlIHNhbWUgc3BlZWQgaXQgaGFkIGdvaW5nIHVwLCBhbmQgb3ZlcnNob290IHRoZSB0YXJnZXQuDQoNCmBgYHtyfQ0KdXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSkNCg0KZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXsNCiAgdDwtMQ0KICBkZWx0YXk8LWkNCiAgeTwtMA0KICBoPC0wDQogIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7DQogICAgeTwteStkZWx0YXkNCiAgICBpZihkZWx0YXk9PTApe2g8LXl9DQogICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpew0KICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9DQogICAgZGVsdGF5PC1kZWx0YXktMQ0KICAgIHQ8LXQrMX19DQpjb2xuYW1lcyh1cGRvd24pPC1jKCJzdGFydHkiLCJ0eSIsInkiLCJoIikNCnVwZG93bg0KYGBgDQoNCkFzICJoIiBpcyB0aGUgaGlnaGVzdCBwb2ludCBpbiB0aG9zZSB0cmFqZWN0b3JpZXMsIG1heChoKSBpcyB0aGUgaGlnaGVzdCBwb2ludA0KYGBge3J9DQp1cGRvd25bd2hpY2godXBkb3duJGg9PW1heCh1cGRvd24kaCkpLF0NCmBgYA0KQnV0IG9ubHkgaWYgdGhlcmUncyBzb21ldGhpbmcgdGhhdCB3aWxsIGJlIGluIHRoZSBYIHRhcmdldCByYW5nZSBhdCB0aW1lIHQuDQoNClNvLCBmaW5kIHZpYWJsZSBzdGFydGluZyB4cy4NClRoZSBtYXggdGhhdCBzdGFydHggY2FuIGJlIGlzIGdvaW5nIHRvIGJlIHRoZSBtYXgodGFyZ2V0eCkgLSBvdGhlcndpc2UsIGl0IHdpbGwganVzdCBvdmVyc2hvb3QgdGhlIHRhcmdldCBvbiB0aGUgZmlyc3Qgc3RlcC4NClNvLCAoYmVjYXVzZSB0aGUgdGFyZ2V0IGlzIGNsb3NlIGVub3VnaCksIGl0J3MgcG9zc2libGUgdG8gdHJ5IGV2ZXJ5IG51bWJlciBmcm9tIDEgdG8gdGhlIGZhciBlZGdlIG9mIHRoZSB0YXJnZXQNCg0KYGBge3J9DQpzaWRld2F5czwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0zLG5yb3c9MCkpDQoNCmZvcihpIGluIDE6bWF4KHRhcmdldHgpKXsNCiAgdDwtMQ0KICBkZWx0YXg8LWkNCiAgeDwtMA0KICB3aGlsZSh4PG1heCh0YXJnZXR4KSYmdDw9bWF4KHVwZG93biR0eSkpew0KICAgIHg8LXgrZGVsdGF4DQogICAgaWYoeD49bWluKHRhcmdldHgpJiZ4PD1tYXgodGFyZ2V0eCkpew0KICAgICAgc2lkZXdheXM8LXJiaW5kKHNpZGV3YXlzLGMoaSx0LHgpKX0NCiAgICBpZihkZWx0YXg+MCl7ZGVsdGF4PC1kZWx0YXgtMX0NCiAgICB0PC10KzF9fQ0KY29sbmFtZXMoc2lkZXdheXMpPC1jKCJzdGFydHgiLCJ0eCIsIngiKQ0Kc2lkZXdheXMNCmBgYA0KDQpUaGVuIGpvaW4gdGhlIHR3byBmcmFtZXMuICBCZWNhdXNlIHgganVzdCBzdG9wcyBnb2luZyBmb3J3YXJkIHdoZW4gaXQgaGl0cyB0aW1lLCBpdCdzIGEgdmFsaWQgc3BvdCBzbyBsb25nIGFzIHR5Pj10eA0KDQpgYGB7cn0NCmFsbHBhc3NlczwtY3Jvc3Nfam9pbihzaWRld2F5cyx1cGRvd24pICU+JSANCiAgZmlsdGVyKHR5PT10eCkNCmBgYA0KVGhpcyBnaXZlcyB0aGUgbGlzdCBvZiB0YXJnZXQgY3Jvc3NpbmcgLSB0aGUgaGlnaGVzdCBoZWlnaHQgZm9yIHRoYXQgdGFyZ2V0IGNyb3NzaW5nLg0KDQpgYGB7cn0NCnBhcnQxPC1tYXgoYWxscGFzc2VzJGgpDQpwYXJ0MQ0KYGBgDQoNCiMjIFBhcnQgMg0KUGFydCAyIG5lZWRzIHRvIGZpbmQgYWxsIG9mIHRoZSBwb3RlbnRpYWwgc3RhcnRpbmcgeCx5IHBhaXJzIC0gd2hpY2ggY2FuIGJlIGhhZCBmcm9tIHBhcnQgMS4gIEJ1dCB0aGUgaW4gcGFydCAxIGNvdW50ZWQgY3Jvc3NpbmdzLiAgSWYgdGhlIHByb2JlIHdhcyBpbiB0aGUgdGFyZ2V0IGFyZWEgdHdvIHRpbWVzLCBpdCBpcyBjb3VudGVkIHR3aWNlIGluIHBhcnQgMS4gIFNvIHdlIG5lZWQgdG8gcHVsbCB0aGUgdW5pcXVlIHN0YXJ0IGNvbWJpbmF0aW9ucw0KYGBge3J9DQpwYXJ0MjwtdW5pcXVlKGFsbHBhc3NlcyU+JXNlbGVjdChzdGFydHgsc3RhcnR5KSkNCnBhcnQyPC1ucm93KHBhcnQyKQ0KcGFydDINCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAyMiBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQppbnB1dDwtcmVhZF9saW5lcygiRGF5MjJTYW1wbGUyLnR4dCIpDQpgYGANCg0KIyMgUGFydCAxDQpVbmRlciAidGhpbmdzIHRoYXQgbWlnaHQgdGFrZSB0b28gbXVjaCBtZW1vcnksIGJ1dCB3aGF0IHRoZSBoZWxsLiINCkZpcnN0LCByZXBhcnNlIHRoZSBpbnB1dCBzbyB0aGF0IGl0IGlzIG9mIHRoZSBmb3JtDQpjKG9uLHhtaW4seG1heCx5bWluLHltYXgsem1pbix6bWF4KQ0KDQoNCmBgYHtyfQ0KcmVib290c3RlcDwtbGFwcGx5KGlucHV0LGZ1bmN0aW9uKHgpew0KICB4PC1zdHJfc3F1aXNoKHN0cl9yZXBsYWNlX2FsbCh4LCJbeD18LHk9fCx6PXxcXC5cXC5dIiwiICIpKQ0KICB4PC1zdHJfcmVwbGFjZSh4LCJvbiIsIjEiKQ0KICB4PC1zdHJfcmVwbGFjZSh4LCJvZmYiLCIwIikNCiAgeDwtYXMubnVtZXJpYyh1bmxpc3Qoc3RyX3NwbGl0KHgsIiAiKSkpDQp9KQ0KYGBgDQoNCg0KVGhlIGlkZWEgaGVyZSBpcyB0byB0YWtlICh1cCB0bykgc2l4IHdoYWNrcyBhdCB0aGUgb3JpZ2luYWwsIHBhcmluZyBkb3duIHRvIHRoZSBwYXJ0IHRoYXQgZ2V0cyBjaGFuZ2UgKGlmIGFueXRoaW5nKQ0KDQoNCg0Kc2xpY2UgaXQgZG9lcyB0aGUgd2hhY2tpbmcgaW4gYSBzaW5nbGUgZGltZW5zaW9uLCBzZXBhcmF0aW5nIGxlZnQsIG1pZGRsZSwgYW5kIHJpZ2h0Lg0KDQpgYGB7cn0NCnNsaWNlaXQ8LWZ1bmN0aW9uKGJsb2NrLGluc3Qpew0KICBpZihibG9ja1sxXT49aW5zdFsxXSl7bDwtYyhOQSxOQSkNCiAgfWVsc2V7bDwtYyhibG9ja1sxXSxtaW4oYmxvY2tbMl0sKGluc3RbMV0tMSkpKX0NCiAgaWYoYmxvY2tbMV0+aW5zdFsyXXx8YmxvY2tbMl08aW5zdFsxXSl7bTwtYyhOQSxOQSkNCiAgfWVsc2V7bTwtYyhtYXgoYmxvY2tbMV0saW5zdFsxXSksbWluKGJsb2NrWzJdLGluc3RbMl0pKX0NCiAgaWYoYmxvY2tbMl08PWluc3RbMl0pe2g8LWMoTkEsTkEpDQogIH1lbHNle2g8LWMobWF4KGluc3RbMl0rMSxibG9ja1sxXSksYmxvY2tbMl0pfQ0KYyhsLG0saCl9DQoNCmBgYA0KDQpjaG9wYmxvY2sgZG9lcyB0aGlzIGluIGFsbCBkaW1lbnNpb25zLiAgSXQgZW5kcyB3aXRoIHVwIHRvIHNldmVuIHVwZGF0ZWQgKG9yIG5vdCB1cGRhdGVkKSBuZXcgYmxvY2tzLg0KDQpgYGB7cn0NCmNob3BhYmxvY2s8LWZ1bmN0aW9uKGJsb2NrLGluc3Qpew0KICBvdXRsaXN0PC1saXN0KCkNCiAgIyMjIGlmIHRoaXMgaW5zdHJ1Y3Rpb24gaXMgdG8gdHVybiBzb21ldGhpbmcgb24gYW5kIHRoZSBibG9jayBpcyBhbHJlYWR5IG9uLCByZXR1cm4gdGhlIGJsb2NrLg0KICBpZihibG9ja1sxXT09aW5zdFsxXSl7b3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoYmxvY2spKQ0KICB9ZWxzZXsNCiAgICAjb3RoZXJ3aXNlIHNsaWNlIHgNCiAgICB4PC1zbGljZWl0KGJsb2NrWzI6M10saW5zdFsyOjNdKQ0KICAgIGlmKCFpcy5uYSh4WzFdKSl7DQogICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzFdLHhbMToyXSxibG9ja1s0OjddKSkpfQ0KICAgIGlmKCFpcy5uYSh4WzVdKSl7DQogICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzFdLHhbNTo2XSxibG9ja1s0OjddKSkpfQ0KICAgIGlmKGlzLm5hKHhbM10pKXtibG9jazwtTkF9ZWxzZXtibG9jazwtYyhibG9ja1sxXSx4WzM6NF0sYmxvY2tbNDo3XSl9ICAgIA0KICAgICMjIyBzbGljZSB5DQogICAgaWYoYW55KCFpcy5uYShibG9jaykpKXsNCiAgICAgIHk8LXNsaWNlaXQoYmxvY2tbNDo1XSxpbnN0WzQ6NV0pDQogICAgICBpZighaXMubmEoeVsxXSkpew0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzE6M10seVsxOjJdLGJsb2NrWzY6N10pKSl9DQogICAgICBpZighaXMubmEoeVs1XSkpew0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzE6M10seVs1OjZdLGJsb2NrWzY6N10pKSl9DQogICAgICBpZihpcy5uYSh5WzNdKSl7YmxvY2s8LU5BfWVsc2V7YmxvY2s8LWMoYmxvY2tbMTozXSx5WzM6NF0sYmxvY2tbNjo3XSl9DQogICAgICAjIyMgaWYgdGhlcmUgaXMgYW55IGJsb2NrIGxlZnQsIHNsaWNlIHoNCiAgICAgIGlmKGFueSghaXMubmEoYmxvY2spKSl7DQogICAgICAgIHo8LXNsaWNlaXQoYmxvY2tbNjo3XSxpbnN0WzY6N10pDQogICAgICAgIGlmKCFpcy5uYSh6WzFdKSl7DQogICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoYyhibG9ja1sxOjVdLHpbMToyXSkpKX0NCiAgICAgICAgaWYoIWlzLm5hKHpbNV0pKXsNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChjKGJsb2NrWzE6NV0sels1OjZdKSkpfQ0KICAgICAgICBpZihpcy5uYSh6WzNdKSl7YmxvY2s8LU5BfWVsc2V7YmxvY2s8LWMoYmxvY2tbMTo1XSx6WzM6NF0pfQ0KICAgICAgICAjIyMgYXNzdW1pbmcgZXZlcnl0aGluZyBpcyBzbGljZWQgLSBhZGQgYmxvY2sNCiAgICAgICAgaWYoYW55KCFpcy5uYShibG9jaykpKXsNCiAgICAgICAgICBibG9ja1sxXTwtMS1ibG9ja1sxXQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdChibG9jaykpfX19fQ0Kb3V0bGlzdH0NCmBgYA0KDQpOb3csIHdlIHRha2Ugb3VyIGJsb2NrICgwLC01MCw1MCwtNTAsNTAsLTUwLDUwICksIGFuZCBydW4gaXQgdGhyb3VnaCBpbnN0cnVjdGlvbiAxIHRvIGdldCBhIGxpc3Qgb2YgbmV3IGJsb2Nrcy4gIFdlIHJ1biBlYWNoIG9mIHRob3NlIGJsb2NrcyB0aHJvdWdoIGluc3QgMiB0byBnZXQgbmV3IGJsb2NrcyAmIHNvIG9uICYgc28gb24gdW50aWwgd2UncmUgb3V0IG9mIGluc3RydWN0aW9ucw0KDQpgYGB7cn0NCmRpY2VhYmxvY2s8LWZ1bmN0aW9uKGJsb2NrLCBpbnN0cnVjdGlvbnMpew0KICBvdXRibG9ja3M8LWxpc3QoYmxvY2spDQogIGZvcihpIGluIDE6bGVuZ3RoKGluc3RydWN0aW9ucykpew0KICAgIG91dGJsb2NrcyA8LSBzYXBwbHkob3V0YmxvY2tzLGZ1bmN0aW9uKHgpew0KICAgICAgb2I8LWNob3BhYmxvY2soYmxvY2s9eCxpbnN0PWluc3RydWN0aW9uc1tbaV1dKQ0KICAgICAgb2J9KQ0KICAgICMjIyB3ZSBuZWVkIGEgbGlzdCBvZiB2ZWN0b3JzLCBzbyBnZXQgYSBsaXN0IG9mIHZlY3RvcnMNCiAgICBpZihjbGFzcyhvdXRibG9ja3NbWzFdXSk9PSJsaXN0Iil7b3V0YmxvY2tzPC11bmxpc3Qob3V0YmxvY2tzLHJlY3Vyc2l2ZSA9IEZBTFNFKX19DQogIG91dGJsb2Nrc30NCiAgDQpgYGANCg0KYGBge3J9DQpwYXJ0MTwtZGljZWFibG9jayhjKDAsLTUwLDUwLC01MCw1MCwtNTAsNTApLHJlYm9vdHN0ZXApDQpgYGANCg0KRmluYWxseSwgd2UgbmVlZCB0byBjb3VudCBob3cgbWFueSBhcmUgb246DQoNCmBgYHtyfQ0Kb25jb3VudGVyPC1mdW5jdGlvbihibG9ja2xpc3Qpew0Kb25zPC0wDQpmb3IoaSBpbiAxOmxlbmd0aChibG9ja2xpc3QpKXsNCiAgYmxvY2s8LWJsb2NrbGlzdFtbaV1dDQogIGlmKGJsb2NrWzFdPT0xKXsNCiAgICB0b3Q8LXByb2QoYWJzKGJsb2NrW2MoMiw0LDYpXS1ibG9ja1tjKDMsNSw3KV0pK2MoMSwxLDEpKQ0KICAgIG9uczwtb25zK3RvdH19DQpvbnN9DQoNCnBhcnQxPC1vbmNvdW50ZXIocGFydDEpDQpwYXJ0MQ0KYGBgDQojIyBQYXJ0IDINCg0KZmluZCB0aGUgbWluICYgbWF4IG9mIGFsbCBkaW1lbnNpb25zIHRvIGdpdmUgdGhlIGJvdW5kcyBvZiB0aGUgYmxvY2sNCmBgYHtyfQ0Kc3RhcnRpbmdibG9jazwtYygwLDAsMCwwLDAsMCkNCmZvcihpIGluIDE6bGVuZ3RoKHJlYm9vdHN0ZXApKXsNCiAgeDwtcmVib290c3RlcFtbaV1dDQogIHN0YXJ0aW5nYmxvY2s8LWMobWluKHN0YXJ0aW5nYmxvY2tbMV0seFsyXSksbWF4KHN0YXJ0aW5nYmxvY2tbMl0seFszXSksDQogICAgICAgICAgICAgICAgICAgbWluKHN0YXJ0aW5nYmxvY2tbM10seFs0XSksbWF4KHN0YXJ0aW5nYmxvY2tbNF0seFs1XSksDQogICAgICAgICAgICAgICAgICAgbWluKHN0YXJ0aW5nYmxvY2tbNV0seFs2XSksbWF4KHN0YXJ0aW5nYmxvY2tbNl0seFs3XSkpfQ0Kc3RhcnRpbmdibG9jazwtYygwLHN0YXJ0aW5nYmxvY2spDQpzdGFydGluZ2Jsb2NrDQpgYGANCg0KUnVuIHdpdGggdGhpcyBiaWdnZXIgYmxvY2suDQpgYGB7cn0NCg0KcGFydDI8LWRpY2VhYmxvY2soc3RhcnRpbmdibG9jayxyZWJvb3RzdGVwKQ0KcGFydDI8LW9uY291bnRlcihwYXJ0MikNCnBhcnQyDQoNCmBgYA0KDQo=</div>
 
 
 
@@ -1939,7 +1972,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day17.Rmd");
+  window.initializeSourceEmbed("Day22.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
