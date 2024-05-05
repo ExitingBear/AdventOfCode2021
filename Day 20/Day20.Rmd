@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 20 Notebook"
 output: html_notebook
 ---
 
@@ -10,23 +10,96 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
 library(ggplot2)
-library(rgl)
-library(ggraph)
+library(memoise)
+library(reshape2)
 options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day20Sample.txt")
+bl<-which(input=="")
+```
 
+
+## Part 1
+There's probably a way to not brute force this - but...
+
+Get the enhancement algorithm
+```{r}
+enalgo<-""
+for(i in 1:(bl-1)){
+  enalgo<-str_c(enalgo,input[i])}
+```
+Get the image
+```{r}
+image<-matrix(nrow=(length(input)-bl),ncol=nchar(input[bl+1]))
+for(i in (bl+1):(length(input))){image[i-bl,]<-unlist(str_split(input[i],""))}
+```
+
+create a function that produces # or . from the image:
+
+```{r}
+### this converts a 3x3 matrix to either a dot or hash
+dotorhash<-function(m,a){
+  m<-strtoi(str_replace_all(str_replace_all(str_flatten(as.vector(t(m))),"\\.","0"),"#","1"),2)
+  ### because 1 based rather than 0 based
+  if(m>=510||is.na(m)){cat(m,"\n")}
+  m<-str_sub(a,m+1,m+1)
+m}
+### this memoises the dot or hash - there are only 512 possibilities, so this might 
+mdoh<-memoise(dotorhash)
+```
+
+Then create the function that enhances the image a set number of times:
+
+```{r}
+enhanceit<-function(m,a,rps){
+  ### because a - the image grows 1 in each direction every move and 
+  ### b - I cannot simulate an *infinite* field
+  ### padding around the edges by twice the number of repeats (+2 just in case) and then trimming off the edge each row 
+  bigimage<-matrix(".",nrow=(nrow(m)+4*rps+4),ncol=(ncol(m)+4*rps+4))
+  bigimage[(2*rps+2):(2*rps+1+nrow(m)),(2*rps+2):(2*rps+1+ncol(m))]<-m
+
+ for(r in 1:rps){
+   nxt<-matrix(ncol=(ncol(bigimage)-2),nrow=(nrow(bigimage)-2))
+   for(i in 1:nrow(nxt)){
+     for(j in 1:ncol(nxt)){
+       nxt[i,j]<-mdoh(bigimage[i:(i+2),j:(j+2)],a)}}
+   bigimage<-nxt}
+  bigimage}
+
+```
+
+Run it twice:
+```{r}
+part1<-enhanceit(image,enalgo,2)
+part1<-length(which(part1=="#"))
+part1
+```
+## Part 2
+Run it 50 times.
+
+```{r}
+p2<-enhanceit(image,enalgo,50)
+part2<-length(which(p2=="#"))
+part2
 ```
 
 
 
+
+
+
+
 ```{r,echo=FALSE}
-basicgraph<-ggplot()+
+gr<-melt(p2)
+```
+
+
+```{r,echo=FALSE}
+basicgraph<-ggplot(data=gr,aes(x=Var2,y=Var1,color=value))+
+geom_point()+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -38,5 +111,6 @@ basicgraph<-ggplot()+
         legend.position="none")+
   scale_y_reverse()+
   coord_fixed()
+basicgraph
 ```
 

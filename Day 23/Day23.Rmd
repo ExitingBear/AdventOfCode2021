@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 23 Notebook"
 output: html_notebook
 ---
 
@@ -10,33 +10,985 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
-library(ggplot2)
-library(rgl)
-library(ggraph)
 options(scipen = 999)
 ```
 
+
+All of these functions take in a map and return a list of possible maps and the additional cost for one move past the  one that was brought in.
+
+The hall functions move something in the hall to its appropriate room in position 1 (if position 1 is empty)
+
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
-
+hall1<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  ### move if position 1 in that room is 0.  
+  switch(hall[1],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))&&hall[2]=="."){cost<-cost+3
+           hall[1]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))&&hall[2]=="."&&hall[3]=="."){cost<-cost+50
+           hall[1]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))&&hall[2]=="."&&hall[3]=="."&&hall[4]=="."){
+             cost<-cost+700
+           hall[1]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))&&hall[2]=="."&&hall[3]=="."&&hall[4]=="."&&hall[5]=="."){cost<-cost+9000
+           hall[1]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall1\n"))
+  ### return the updated diagram with the new cost
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall2<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[2],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))){cost<-cost+2
+           hall[2]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))&&hall[3]=="."){cost<-cost+40
+           hall[2]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))&&hall[3]=="."&&hall[4]=="."){cost<-cost+600
+           hall[2]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))&&hall[3]=="."&&hall[4]=="."&&hall[5]=="."){cost<-cost+8000
+           hall[2]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall2\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall3<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[3],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))){cost<-cost+2
+           hall[3]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))){cost<-cost+20
+           hall[3]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C"))) && hall[4]=="."){cost<-cost+400
+           hall[3]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D"))) &&hall[4]=="."&&hall[5]=="."){cost<-cost+6000
+           hall[3]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall3\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall4<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[4],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))&&hall[3]=="."){cost<-cost+4
+           hall[4]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))){cost<-cost+20
+           hall[4]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))){cost<-cost+200
+           hall[4]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))&&hall[5]=="."){cost<-cost+4000
+           hall[4]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall4\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall5<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[5],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))&&hall[3]=="."&&hall[4]=="."){cost<-cost+6
+           hall[5]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))&&hall[4]=="."){cost<-cost+40
+           hall[5]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))){cost<-cost+200
+           hall[5]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))){cost<-cost+2000
+           hall[5]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall5\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall6<-function(diag){
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[6],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))&&hall[3]=="."&&hall[4]=="."&&hall[5]=="."){cost<-cost+8
+           hall[6]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))&&hall[4]=="."&&hall[5]=="."){cost<-cost+60
+           hall[6]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))&&hall[5]=="."){cost<-cost+400
+           hall[6]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))){cost<-cost+2000
+           hall[6]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall6\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall7<-function(diag){
+ # cat(paste(unlist(diag)),"\n")
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  cost<-diag[[6]]
+  switch(hall[7],
+         "A"={
+           if(rooma[1]=="."&&(all(rooma[-1]%in%c(".","A")))&&hall[3]=="."&&hall[4]=="."&&hall[5]=="."&&hall[6]=="."){cost<-cost+9
+           hall[7]<-"."
+           rooma[1]<-"A"}else{cost<-0}},
+         "B"={
+           if(roomb[1]=="."&&(all(roomb[-1]%in%c(".","B")))&&hall[4]=="."&&hall[5]=="."&&hall[6]=="."){cost<-cost+70
+           hall[7]<-"."
+           roomb[1]<-"B"}else{cost<-0}},
+         "C"={
+           if(roomc[1]=="."&&(all(roomc[-1]%in%c(".","C")))&&hall[5]=="."&&hall[6]=="."){cost<-cost+500
+           hall[7]<-"."
+           roomc[1]<-"C"}else{cost<-0}},
+         "D"={
+           if(roomd[1]=="."&&(all(roomd[-1]%in%c(".","D")))&&hall[6]=="."){cost<-cost+3000
+           hall[7]<-"."
+           roomd[1]<-"D"}else{cost<-0}},
+         cat("something went wrong hall7\n"))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
 ```
 
 
+The room function does flips the room to move correct amphipods deeper or incorrect amphipods to space 1.  It also puts amphipods in space 1 into all of the hallway positions
 
-```{r,echo=FALSE}
-basicgraph<-ggplot()+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position="none")+
-  scale_y_reverse()+
-  coord_fixed()
+```{r}
+### only go to the rooms if:
+# need to move something deeper in e.g., rooma == c("A",".") move to c(".","A")
+# need to move closer out, e.g., rooma==c(".","D") move to c("D",".")
+# need to move something into the hall e.g. c("D",doesn't matter) move to c(".",still doesn't matter), hall = something new
+rooma<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  if(all(rooma==c("A","."))){
+    outlist<-list(list(c(hall),rev(rooma),c(roomb),c(roomc),c(roomd),oldcost+1))
+  }else if(rooma[1]=="."&&rooma[2]!="A"){
+    switch(rooma[2],
+           "B"=cost<-10,
+           "C"=cost<-100,
+           "D"=cost<-1000,
+           cat("somethings wrong in rooma\n"))
+    outlist<-list(list(c(hall),rev(rooma),c(roomb),c(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(rooma[1]%in%c("A","B","C","D")){
+      switch(rooma[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in rooma\n"))
+      if(hall[2]=="."){
+        x<-list(c(hall[1],rooma[1],hall[3:7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*3)
+        outlist<-c(outlist,list(x))
+        if(hall[1]=="."){
+          x<-list(c(rooma[1],hall[2:7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+          outlist<-c(outlist,list(x))}}
+      if(hall[3]=="."){
+        x<-list(c(hall[1:2],rooma[1],hall[4:7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[4]=="."){
+          x<-list(c(hall[1:3],rooma[1],hall[5:7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[5]=="."){
+            x<-list(c(hall[1:4],rooma[1],hall[6:7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[6]=="."){
+              x<-list(c(hall[1:5],rooma[1],hall[7]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*8)
+              outlist<-c(outlist,list(x))
+              if(hall[7]=="."){
+                x<-list(c(hall[1:6],rooma[1]),c(".",rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*9)
+                outlist<-c(outlist,list(x))}}}}}}}
+  outlist}
+
+###
+
+roomb<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  if(all(roomb==c("B","."))){
+    outlist<-list(list(c(hall),c(rooma),rev(roomb),c(roomc),c(roomd),oldcost+10))
+  }else if(roomb[1]=="."&&roomb[2]!="B"){
+    switch(roomb[2],
+           "A"=cost<-1,
+           "C"=cost<-100,
+           "D"=cost<-1000,
+           cat("somethings wrong in roomb\n"))
+    outlist<-list(list(c(hall),c(rooma),rev(roomb),c(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomb[1]%in%c("A","B","C","D")){
+      switch(roomb[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in roomb\n"))
+      if(hall[3]=="."){
+        x<-list(c(hall[1:2],roomb[1],hall[4:7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[2]=="."){
+          x<-list(c(hall[1],roomb[1],hall[3:7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[1]=="."){
+            x<-list(c(roomb[1],hall[2:7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*5)
+            outlist<-c(outlist,list(x))}}}
+      if(hall[4]=="."){
+        x<-list(c(hall[1:3],roomb[1],hall[5:7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[5]=="."){
+          x<-list(c(hall[1:4],roomb[1],hall[6:7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[6]=="."){
+            x<-list(c(hall[1:5],roomb[1],hall[7]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[7]=="."){
+              x<-list(c(hall[1:6],roomb[1]),c(rooma),c(".",roomb[2]),c(roomc),c(roomd),oldcost+cost*7)
+              outlist<-c(outlist,list(x))}}}}}}
+  outlist}
+
+
+#######
+
+roomc<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  if(all(roomc==c("C","."))){
+    outlist<-list(list(c(hall),c(rooma),c(roomb),rev(roomc),c(roomd),oldcost+100))
+  }else if(roomc[1]=="."&&roomc[2]!="C"){
+    switch(roomc[2],
+           "A"=cost<-1,
+           "B"=cost<-10,
+           "D"=cost<-1000,
+           cat("somethings wrong in roomc\n"))
+    outlist<-list(list(c(hall),c(rooma),c(roomb),rev(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomc[1]%in%c("A","B","C","D")){
+      switch(roomc[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in roomc\n"))
+      if(hall[4]=="."){
+        x<-list(c(hall[1:3],roomc[1],hall[5:7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[3]=="."){
+          x<-list(c(hall[1:2],roomc[1],hall[4:7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[2]=="."){
+            x<-list(c(hall[1],roomc[1],hall[3:7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[1]=="."){
+              x<-list(c(roomc[1],hall[2:7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*7)
+              outlist<-c(outlist,list(x))}}}}
+      if(hall[5]=="."){
+        x<-list(c(hall[1:4],roomc[1],hall[6:7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[6]=="."){
+          x<-list(c(hall[1:5],roomc[1],hall[7]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[7]=="."){
+            x<-list(c(hall[1:6],roomc[1]),c(rooma),c(roomb),c(".",roomc[2]),c(roomd),oldcost+cost*5)
+            outlist<-c(outlist,list(x))}}}}}
+  outlist}
+
+##################
+
+roomd<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  if(all(roomd==c("D","."))){
+    outlist<-list(list(c(hall),c(rooma),c(roomb),c(roomc),rev(roomd),oldcost+1000))
+  }else if(roomd[1]=="."&&roomd[2]!="C"){
+    switch(roomd[2],
+           "A"=cost<-1,
+           "B"=cost<-10,
+           "C"=cost<-100,
+           cat("somethings wrong in roomd p1\n"))
+    outlist<-list(list(c(hall),c(rooma),c(roomb),c(roomc),rev(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomd[1]%in%c("A","B","C","D")){
+      switch(roomd[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in roomd p2\n"))
+      if(hall[5]=="."){
+        x<-list(c(hall[1:4],roomd[1],hall[6:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[4]=="."){
+          x<-list(c(hall[1:3],roomd[1],hall[5:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[3]=="."){
+            x<-list(c(hall[1:2],roomd[1],hall[4:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[2]=="."){
+              x<-list(c(hall[1],roomd[1],hall[3:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*8)
+              outlist<-c(outlist,list(x))
+              if(hall[1]=="."){
+                x<-list(c(roomd[1],hall[2:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*9)
+                outlist<-c(outlist,list(x))}}}}}
+      if(hall[6]=="."){
+        x<-list(c(hall[1:5],roomd[1],hall[7]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[7]=="."){
+          x<-list(c(hall[1:6],roomd[1]),c(rooma),c(roomb),c(roomc),c(".",roomd[2]),oldcost+cost*3)
+          outlist<-c(outlist,list(x))}}}}
+  outlist}
+
 ```
 
+The full function makes one move at a time. Either a hallway move or one or more room moves.
+
+```{r}
+amphipods<-function(a,b,c,d){
+  pq<-priority_queue()
+  beenthere<-dict()
+  start<-list(rep(".",7),c(a),c(b),c(c),c(d),0)
+  finalstate<-c(rep(".",7),c("A","A"),c("B","B"),c("C","C"),c("D","D"))
+  pq$push(start,0)
+  counter<-1
+  while(pq$size()>0){
+    now<-pq$pop()
+    ### if done, done
+    if(all(now[[1]]==".")&&all(now[[2]]=="A")){return(now)}
+    ### if been there, next
+    if(beenthere$has(now[1:5])){
+#      counter<-counter+1
+#      if(counter%%10000==0){cat(counter,now[[6]],pq$size(),beenthere$size(),"\n")}
+      next}
+    ### otherwise, here to the dictionary
+    beenthere$set(now[1:5],now[[6]])
+    #### Hallway moves
+    if(now[[1]][1]!="."){
+      h1<-hall1(now)
+      if(h1[[6]]>0){pq$push(h1,-h1[[6]])}
+    }
+    if(now[[1]][2]!="."){
+      h2<-hall2(now)
+      if(h2[[6]]>0){pq$push(h2,-h2[[6]])}
+    }
+    if(now[[1]][3]!="."){
+      h3<-hall3(now)
+      if(h3[[6]]>0){pq$push(h3,-h3[[6]])}
+    }
+    if(now[[1]][4]!="."){
+      h4<-hall4(now)
+      if(h4[[6]]>0){pq$push(h4,-h4[[6]])}
+    }
+    if(now[[1]][5]!="."){
+      h5<-hall5(now)
+      if(h5[[6]]>0){pq$push(h5,-h5[[6]])}
+    }
+    if(now[[1]][6]!="."){
+      h6<-hall6(now)
+      if(h6[[6]]>0){pq$push(h6,-h6[[6]])}
+    }
+    if(now[[1]][7]!="."){
+      h7<-hall7(now)
+      if(h7[[6]]>0){pq$push(h7,-h7[[6]])}
+    }
+    ### room moves
+    if(any(now[[2]]!=".")&& !all(now[[2]]==c(".","A"))){
+      ra<-rooma(now)
+      if(length(ra)>0){
+        for(i in 1:length(ra)){
+          x<-ra[[i]]
+          pq$push(x,-x[[6]])}}}
+    if(any(now[[3]]!=".")&& !all(now[[3]]==c(".","B"))){
+      rb<-roomb(now)
+      if(length(rb)>0){
+        for(i in 1:length(rb)){
+          x<-rb[[i]]
+          pq$push(x,-x[[6]])
+          }}}
+    if(any(now[[4]]!=".")&& !all(now[[4]]==c(".","C"))){
+      rc<-roomc(now)
+      if(length(rc)>0){
+        for(i in 1:length(rc)){
+          x<-rc[[i]]
+          pq$push(x,-x[[6]])}}}
+    if(any(now[[5]]!=".")&& !all(now[[5]]==c(".","D"))){
+      rd<-roomd(now)
+      if(length(rd)>0){
+        for(i in 1:length(rd)){
+          x<-rd[[i]]
+          #cat("d",paste(x))    
+          pq$push(x,-x[[6]])
+          }}}
+    
+    
+    
+    
+  }
+  return(beenthere)}
+```
+
+
+Run the function with input
+```{r}
+### Puzzle input is done manually
+
+a<-c("B","A")
+b<-c("C","D")
+c<-c("B","C")
+d<-c("D","A")
+
+p1<-amphipods(a,b,c,d)
+part1<-p1[[6]]
+part1
+```
+
+
+## Part 2
+
+For the halls, nothing changes.  They're already set up to to be called & to work no matter how long the rooms are.
+
+The rooms need to be split into three functions for my sanity.
+
+Nothing really changes in the room to hall - they are split apart from the other room functions
+
+```{r}
+### if there is something in roomX[1]&&if there is space in the hall&&if there is something in the room that belongs in a different room:
+roomouta<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  ### move to hallway
+  ### to the left
+ # cat(paste(diag,"\n"))
+  switch(rooma[1],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in rooma\n"))
+  if(hall[2]=="."){
+    x<-list(c(hall[1],rooma[1],hall[3:7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*3)
+    outlist<-c(outlist,list(x))
+    if(hall[1]=="."){
+      x<-list(c(rooma[1],hall[2:7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+      outlist<-c(outlist,list(x))}}
+  if(hall[3]=="."){
+    x<-list(c(hall[1:2],rooma[1],hall[4:7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+    outlist<-c(outlist,list(x))
+    if(hall[4]=="."){
+      x<-list(c(hall[1:3],rooma[1],hall[5:7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*4)
+      outlist<-c(outlist,list(x))
+      if(hall[5]=="."){
+        x<-list(c(hall[1:4],rooma[1],hall[6:7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*6)
+        outlist<-c(outlist,list(x))
+        if(hall[6]=="."){
+          x<-list(c(hall[1:5],rooma[1],hall[7]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*8)
+          outlist<-c(outlist,list(x))
+          if(hall[7]=="."){
+            x<-list(c(hall[1:6],rooma[1]),c(".",rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*9)
+            outlist<-c(outlist,list(x))}}}}}
+outlist}
+
+###
+
+roomoutb<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  switch(roomb[1],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in roomb\n"))
+  if(hall[3]=="."){
+    x<-list(c(hall[1:2],roomb[1],hall[4:7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*2)
+    outlist<-c(outlist,list(x))
+    if(hall[2]=="."){
+      x<-list(c(hall[1],roomb[1],hall[3:7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*4)
+      outlist<-c(outlist,list(x))
+      if(hall[1]=="."){
+        x<-list(c(roomb[1],hall[2:7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*5)
+        outlist<-c(outlist,list(x))}}}
+  if(hall[4]=="."){
+    x<-list(c(hall[1:3],roomb[1],hall[5:7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*2)
+    outlist<-c(outlist,list(x))
+    if(hall[5]=="."){
+      x<-list(c(hall[1:4],roomb[1],hall[6:7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*4)
+      outlist<-c(outlist,list(x))
+      if(hall[6]=="."){
+        x<-list(c(hall[1:5],roomb[1],hall[7]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*6)
+        outlist<-c(outlist,list(x))
+        if(hall[7]=="."){
+          x<-list(c(hall[1:6],roomb[1]),c(rooma),c(".",roomb[-1]),c(roomc),c(roomd),oldcost+cost*7)
+          outlist<-c(outlist,list(x))}}}}
+outlist}
+
+
+#######
+
+roomoutc<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+    ### move to hallway
+    ### to the left
+      switch(roomc[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in roomc\n"))
+      if(hall[4]=="."){
+        x<-list(c(hall[1:3],roomc[1],hall[5:7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[3]=="."){
+          x<-list(c(hall[1:2],roomc[1],hall[4:7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[2]=="."){
+            x<-list(c(hall[1],roomc[1],hall[3:7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[1]=="."){
+              x<-list(c(roomc[1],hall[2:7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*7)
+              outlist<-c(outlist,list(x))}}}}
+      if(hall[5]=="."){
+        x<-list(c(hall[1:4],roomc[1],hall[6:7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[6]=="."){
+          x<-list(c(hall[1:5],roomc[1],hall[7]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[7]=="."){
+            x<-list(c(hall[1:6],roomc[1]),c(rooma),c(roomb),c(".",roomc[-1]),c(roomd),oldcost+cost*5)
+            outlist<-c(outlist,list(x))}}}
+  outlist}
+
+##################
+
+roomoutd<-function(diag){
+  #create the list of things to be returned
+  outlist<-list()
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+    ### move to hallway
+    ### to the left
+      switch(roomd[1],
+             "A"=cost<-1,
+             "B"=cost<-10,
+             "C"=cost<-100,
+             "D"=cost<-1000,
+             cat("somethings wrong in roomd p2\n"))
+      if(hall[5]=="."){
+        x<-list(c(hall[1:4],roomd[1],hall[6:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[4]=="."){
+          x<-list(c(hall[1:3],roomd[1],hall[5:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*4)
+          outlist<-c(outlist,list(x))
+          if(hall[3]=="."){
+            x<-list(c(hall[1:2],roomd[1],hall[4:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*6)
+            outlist<-c(outlist,list(x))
+            if(hall[2]=="."){
+              x<-list(c(hall[1],roomd[1],hall[3:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*8)
+              outlist<-c(outlist,list(x))
+              if(hall[1]=="."){
+                x<-list(c(roomd[1],hall[2:7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*9)
+                outlist<-c(outlist,list(x))}}}}}
+      if(hall[6]=="."){
+        x<-list(c(hall[1:5],roomd[1],hall[7]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*2)
+        outlist<-c(outlist,list(x))
+        if(hall[7]=="."){
+          x<-list(c(hall[1:6],roomd[1]),c(rooma),c(roomb),c(roomc),c(".",roomd[-1]),oldcost+cost*3)
+          outlist<-c(outlist,list(x))}}
+  outlist}
+```
+
+The room forward should be called if there's nothing in space 1 and an incorrect amphipod somewhere further back.  It moves the closest to the front all the way to the front.  There they can be picked up by the room out function
+
+```{r}
+roomaforward<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  ### find the first non empty space
+  x<-min(which(rooma!="."))
+  switch(rooma[x],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in roomd forward\n"))
+  ### put it in space 1 and make its space empty
+  rooma[1]<-rooma[x]
+  rooma[x]<-"."
+  ### update the cost based on what was being moved.
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roombforward<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-min(which(roomb!="."))
+  switch(roomb[x],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in roomd forward\n"))
+  roomb[1]<-roomb[x]
+  roomb[x]<-"."
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roomcforward<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-min(which(roomc!="."))
+  switch(roomc[x],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in roomd forward\n"))
+  roomc[1]<-roomc[x]
+  roomc[x]<-"."
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roomdforward<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-min(which(roomd!="."))
+  switch(roomd[x],
+         "A"=cost<-1,
+         "B"=cost<-10,
+         "C"=cost<-100,
+         "D"=cost<-1000,
+         cat("somethings wrong in roomd forward\n"))
+  roomd[1]<-roomd[x]
+  roomd[x]<-"."
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+```
+Room back moves correct amphipods from position 1 (where they were dropped off by the hallway function) to the first space in the back of the room.
+
+```{r}
+roomaback<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  ### find the first empty space
+  x<-max(which(rooma=="."))
+  ### swap it with the amphipod
+  rooma[1]<-"."
+  rooma[x]<-"A"
+  ### update the cost
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+(x-1))
+  outlist}
+####
+roombback<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-max(which(roomb=="."))
+  roomb[1]<-"."
+  roomb[x]<-"B"
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+10*(x-1))
+  outlist}
+####
+roomcback<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-max(which(roomc=="."))
+  roomc[1]<-"."
+  roomc[x]<-"C"
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+100*(x-1))
+  outlist}
+####
+roomdback<-function(diag){
+  #create the list of things to be returned
+  outlist<-diag
+  hall<-diag[[1]]
+  rooma<-diag[[2]]
+  roomb<-diag[[3]]
+  roomc<-diag[[4]]
+  roomd<-diag[[5]]
+  oldcost<-diag[[6]]
+  x<-max(which(roomd=="."))
+  roomd[1]<-"."
+  roomd[x]<-"D"
+  outlist<-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+1000*(x-1))
+  outlist}
+```
+
+
+The whole function works the same way as it did before.
+
+```{r}
+amphipodslong<-function(a,b,c,d){
+  pq<-priority_queue()
+  beenthere<-dict()
+  start<- list(rep(".",7),c(a),c(b),c(c),c(d),0)
+  finalstate<-c(rep(".",7),c("A","A"),c("B","B"),c("C","C"),c("D","D"))
+  pq$push(start,0)
+  counter<-1
+  while(pq$size()>0){
+    now<-pq$pop()
+    ### if done, done return the whole diagram for checking
+    if(all(now[[1]]==".")&&all(now[[2]]=="A")&&all(now[[3]]=="B")){return(now)}
+    ### if been there, next
+    if(beenthere$has(now[1:5])){
+      next}
+    ### otherwise, add this to the dictionary
+    beenthere$set(now[1:5],now[[6]])
+    #### add in the hallway moves
+    if(now[[1]][1]!="."){
+      h1<-hall1(now)
+      pq$push(h1,-h1[[6]])}
+    if(now[[1]][2]!="."){
+      h2<-hall2(now)
+      pq$push(h2,-h2[[6]])}
+    if(now[[1]][3]!="."){
+      h3<-hall3(now)
+      pq$push(h3,-h3[[6]])}
+    if(now[[1]][4]!="."){
+      h4<-hall4(now)
+      pq$push(h4,-h4[[6]])}
+    if(now[[1]][5]!="."){
+      h5<-hall5(now)
+      pq$push(h5,-h5[[6]])}
+    if(now[[1]][6]!="."){
+      h6<-hall6(now)
+      pq$push(h6,-h6[[6]])}
+    if(now[[1]][7]!="."){
+      h7<-hall7(now)
+      pq$push(h7,-h7[[6]])}
+    ### First, Room outs
+    ### add in the room outs for everything in position 1 where there is a lost amphipod
+    if(any(now[[1]]==".")){
+      if(now[[2]][1]!="."&&!all(now[[2]]%in%c(".","A"))){
+        ra<-roomouta(now)
+        if(length(ra)>0){
+          for(i in 1:length(ra)){
+            x<-ra[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[3]][1]!="."&&!all(now[[3]]%in%c(".","B"))){
+        rb<-roomoutb(now)
+        if(length(rb)>0){
+          for(i in 1:length(rb)){
+            x<-rb[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[4]][1]!="."&&!all(now[[4]]%in%c(".","C"))){
+        rc<-roomoutc(now)
+        if(length(rc)>0){
+          for(i in 1:length(rc)){
+            x<-rc[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[5]][1]!="."&&!all(now[[5]]%in%c(".","D"))){
+        rd<-roomoutd(now)
+        if(length(rd)>0){
+          for(i in 1:length(rd)){
+            x<-rd[[i]]
+            pq$push(x,-x[[6]])}}}}
+    ### shuffle amphipods forward to space 1
+    if(now[[2]][1]=="."&&any(c("B","C","D")%in%now[[2]])){
+      raf<-roomaforward(now)
+      pq$push(raf,-raf[[6]])}
+    if(now[[3]][1]=="."&&any(c("A","C","D")%in%now[[3]])){
+      rbf<-roombforward(now)
+      pq$push(rbf,-rbf[[6]])}
+    if(now[[4]][1]=="."&&any(c("A","B","D")%in%now[[4]])){
+      rcf<-roomcforward(now)
+      pq$push(rcf,-rcf[[6]])}
+    if(now[[5]][1]=="."&&any(c("A","B","C")%in%now[[5]])){
+      rdf<-roomdforward(now)
+      pq$push(rdf,-rdf[[6]])}
+    ### shuffle found amphipods back to the back of the room.
+    if(now[[2]][1]=="A"&&all(c(".","A")%in%now[[2]])&&all(now[[2]]%in%c(".","A"))){
+      rab<-roomaback(now)
+      pq$push(rab,-rab[[6]])}
+    if(now[[3]][1]=="B"&&all(c(".","B")%in%now[[3]])&&all(now[[3]]%in%c(".","B"))){
+      rbb<-roombback(now)
+      pq$push(rbb,-rbb[[6]])}
+    if(now[[4]][1]=="C"&&all(c(".","C")%in%now[[4]])&&all(now[[4]]%in%c(".","C"))){
+      rcb<-roomcback(now)
+      pq$push(rcb,-rcb[[6]])}
+    if(now[[5]][1]=="D"&&all(c(".","D")%in%now[[5]])&&all(now[[5]]%in%c(".","D"))){
+      rdb<-roomdback(now)
+      pq$push(rdb,-rdb[[6]])}
+    }
+  return(list(now,beenthere))}
+```
+
+
+Now run - 
+```{r}
+### First show it works on the previous input (rooms size 2):
+
+a<-c("B","A")
+b<-c("C","D")
+c<-c("B","C")
+d<-c("D","A")
+p1<-amphipodslong(a,b,c,d)
+part1long<-p1[[6]]
+part1long
+
+### then that it works on the long input (room size 4)
+
+a<-c("B","D","D","A")
+b<-c("C","C","B","D")
+c<-c("B","B","A","C")
+d<-c("D","A","C","A")
+p2<-amphipodslong(a,b,c,d)
+part2<-p2[[6]]
+part2
+```

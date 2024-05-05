@@ -11,7 +11,7 @@
 
 
 
-<title>Day 17 Notebook</title>
+<title>Day 23 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 17 Notebook</h1>
+<h1 class="title toc-ignore">Day 23 Notebook</h1>
 
 </div>
 
@@ -1754,145 +1754,1023 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-text-begin -->
+<p>All of these functions take in a map and return a list of possible
+maps and the additional cost for one move past the one that was brought
+in.</p>
+<p>The hall functions move something in the hall to its appropriate room
+in position 1 (if position 1 is empty)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFyZ2V0eDwtMjA6MzBcbnRhcmdldHk8LSAtNTotMTBcbmBgYCJ9 -->
-<pre class="r"><code>targetx&lt;-20:30
-targety&lt;- -5:-10</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGFsbDE8LWZ1bmN0aW9uKGRpYWcpe1xuICBoYWxsPC1kaWFnW1sxXV1cbiAgcm9vbWE8LWRpYWdbWzJdXVxuICByb29tYjwtZGlhZ1tbM11dXG4gIHJvb21jPC1kaWFnW1s0XV1cbiAgcm9vbWQ8LWRpYWdbWzVdXVxuICBjb3N0PC1kaWFnW1s2XV1cbiAgIyMjIG1vdmUgaWYgcG9zaXRpb24gMSBpbiB0aGF0IHJvb20gaXMgMC4gIFxuICBzd2l0Y2goaGFsbFsxXSxcbiAgICAgICAgIFwiQVwiPXtcbiAgICAgICAgICAgaWYocm9vbWFbMV09PVwiLlwiJiYoYWxsKHJvb21hWy0xXSVpbiVjKFwiLlwiLFwiQVwiKSkpJiZoYWxsWzJdPT1cIi5cIil7Y29zdDwtY29zdCszXG4gICAgICAgICAgIGhhbGxbMV08LVwiLlwiXG4gICAgICAgICAgIHJvb21hWzFdPC1cIkFcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiQlwiPXtcbiAgICAgICAgICAgaWYocm9vbWJbMV09PVwiLlwiJiYoYWxsKHJvb21iWy0xXSVpbiVjKFwiLlwiLFwiQlwiKSkpJiZoYWxsWzJdPT1cIi5cIiYmaGFsbFszXT09XCIuXCIpe2Nvc3Q8LWNvc3QrNTBcbiAgICAgICAgICAgaGFsbFsxXTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWJbMV08LVwiQlwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJDXCI9e1xuICAgICAgICAgICBpZihyb29tY1sxXT09XCIuXCImJihhbGwocm9vbWNbLTFdJWluJWMoXCIuXCIsXCJDXCIpKSkmJmhhbGxbMl09PVwiLlwiJiZoYWxsWzNdPT1cIi5cIiYmaGFsbFs0XT09XCIuXCIpe1xuICAgICAgICAgICAgIGNvc3Q8LWNvc3QrNzAwXG4gICAgICAgICAgIGhhbGxbMV08LVwiLlwiXG4gICAgICAgICAgIHJvb21jWzFdPC1cIkNcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiRFwiPXtcbiAgICAgICAgICAgaWYocm9vbWRbMV09PVwiLlwiJiYoYWxsKHJvb21kWy0xXSVpbiVjKFwiLlwiLFwiRFwiKSkpJiZoYWxsWzJdPT1cIi5cIiYmaGFsbFszXT09XCIuXCImJmhhbGxbNF09PVwiLlwiJiZoYWxsWzVdPT1cIi5cIil7Y29zdDwtY29zdCs5MDAwXG4gICAgICAgICAgIGhhbGxbMV08LVwiLlwiXG4gICAgICAgICAgIHJvb21kWzFdPC1cIkRcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIGNhdChcInNvbWV0aGluZyB3ZW50IHdyb25nIGhhbGwxXFxuXCIpKVxuICAjIyMgcmV0dXJuIHRoZSB1cGRhdGVkIGRpYWdyYW0gd2l0aCB0aGUgbmV3IGNvc3RcbiAgcmV0dXJuKGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxjb3N0KSl9XG4jIyMjXG5oYWxsMjwtZnVuY3Rpb24oZGlhZyl7XG4gIGhhbGw8LWRpYWdbWzFdXVxuICByb29tYTwtZGlhZ1tbMl1dXG4gIHJvb21iPC1kaWFnW1szXV1cbiAgcm9vbWM8LWRpYWdbWzRdXVxuICByb29tZDwtZGlhZ1tbNV1dXG4gIGNvc3Q8LWRpYWdbWzZdXVxuICBzd2l0Y2goaGFsbFsyXSxcbiAgICAgICAgIFwiQVwiPXtcbiAgICAgICAgICAgaWYocm9vbWFbMV09PVwiLlwiJiYoYWxsKHJvb21hWy0xXSVpbiVjKFwiLlwiLFwiQVwiKSkpKXtjb3N0PC1jb3N0KzJcbiAgICAgICAgICAgaGFsbFsyXTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWFbMV08LVwiQVwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJCXCI9e1xuICAgICAgICAgICBpZihyb29tYlsxXT09XCIuXCImJihhbGwocm9vbWJbLTFdJWluJWMoXCIuXCIsXCJCXCIpKSkmJmhhbGxbM109PVwiLlwiKXtjb3N0PC1jb3N0KzQwXG4gICAgICAgICAgIGhhbGxbMl08LVwiLlwiXG4gICAgICAgICAgIHJvb21iWzFdPC1cIkJcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiQ1wiPXtcbiAgICAgICAgICAgaWYocm9vbWNbMV09PVwiLlwiJiYoYWxsKHJvb21jWy0xXSVpbiVjKFwiLlwiLFwiQ1wiKSkpJiZoYWxsWzNdPT1cIi5cIiYmaGFsbFs0XT09XCIuXCIpe2Nvc3Q8LWNvc3QrNjAwXG4gICAgICAgICAgIGhhbGxbMl08LVwiLlwiXG4gICAgICAgICAgIHJvb21jWzFdPC1cIkNcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiRFwiPXtcbiAgICAgICAgICAgaWYocm9vbWRbMV09PVwiLlwiJiYoYWxsKHJvb21kWy0xXSVpbiVjKFwiLlwiLFwiRFwiKSkpJiZoYWxsWzNdPT1cIi5cIiYmaGFsbFs0XT09XCIuXCImJmhhbGxbNV09PVwiLlwiKXtjb3N0PC1jb3N0KzgwMDBcbiAgICAgICAgICAgaGFsbFsyXTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWRbMV08LVwiRFwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgY2F0KFwic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDJcXG5cIikpXG4gIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfVxuIyMjI1xuaGFsbDM8LWZ1bmN0aW9uKGRpYWcpe1xuICBoYWxsPC1kaWFnW1sxXV1cbiAgcm9vbWE8LWRpYWdbWzJdXVxuICByb29tYjwtZGlhZ1tbM11dXG4gIHJvb21jPC1kaWFnW1s0XV1cbiAgcm9vbWQ8LWRpYWdbWzVdXVxuICBjb3N0PC1kaWFnW1s2XV1cbiAgc3dpdGNoKGhhbGxbM10sXG4gICAgICAgICBcIkFcIj17XG4gICAgICAgICAgIGlmKHJvb21hWzFdPT1cIi5cIiYmKGFsbChyb29tYVstMV0laW4lYyhcIi5cIixcIkFcIikpKSl7Y29zdDwtY29zdCsyXG4gICAgICAgICAgIGhhbGxbM108LVwiLlwiXG4gICAgICAgICAgIHJvb21hWzFdPC1cIkFcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiQlwiPXtcbiAgICAgICAgICAgaWYocm9vbWJbMV09PVwiLlwiJiYoYWxsKHJvb21iWy0xXSVpbiVjKFwiLlwiLFwiQlwiKSkpKXtjb3N0PC1jb3N0KzIwXG4gICAgICAgICAgIGhhbGxbM108LVwiLlwiXG4gICAgICAgICAgIHJvb21iWzFdPC1cIkJcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiQ1wiPXtcbiAgICAgICAgICAgaWYocm9vbWNbMV09PVwiLlwiJiYoYWxsKHJvb21jWy0xXSVpbiVjKFwiLlwiLFwiQ1wiKSkpICYmIGhhbGxbNF09PVwiLlwiKXtjb3N0PC1jb3N0KzQwMFxuICAgICAgICAgICBoYWxsWzNdPC1cIi5cIlxuICAgICAgICAgICByb29tY1sxXTwtXCJDXCJ9ZWxzZXtjb3N0PC0wfX0sXG4gICAgICAgICBcIkRcIj17XG4gICAgICAgICAgIGlmKHJvb21kWzFdPT1cIi5cIiYmKGFsbChyb29tZFstMV0laW4lYyhcIi5cIixcIkRcIikpKSAmJmhhbGxbNF09PVwiLlwiJiZoYWxsWzVdPT1cIi5cIil7Y29zdDwtY29zdCs2MDAwXG4gICAgICAgICAgIGhhbGxbM108LVwiLlwiXG4gICAgICAgICAgIHJvb21kWzFdPC1cIkRcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIGNhdChcInNvbWV0aGluZyB3ZW50IHdyb25nIGhhbGwzXFxuXCIpKVxuICByZXR1cm4obGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLGNvc3QpKX1cbiMjIyNcbmhhbGw0PC1mdW5jdGlvbihkaWFnKXtcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgY29zdDwtZGlhZ1tbNl1dXG4gIHN3aXRjaChoYWxsWzRdLFxuICAgICAgICAgXCJBXCI9e1xuICAgICAgICAgICBpZihyb29tYVsxXT09XCIuXCImJihhbGwocm9vbWFbLTFdJWluJWMoXCIuXCIsXCJBXCIpKSkmJmhhbGxbM109PVwiLlwiKXtjb3N0PC1jb3N0KzRcbiAgICAgICAgICAgaGFsbFs0XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWFbMV08LVwiQVwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJCXCI9e1xuICAgICAgICAgICBpZihyb29tYlsxXT09XCIuXCImJihhbGwocm9vbWJbLTFdJWluJWMoXCIuXCIsXCJCXCIpKSkpe2Nvc3Q8LWNvc3QrMjBcbiAgICAgICAgICAgaGFsbFs0XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWJbMV08LVwiQlwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJDXCI9e1xuICAgICAgICAgICBpZihyb29tY1sxXT09XCIuXCImJihhbGwocm9vbWNbLTFdJWluJWMoXCIuXCIsXCJDXCIpKSkpe2Nvc3Q8LWNvc3QrMjAwXG4gICAgICAgICAgIGhhbGxbNF08LVwiLlwiXG4gICAgICAgICAgIHJvb21jWzFdPC1cIkNcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiRFwiPXtcbiAgICAgICAgICAgaWYocm9vbWRbMV09PVwiLlwiJiYoYWxsKHJvb21kWy0xXSVpbiVjKFwiLlwiLFwiRFwiKSkpJiZoYWxsWzVdPT1cIi5cIil7Y29zdDwtY29zdCs0MDAwXG4gICAgICAgICAgIGhhbGxbNF08LVwiLlwiXG4gICAgICAgICAgIHJvb21kWzFdPC1cIkRcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIGNhdChcInNvbWV0aGluZyB3ZW50IHdyb25nIGhhbGw0XFxuXCIpKVxuICByZXR1cm4obGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLGNvc3QpKX1cbiMjIyNcbmhhbGw1PC1mdW5jdGlvbihkaWFnKXtcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgY29zdDwtZGlhZ1tbNl1dXG4gIHN3aXRjaChoYWxsWzVdLFxuICAgICAgICAgXCJBXCI9e1xuICAgICAgICAgICBpZihyb29tYVsxXT09XCIuXCImJihhbGwocm9vbWFbLTFdJWluJWMoXCIuXCIsXCJBXCIpKSkmJmhhbGxbM109PVwiLlwiJiZoYWxsWzRdPT1cIi5cIil7Y29zdDwtY29zdCs2XG4gICAgICAgICAgIGhhbGxbNV08LVwiLlwiXG4gICAgICAgICAgIHJvb21hWzFdPC1cIkFcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiQlwiPXtcbiAgICAgICAgICAgaWYocm9vbWJbMV09PVwiLlwiJiYoYWxsKHJvb21iWy0xXSVpbiVjKFwiLlwiLFwiQlwiKSkpJiZoYWxsWzRdPT1cIi5cIil7Y29zdDwtY29zdCs0MFxuICAgICAgICAgICBoYWxsWzVdPC1cIi5cIlxuICAgICAgICAgICByb29tYlsxXTwtXCJCXCJ9ZWxzZXtjb3N0PC0wfX0sXG4gICAgICAgICBcIkNcIj17XG4gICAgICAgICAgIGlmKHJvb21jWzFdPT1cIi5cIiYmKGFsbChyb29tY1stMV0laW4lYyhcIi5cIixcIkNcIikpKSl7Y29zdDwtY29zdCsyMDBcbiAgICAgICAgICAgaGFsbFs1XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWNbMV08LVwiQ1wifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJEXCI9e1xuICAgICAgICAgICBpZihyb29tZFsxXT09XCIuXCImJihhbGwocm9vbWRbLTFdJWluJWMoXCIuXCIsXCJEXCIpKSkpe2Nvc3Q8LWNvc3QrMjAwMFxuICAgICAgICAgICBoYWxsWzVdPC1cIi5cIlxuICAgICAgICAgICByb29tZFsxXTwtXCJEXCJ9ZWxzZXtjb3N0PC0wfX0sXG4gICAgICAgICBjYXQoXCJzb21ldGhpbmcgd2VudCB3cm9uZyBoYWxsNVxcblwiKSlcbiAgcmV0dXJuKGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxjb3N0KSl9XG4jIyMjXG5oYWxsNjwtZnVuY3Rpb24oZGlhZyl7XG4gIGhhbGw8LWRpYWdbWzFdXVxuICByb29tYTwtZGlhZ1tbMl1dXG4gIHJvb21iPC1kaWFnW1szXV1cbiAgcm9vbWM8LWRpYWdbWzRdXVxuICByb29tZDwtZGlhZ1tbNV1dXG4gIGNvc3Q8LWRpYWdbWzZdXVxuICBzd2l0Y2goaGFsbFs2XSxcbiAgICAgICAgIFwiQVwiPXtcbiAgICAgICAgICAgaWYocm9vbWFbMV09PVwiLlwiJiYoYWxsKHJvb21hWy0xXSVpbiVjKFwiLlwiLFwiQVwiKSkpJiZoYWxsWzNdPT1cIi5cIiYmaGFsbFs0XT09XCIuXCImJmhhbGxbNV09PVwiLlwiKXtjb3N0PC1jb3N0KzhcbiAgICAgICAgICAgaGFsbFs2XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWFbMV08LVwiQVwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJCXCI9e1xuICAgICAgICAgICBpZihyb29tYlsxXT09XCIuXCImJihhbGwocm9vbWJbLTFdJWluJWMoXCIuXCIsXCJCXCIpKSkmJmhhbGxbNF09PVwiLlwiJiZoYWxsWzVdPT1cIi5cIil7Y29zdDwtY29zdCs2MFxuICAgICAgICAgICBoYWxsWzZdPC1cIi5cIlxuICAgICAgICAgICByb29tYlsxXTwtXCJCXCJ9ZWxzZXtjb3N0PC0wfX0sXG4gICAgICAgICBcIkNcIj17XG4gICAgICAgICAgIGlmKHJvb21jWzFdPT1cIi5cIiYmKGFsbChyb29tY1stMV0laW4lYyhcIi5cIixcIkNcIikpKSYmaGFsbFs1XT09XCIuXCIpe2Nvc3Q8LWNvc3QrNDAwXG4gICAgICAgICAgIGhhbGxbNl08LVwiLlwiXG4gICAgICAgICAgIHJvb21jWzFdPC1cIkNcIn1lbHNle2Nvc3Q8LTB9fSxcbiAgICAgICAgIFwiRFwiPXtcbiAgICAgICAgICAgaWYocm9vbWRbMV09PVwiLlwiJiYoYWxsKHJvb21kWy0xXSVpbiVjKFwiLlwiLFwiRFwiKSkpKXtjb3N0PC1jb3N0KzIwMDBcbiAgICAgICAgICAgaGFsbFs2XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWRbMV08LVwiRFwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgY2F0KFwic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDZcXG5cIikpXG4gIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfVxuIyMjI1xuaGFsbDc8LWZ1bmN0aW9uKGRpYWcpe1xuICMgY2F0KHBhc3RlKHVubGlzdChkaWFnKSksXCJcXG5cIilcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgY29zdDwtZGlhZ1tbNl1dXG4gIHN3aXRjaChoYWxsWzddLFxuICAgICAgICAgXCJBXCI9e1xuICAgICAgICAgICBpZihyb29tYVsxXT09XCIuXCImJihhbGwocm9vbWFbLTFdJWluJWMoXCIuXCIsXCJBXCIpKSkmJmhhbGxbM109PVwiLlwiJiZoYWxsWzRdPT1cIi5cIiYmaGFsbFs1XT09XCIuXCImJmhhbGxbNl09PVwiLlwiKXtjb3N0PC1jb3N0KzlcbiAgICAgICAgICAgaGFsbFs3XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWFbMV08LVwiQVwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJCXCI9e1xuICAgICAgICAgICBpZihyb29tYlsxXT09XCIuXCImJihhbGwocm9vbWJbLTFdJWluJWMoXCIuXCIsXCJCXCIpKSkmJmhhbGxbNF09PVwiLlwiJiZoYWxsWzVdPT1cIi5cIiYmaGFsbFs2XT09XCIuXCIpe2Nvc3Q8LWNvc3QrNzBcbiAgICAgICAgICAgaGFsbFs3XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWJbMV08LVwiQlwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJDXCI9e1xuICAgICAgICAgICBpZihyb29tY1sxXT09XCIuXCImJihhbGwocm9vbWNbLTFdJWluJWMoXCIuXCIsXCJDXCIpKSkmJmhhbGxbNV09PVwiLlwiJiZoYWxsWzZdPT1cIi5cIil7Y29zdDwtY29zdCs1MDBcbiAgICAgICAgICAgaGFsbFs3XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWNbMV08LVwiQ1wifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgXCJEXCI9e1xuICAgICAgICAgICBpZihyb29tZFsxXT09XCIuXCImJihhbGwocm9vbWRbLTFdJWluJWMoXCIuXCIsXCJEXCIpKSkmJmhhbGxbNl09PVwiLlwiKXtjb3N0PC1jb3N0KzMwMDBcbiAgICAgICAgICAgaGFsbFs3XTwtXCIuXCJcbiAgICAgICAgICAgcm9vbWRbMV08LVwiRFwifWVsc2V7Y29zdDwtMH19LFxuICAgICAgICAgY2F0KFwic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDdcXG5cIikpXG4gIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfVxuYGBgIn0= -->
+<pre class="r"><code>hall1&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  ### move if position 1 in that room is 0.  
+  switch(hall[1],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))&amp;&amp;hall[2]==&quot;.&quot;){cost&lt;-cost+3
+           hall[1]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))&amp;&amp;hall[2]==&quot;.&quot;&amp;&amp;hall[3]==&quot;.&quot;){cost&lt;-cost+50
+           hall[1]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))&amp;&amp;hall[2]==&quot;.&quot;&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;){
+             cost&lt;-cost+700
+           hall[1]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))&amp;&amp;hall[2]==&quot;.&quot;&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+9000
+           hall[1]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall1\n&quot;))
+  ### return the updated diagram with the new cost
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall2&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[2],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))){cost&lt;-cost+2
+           hall[2]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))&amp;&amp;hall[3]==&quot;.&quot;){cost&lt;-cost+40
+           hall[2]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;){cost&lt;-cost+600
+           hall[2]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+8000
+           hall[2]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall2\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall3&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[3],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))){cost&lt;-cost+2
+           hall[3]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))){cost&lt;-cost+20
+           hall[3]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;))) &amp;&amp; hall[4]==&quot;.&quot;){cost&lt;-cost+400
+           hall[3]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;))) &amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+6000
+           hall[3]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall3\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall4&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[4],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))&amp;&amp;hall[3]==&quot;.&quot;){cost&lt;-cost+4
+           hall[4]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))){cost&lt;-cost+20
+           hall[4]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))){cost&lt;-cost+200
+           hall[4]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+4000
+           hall[4]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall4\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall5&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[5],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;){cost&lt;-cost+6
+           hall[5]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))&amp;&amp;hall[4]==&quot;.&quot;){cost&lt;-cost+40
+           hall[5]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))){cost&lt;-cost+200
+           hall[5]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))){cost&lt;-cost+2000
+           hall[5]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall5\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall6&lt;-function(diag){
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[6],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+8
+           hall[6]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+60
+           hall[6]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))&amp;&amp;hall[5]==&quot;.&quot;){cost&lt;-cost+400
+           hall[6]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))){cost&lt;-cost+2000
+           hall[6]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall6\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}
+####
+hall7&lt;-function(diag){
+ # cat(paste(unlist(diag)),&quot;\n&quot;)
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  cost&lt;-diag[[6]]
+  switch(hall[7],
+         &quot;A&quot;={
+           if(rooma[1]==&quot;.&quot;&amp;&amp;(all(rooma[-1]%in%c(&quot;.&quot;,&quot;A&quot;)))&amp;&amp;hall[3]==&quot;.&quot;&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;&amp;&amp;hall[6]==&quot;.&quot;){cost&lt;-cost+9
+           hall[7]&lt;-&quot;.&quot;
+           rooma[1]&lt;-&quot;A&quot;}else{cost&lt;-0}},
+         &quot;B&quot;={
+           if(roomb[1]==&quot;.&quot;&amp;&amp;(all(roomb[-1]%in%c(&quot;.&quot;,&quot;B&quot;)))&amp;&amp;hall[4]==&quot;.&quot;&amp;&amp;hall[5]==&quot;.&quot;&amp;&amp;hall[6]==&quot;.&quot;){cost&lt;-cost+70
+           hall[7]&lt;-&quot;.&quot;
+           roomb[1]&lt;-&quot;B&quot;}else{cost&lt;-0}},
+         &quot;C&quot;={
+           if(roomc[1]==&quot;.&quot;&amp;&amp;(all(roomc[-1]%in%c(&quot;.&quot;,&quot;C&quot;)))&amp;&amp;hall[5]==&quot;.&quot;&amp;&amp;hall[6]==&quot;.&quot;){cost&lt;-cost+500
+           hall[7]&lt;-&quot;.&quot;
+           roomc[1]&lt;-&quot;C&quot;}else{cost&lt;-0}},
+         &quot;D&quot;={
+           if(roomd[1]==&quot;.&quot;&amp;&amp;(all(roomd[-1]%in%c(&quot;.&quot;,&quot;D&quot;)))&amp;&amp;hall[6]==&quot;.&quot;){cost&lt;-cost+3000
+           hall[7]&lt;-&quot;.&quot;
+           roomd[1]&lt;-&quot;D&quot;}else{cost&lt;-0}},
+         cat(&quot;something went wrong hall7\n&quot;))
+  return(list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),cost))}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="part-1" class="section level2">
-<h2>Part 1</h2>
-<p>Is a math problem (probably?). And I’m going to brute force it
-anyway. Because the target is below 0, the lowest y can be is
-min(target) and the highest it can be is negative min(target), because
-it will go up, it will come down at the same speed it had going up, and
-overshoot the target.</p>
+<p>The room function does flips the room to move correct amphipods
+deeper or incorrect amphipods to space 1. It also puts amphipods in
+space 1 into all of the hallway positions</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSlcblxuZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXtcbiAgdDwtMVxuICBkZWx0YXk8LWlcbiAgeTwtMFxuICBoPC0wXG4gIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7XG4gICAgeTwteStkZWx0YXlcbiAgICBpZihkZWx0YXk9PTApe2g8LXl9XG4gICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpe1xuICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9XG4gICAgZGVsdGF5PC1kZWx0YXktMVxuICAgIHQ8LXQrMX19XG5jb2xuYW1lcyh1cGRvd24pPC1jKFwic3RhcnR5XCIsXCJ0eVwiLFwieVwiLFwiaFwiKVxudXBkb3duXG5gYGAifQ== -->
-<pre class="r"><code>updown&lt;-as.data.frame(matrix(ncol=4,nrow=0))
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIG9ubHkgZ28gdG8gdGhlIHJvb21zIGlmOlxuIyBuZWVkIHRvIG1vdmUgc29tZXRoaW5nIGRlZXBlciBpbiBlLmcuLCByb29tYSA9PSBjKFwiQVwiLFwiLlwiKSBtb3ZlIHRvIGMoXCIuXCIsXCJBXCIpXG4jIG5lZWQgdG8gbW92ZSBjbG9zZXIgb3V0LCBlLmcuLCByb29tYT09YyhcIi5cIixcIkRcIikgbW92ZSB0byBjKFwiRFwiLFwiLlwiKVxuIyBuZWVkIHRvIG1vdmUgc29tZXRoaW5nIGludG8gdGhlIGhhbGwgZS5nLiBjKFwiRFwiLGRvZXNuJ3QgbWF0dGVyKSBtb3ZlIHRvIGMoXCIuXCIsc3RpbGwgZG9lc24ndCBtYXR0ZXIpLCBoYWxsID0gc29tZXRoaW5nIG5ld1xucm9vbWE8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1saXN0KClcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIGlmKGFsbChyb29tYT09YyhcIkFcIixcIi5cIikpKXtcbiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxyZXYocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrMSkpXG4gIH1lbHNlIGlmKHJvb21hWzFdPT1cIi5cIiYmcm9vbWFbMl0hPVwiQVwiKXtcbiAgICBzd2l0Y2gocm9vbWFbMl0sXG4gICAgICAgICAgIFwiQlwiPWNvc3Q8LTEwLFxuICAgICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICAgIGNhdChcInNvbWV0aGluZ3Mgd3JvbmcgaW4gcm9vbWFcXG5cIikpXG4gICAgb3V0bGlzdDwtbGlzdChsaXN0KGMoaGFsbCkscmV2KHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QpKVxuICB9ZWxzZXtcbiAgICAjIyMgbW92ZSB0byBoYWxsd2F5XG4gICAgIyMjIHRvIHRoZSBsZWZ0XG4gICAgaWYocm9vbWFbMV0laW4lYyhcIkFcIixcIkJcIixcIkNcIixcIkRcIikpe1xuICAgICAgc3dpdGNoKHJvb21hWzFdLFxuICAgICAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tYVxcblwiKSlcbiAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgeDwtbGlzdChjKGhhbGxbMV0scm9vbWFbMV0saGFsbFszOjddKSxjKFwiLlwiLHJvb21hWzJdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMylcbiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgIGlmKGhhbGxbMV09PVwiLlwiKXtcbiAgICAgICAgICB4PC1saXN0KGMocm9vbWFbMV0saGFsbFsyOjddKSxjKFwiLlwiLHJvb21hWzJdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fVxuICAgICAgaWYoaGFsbFszXT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21hWzFdLGhhbGxbNDo3XSksYyhcIi5cIixyb29tYVsyXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjIpXG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICBpZihoYWxsWzRdPT1cIi5cIil7XG4gICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTozXSxyb29tYVsxXSxoYWxsWzU6N10pLGMoXCIuXCIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbNV09PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NF0scm9vbWFbMV0saGFsbFs2OjddKSxjKFwiLlwiLHJvb21hWzJdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNilcbiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21hWzFdLGhhbGxbN10pLGMoXCIuXCIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo4KVxuICAgICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWFbMV0pLGMoXCIuXCIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo5KVxuICAgICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19fX1cbiAgb3V0bGlzdH1cblxuIyMjXG5cbnJvb21iPC1mdW5jdGlvbihkaWFnKXtcbiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWRcbiAgb3V0bGlzdDwtbGlzdCgpXG4gIGhhbGw8LWRpYWdbWzFdXVxuICByb29tYTwtZGlhZ1tbMl1dXG4gIHJvb21iPC1kaWFnW1szXV1cbiAgcm9vbWM8LWRpYWdbWzRdXVxuICByb29tZDwtZGlhZ1tbNV1dXG4gIG9sZGNvc3Q8LWRpYWdbWzZdXVxuICBpZihhbGwocm9vbWI9PWMoXCJCXCIsXCIuXCIpKSl7XG4gICAgb3V0bGlzdDwtbGlzdChsaXN0KGMoaGFsbCksYyhyb29tYSkscmV2KHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KzEwKSlcbiAgfWVsc2UgaWYocm9vbWJbMV09PVwiLlwiJiZyb29tYlsyXSE9XCJCXCIpe1xuICAgIHN3aXRjaChyb29tYlsyXSxcbiAgICAgICAgICAgXCJBXCI9Y29zdDwtMSxcbiAgICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgICBcIkRcIj1jb3N0PC0xMDAwLFxuICAgICAgICAgICBjYXQoXCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21iXFxuXCIpKVxuICAgIG91dGxpc3Q8LWxpc3QobGlzdChjKGhhbGwpLGMocm9vbWEpLHJldihyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KSlcbiAgfWVsc2V7XG4gICAgIyMjIG1vdmUgdG8gaGFsbHdheVxuICAgICMjIyB0byB0aGUgbGVmdFxuICAgIGlmKHJvb21iWzFdJWluJWMoXCJBXCIsXCJCXCIsXCJDXCIsXCJEXCIpKXtcbiAgICAgIHN3aXRjaChyb29tYlsxXSxcbiAgICAgICAgICAgICBcIkFcIj1jb3N0PC0xLFxuICAgICAgICAgICAgIFwiQlwiPWNvc3Q8LTEwLFxuICAgICAgICAgICAgIFwiQ1wiPWNvc3Q8LTEwMCxcbiAgICAgICAgICAgICBcIkRcIj1jb3N0PC0xMDAwLFxuICAgICAgICAgICAgIGNhdChcInNvbWV0aGluZ3Mgd3JvbmcgaW4gcm9vbWJcXG5cIikpXG4gICAgICBpZihoYWxsWzNdPT1cIi5cIil7XG4gICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Ml0scm9vbWJbMV0saGFsbFs0OjddKSxjKHJvb21hKSxjKFwiLlwiLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tYlsxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbMV09PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhyb29tYlsxXSxoYWxsWzI6N10pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo1KVxuICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19XG4gICAgICBpZihoYWxsWzRdPT1cIi5cIil7XG4gICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6M10scm9vbWJbMV0saGFsbFs1OjddKSxjKHJvb21hKSxjKFwiLlwiLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgIGlmKGhhbGxbNV09PVwiLlwiKXtcbiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21iWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhcIi5cIixyb29tYlsyXSksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjQpXG4gICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo1XSxyb29tYlsxXSxoYWxsWzddKSxjKHJvb21hKSxjKFwiLlwiLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNilcbiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjZdLHJvb21iWzFdKSxjKHJvb21hKSxjKFwiLlwiLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNylcbiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19fX19XG4gIG91dGxpc3R9XG5cblxuIyMjIyMjI1xuXG5yb29tYzwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWxpc3QoKVxuICBoYWxsPC1kaWFnW1sxXV1cbiAgcm9vbWE8LWRpYWdbWzJdXVxuICByb29tYjwtZGlhZ1tbM11dXG4gIHJvb21jPC1kaWFnW1s0XV1cbiAgcm9vbWQ8LWRpYWdbWzVdXVxuICBvbGRjb3N0PC1kaWFnW1s2XV1cbiAgaWYoYWxsKHJvb21jPT1jKFwiQ1wiLFwiLlwiKSkpe1xuICAgIG91dGxpc3Q8LWxpc3QobGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLHJldihyb29tYyksYyhyb29tZCksb2xkY29zdCsxMDApKVxuICB9ZWxzZSBpZihyb29tY1sxXT09XCIuXCImJnJvb21jWzJdIT1cIkNcIil7XG4gICAgc3dpdGNoKHJvb21jWzJdLFxuICAgICAgICAgICBcIkFcIj1jb3N0PC0xLFxuICAgICAgICAgICBcIkJcIj1jb3N0PC0xMCxcbiAgICAgICAgICAgXCJEXCI9Y29zdDwtMTAwMCxcbiAgICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tY1xcblwiKSlcbiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxyZXYocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCkpXG4gIH1lbHNle1xuICAgICMjIyBtb3ZlIHRvIGhhbGx3YXlcbiAgICAjIyMgdG8gdGhlIGxlZnRcbiAgICBpZihyb29tY1sxXSVpbiVjKFwiQVwiLFwiQlwiLFwiQ1wiLFwiRFwiKSl7XG4gICAgICBzd2l0Y2gocm9vbWNbMV0sXG4gICAgICAgICAgICAgXCJBXCI9Y29zdDwtMSxcbiAgICAgICAgICAgICBcIkJcIj1jb3N0PC0xMCxcbiAgICAgICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICAgICAgXCJEXCI9Y29zdDwtMTAwMCxcbiAgICAgICAgICAgICBjYXQoXCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21jXFxuXCIpKVxuICAgICAgaWYoaGFsbFs0XT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21jWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1syXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjIpXG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICBpZihoYWxsWzNdPT1cIi5cIil7XG4gICAgICAgICAgeDwtbGlzdChjKGhhbGxbMToyXSxyb29tY1sxXSxoYWxsWzQ6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoXCIuXCIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzFdLHJvb21jWzFdLGhhbGxbMzo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1syXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjYpXG4gICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgICAgIGlmKGhhbGxbMV09PVwiLlwiKXtcbiAgICAgICAgICAgICAgeDwtbGlzdChjKHJvb21jWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1syXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjcpXG4gICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX1cbiAgICAgIGlmKGhhbGxbNV09PVwiLlwiKXtcbiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tY1sxXSxoYWxsWzY6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoXCIuXCIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWNbMV0saGFsbFs3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1syXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjQpXG4gICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tY1sxXSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1syXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjUpXG4gICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19fVxuICBvdXRsaXN0fVxuXG4jIyMjIyMjIyMjIyMjIyMjIyNcblxucm9vbWQ8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1saXN0KClcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIGlmKGFsbChyb29tZD09YyhcIkRcIixcIi5cIikpKXtcbiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxyZXYocm9vbWQpLG9sZGNvc3QrMTAwMCkpXG4gIH1lbHNlIGlmKHJvb21kWzFdPT1cIi5cIiYmcm9vbWRbMl0hPVwiQ1wiKXtcbiAgICBzd2l0Y2gocm9vbWRbMl0sXG4gICAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICAgIFwiQlwiPWNvc3Q8LTEwLFxuICAgICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICAgIGNhdChcInNvbWV0aGluZ3Mgd3JvbmcgaW4gcm9vbWQgcDFcXG5cIikpXG4gICAgb3V0bGlzdDwtbGlzdChsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYykscmV2KHJvb21kKSxvbGRjb3N0K2Nvc3QpKVxuICB9ZWxzZXtcbiAgICAjIyMgbW92ZSB0byBoYWxsd2F5XG4gICAgIyMjIHRvIHRoZSBsZWZ0XG4gICAgaWYocm9vbWRbMV0laW4lYyhcIkFcIixcIkJcIixcIkNcIixcIkRcIikpe1xuICAgICAgc3dpdGNoKHJvb21kWzFdLFxuICAgICAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBwMlxcblwiKSlcbiAgICAgIGlmKGhhbGxbNV09PVwiLlwiKXtcbiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tZFsxXSxoYWxsWzY6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoXCIuXCIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCoyKVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs0XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6M10scm9vbWRbMV0saGFsbFs1OjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKFwiLlwiLHJvb21kWzJdKSxvbGRjb3N0K2Nvc3QqNClcbiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgICBpZihoYWxsWzNdPT1cIi5cIil7XG4gICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21kWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhcIi5cIixyb29tZFsyXSksb2xkY29zdCtjb3N0KjYpXG4gICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMV0scm9vbWRbMV0saGFsbFszOjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKFwiLlwiLHJvb21kWzJdKSxvbGRjb3N0K2Nvc3QqOClcbiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgICAgICAgIGlmKGhhbGxbMV09PVwiLlwiKXtcbiAgICAgICAgICAgICAgICB4PC1saXN0KGMocm9vbWRbMV0saGFsbFsyOjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKFwiLlwiLHJvb21kWzJdKSxvbGRjb3N0K2Nvc3QqOSlcbiAgICAgICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19fVxuICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21kWzFdLGhhbGxbN10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoXCIuXCIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCoyKVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWRbMV0pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoXCIuXCIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCozKVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX1cbiAgb3V0bGlzdH1cblxuYGBgIn0= -->
+<pre class="r"><code>### only go to the rooms if:
+# need to move something deeper in e.g., rooma == c(&quot;A&quot;,&quot;.&quot;) move to c(&quot;.&quot;,&quot;A&quot;)
+# need to move closer out, e.g., rooma==c(&quot;.&quot;,&quot;D&quot;) move to c(&quot;D&quot;,&quot;.&quot;)
+# need to move something into the hall e.g. c(&quot;D&quot;,doesn&#39;t matter) move to c(&quot;.&quot;,still doesn&#39;t matter), hall = something new
+rooma&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  if(all(rooma==c(&quot;A&quot;,&quot;.&quot;))){
+    outlist&lt;-list(list(c(hall),rev(rooma),c(roomb),c(roomc),c(roomd),oldcost+1))
+  }else if(rooma[1]==&quot;.&quot;&amp;&amp;rooma[2]!=&quot;A&quot;){
+    switch(rooma[2],
+           &quot;B&quot;=cost&lt;-10,
+           &quot;C&quot;=cost&lt;-100,
+           &quot;D&quot;=cost&lt;-1000,
+           cat(&quot;somethings wrong in rooma\n&quot;))
+    outlist&lt;-list(list(c(hall),rev(rooma),c(roomb),c(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(rooma[1]%in%c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;)){
+      switch(rooma[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in rooma\n&quot;))
+      if(hall[2]==&quot;.&quot;){
+        x&lt;-list(c(hall[1],rooma[1],hall[3:7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*3)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[1]==&quot;.&quot;){
+          x&lt;-list(c(rooma[1],hall[2:7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+          outlist&lt;-c(outlist,list(x))}}
+      if(hall[3]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:2],rooma[1],hall[4:7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[4]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:3],rooma[1],hall[5:7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[5]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:4],rooma[1],hall[6:7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[6]==&quot;.&quot;){
+              x&lt;-list(c(hall[1:5],rooma[1],hall[7]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*8)
+              outlist&lt;-c(outlist,list(x))
+              if(hall[7]==&quot;.&quot;){
+                x&lt;-list(c(hall[1:6],rooma[1]),c(&quot;.&quot;,rooma[2]),c(roomb),c(roomc),c(roomd),oldcost+cost*9)
+                outlist&lt;-c(outlist,list(x))}}}}}}}
+  outlist}
 
-for(i in min(targety):(-min(targety)+1)){
-  t&lt;-1
-  deltay&lt;-i
-  y&lt;-0
-  h&lt;-0
-  while(y&gt;=min(targety)){
-    y&lt;-y+deltay
-    if(deltay==0){h&lt;-y}
-    if(y&gt;=min(targety)&amp;&amp;y&lt;=max(targety)){
-      updown&lt;-rbind(updown,c(i,t,y,h))}
-    deltay&lt;-deltay-1
-    t&lt;-t+1}}
-colnames(updown)&lt;-c(&quot;starty&quot;,&quot;ty&quot;,&quot;y&quot;,&quot;h&quot;)
-updown</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MjQsIm5jb2wiOjQsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzI0IMOXIDRdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnIyVHpVckRRQkRIdDBsYTIwQnJ3UjV5OEZCQ0R4NXNrS3JnUVhBUjZRT0lRcTlyRzl0aTNKUmsvYnI1WnZhUitnVFZUZnJmWUVhS2VIRmgrYzNPN0h6dHNOZFhvMk4zNURMR2JPYllGck9yV21UVjI1dGgvNHd4eDlLSENuTllJK09ydnJTbkJVZnZsdDdlc3NmeXRmVEJMcmdQZW1BSGJJTjFrSlg1c1NxVHJvdFZtUng2am5nYzhUbnljZVRucUllalB1NFhJZk0rYU56ZldPU2xyQk8yQ1R1RXREN1V4Zkd1L0FBOEJJL0FBWGhTN3VQUDgvQ0puZXJOL2Q2Vzg3WTRQckY3eE40bDkzcmxQdGcvcngvek5mTXo4ekh6Q01CVDhCeThCSWZ2aUZqNk9GVXBIc05VQyszTUFtVXRWU0pSYnpoWmhWUXBoQmtKMDBqaWw4Q0VhbVpPeU9iUmZPTklwQ2FmVWJvVG9VUnduMmgvZlZvVGw1MTRvZWF4MUU1VzlzTnJ4TG1TRU1YdWs4d3FtZlRIc3lmNTBCOFFzNzJRMHl4bnJ0cXNKbVR2bSt4c3FyQSs0VjR6YnhQSzZWeUdwcDFJM0lXUmlUd0pueUcyOUh2a3p4RXNrcmxVcGsrdFRRTVZLMkZjM0hFY0dVM2VPVnQvQVlLYzBWSDJCQUFBIn0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"-10","2":"1","3":"-10","4":"0"},{"1":"-9","2":"1","3":"-9","4":"0"},{"1":"-8","2":"1","3":"-8","4":"0"},{"1":"-7","2":"1","3":"-7","4":"0"},{"1":"-6","2":"1","3":"-6","4":"0"},{"1":"-5","2":"1","3":"-5","4":"0"},{"1":"-4","2":"2","3":"-9","4":"0"},{"1":"-3","2":"2","3":"-7","4":"0"},{"1":"-2","2":"2","3":"-5","4":"0"},{"1":"-2","2":"3","3":"-9","4":"0"},{"1":"-1","2":"3","3":"-6","4":"0"},{"1":"-1","2":"4","3":"-10","4":"0"},{"1":"0","2":"4","3":"-6","4":"0"},{"1":"0","2":"5","3":"-10","4":"0"},{"1":"1","2":"5","3":"-5","4":"1"},{"1":"1","2":"6","3":"-9","4":"1"},{"1":"2","2":"7","3":"-7","4":"3"},{"1":"3","2":"9","3":"-9","4":"6"},{"1":"4","2":"10","3":"-5","4":"10"},{"1":"5","2":"12","3":"-6","4":"15"},{"1":"6","2":"14","3":"-7","4":"21"},{"1":"7","2":"16","3":"-8","4":"28"},{"1":"8","2":"18","3":"-9","4":"36"},{"1":"9","2":"20","3":"-10","4":"45"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[24]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>As “h” is the highest point in those trajectories, max(h) is the
-highest point</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duW3doaWNoKHVwZG93biRoPT1tYXgodXBkb3duJGgpKSxdXG5gYGAifQ== -->
-<pre class="r"><code>updown[which(updown$h==max(updown$h)),]</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVF5MjdDTUJEY09FNHFJcFVpY2VtNTZqVzUwRU9QUFZSOFFFVWxyaVp4SVdwcVI0NXA0Y2FuOFdYUWRlSkY0RWhSWm1ZenM0K1A5K1VzVzJZQUVBT1BHY1FKUWtnK0YvUDhGWUF6SkJGd0dMbnZEbithSXVENGpwM3c5Z1QwRFB6bGxoK2ZnL3I4NE9sTmNLTEVqK3dRVFByd1FVdzdLNHpkZThZdUtMcUFUUkF6TXZxdm9Lajd2Z0R3R1BZcUc5RlJMeEt6U2xoUmZCbjBJanNGbGp2ZDJsb3JOREczZlJxWUl4TUlEMXZscHFqeWNyTlYzL2tzS01ldFdydWVmc0RvYXRocnpJY3AyTm5iVTdxTFZPdGFTVnFuRVN2WlVISWxmejBjNHkzNlV4U3RxWldsUFZIdENxdXRJRXRXNm9hVWZuTTQvUU96TnA2R0VnSUFBQT09In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"20","3":"-10","4":"45","_rn_":"24"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>But only if there’s something that will be in the X target range at
-time t.</p>
-<p>So, find viable starting xs. The max that startx can be is going to
-be the max(targetx) - otherwise, it will just overshoot the target on
-the first step. So, (because the target is close enough), it’s possible
-to try every number from 1 to the far edge of the target</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lkZXdheXM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9Myxucm93PTApKVxuXG5mb3IoaSBpbiAxOm1heCh0YXJnZXR4KSl7XG4gIHQ8LTFcbiAgZGVsdGF4PC1pXG4gIHg8LTBcbiAgd2hpbGUoeDxtYXgodGFyZ2V0eCkmJnQ8PW1heCh1cGRvd24kdHkpKXtcbiAgICB4PC14K2RlbHRheFxuICAgIGlmKHg+PW1pbih0YXJnZXR4KSYmeDw9bWF4KHRhcmdldHgpKXtcbiAgICAgIHNpZGV3YXlzPC1yYmluZChzaWRld2F5cyxjKGksdCx4KSl9XG4gICAgaWYoZGVsdGF4PjApe2RlbHRheDwtZGVsdGF4LTF9XG4gICAgdDwtdCsxfX1cbmNvbG5hbWVzKHNpZGV3YXlzKTwtYyhcInN0YXJ0eFwiLFwidHhcIixcInhcIilcbnNpZGV3YXlzXG5gYGAifQ== -->
-<pre class="r"><code>sideways&lt;-as.data.frame(matrix(ncol=3,nrow=0))
+###
 
-for(i in 1:max(targetx)){
-  t&lt;-1
-  deltax&lt;-i
-  x&lt;-0
-  while(x&lt;max(targetx)&amp;&amp;t&lt;=max(updown$ty)){
-    x&lt;-x+deltax
-    if(x&gt;=min(targetx)&amp;&amp;x&lt;=max(targetx)){
-      sideways&lt;-rbind(sideways,c(i,t,x))}
-    if(deltax&gt;0){deltax&lt;-deltax-1}
-    t&lt;-t+1}}
-colnames(sideways)&lt;-c(&quot;startx&quot;,&quot;tx&quot;,&quot;x&quot;)
-sideways</code></pre>
+roomb&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  if(all(roomb==c(&quot;B&quot;,&quot;.&quot;))){
+    outlist&lt;-list(list(c(hall),c(rooma),rev(roomb),c(roomc),c(roomd),oldcost+10))
+  }else if(roomb[1]==&quot;.&quot;&amp;&amp;roomb[2]!=&quot;B&quot;){
+    switch(roomb[2],
+           &quot;A&quot;=cost&lt;-1,
+           &quot;C&quot;=cost&lt;-100,
+           &quot;D&quot;=cost&lt;-1000,
+           cat(&quot;somethings wrong in roomb\n&quot;))
+    outlist&lt;-list(list(c(hall),c(rooma),rev(roomb),c(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomb[1]%in%c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;)){
+      switch(roomb[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in roomb\n&quot;))
+      if(hall[3]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:2],roomb[1],hall[4:7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[2]==&quot;.&quot;){
+          x&lt;-list(c(hall[1],roomb[1],hall[3:7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[1]==&quot;.&quot;){
+            x&lt;-list(c(roomb[1],hall[2:7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*5)
+            outlist&lt;-c(outlist,list(x))}}}
+      if(hall[4]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:3],roomb[1],hall[5:7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[5]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:4],roomb[1],hall[6:7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[6]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:5],roomb[1],hall[7]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[7]==&quot;.&quot;){
+              x&lt;-list(c(hall[1:6],roomb[1]),c(rooma),c(&quot;.&quot;,roomb[2]),c(roomc),c(roomd),oldcost+cost*7)
+              outlist&lt;-c(outlist,list(x))}}}}}}
+  outlist}
+
+
+#######
+
+roomc&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  if(all(roomc==c(&quot;C&quot;,&quot;.&quot;))){
+    outlist&lt;-list(list(c(hall),c(rooma),c(roomb),rev(roomc),c(roomd),oldcost+100))
+  }else if(roomc[1]==&quot;.&quot;&amp;&amp;roomc[2]!=&quot;C&quot;){
+    switch(roomc[2],
+           &quot;A&quot;=cost&lt;-1,
+           &quot;B&quot;=cost&lt;-10,
+           &quot;D&quot;=cost&lt;-1000,
+           cat(&quot;somethings wrong in roomc\n&quot;))
+    outlist&lt;-list(list(c(hall),c(rooma),c(roomb),rev(roomc),c(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomc[1]%in%c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;)){
+      switch(roomc[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in roomc\n&quot;))
+      if(hall[4]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:3],roomc[1],hall[5:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[3]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:2],roomc[1],hall[4:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[2]==&quot;.&quot;){
+            x&lt;-list(c(hall[1],roomc[1],hall[3:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[1]==&quot;.&quot;){
+              x&lt;-list(c(roomc[1],hall[2:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*7)
+              outlist&lt;-c(outlist,list(x))}}}}
+      if(hall[5]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:4],roomc[1],hall[6:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[6]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:5],roomc[1],hall[7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[7]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:6],roomc[1]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[2]),c(roomd),oldcost+cost*5)
+            outlist&lt;-c(outlist,list(x))}}}}}
+  outlist}
+
+##################
+
+roomd&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  if(all(roomd==c(&quot;D&quot;,&quot;.&quot;))){
+    outlist&lt;-list(list(c(hall),c(rooma),c(roomb),c(roomc),rev(roomd),oldcost+1000))
+  }else if(roomd[1]==&quot;.&quot;&amp;&amp;roomd[2]!=&quot;C&quot;){
+    switch(roomd[2],
+           &quot;A&quot;=cost&lt;-1,
+           &quot;B&quot;=cost&lt;-10,
+           &quot;C&quot;=cost&lt;-100,
+           cat(&quot;somethings wrong in roomd p1\n&quot;))
+    outlist&lt;-list(list(c(hall),c(rooma),c(roomb),c(roomc),rev(roomd),oldcost+cost))
+  }else{
+    ### move to hallway
+    ### to the left
+    if(roomd[1]%in%c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;)){
+      switch(roomd[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in roomd p2\n&quot;))
+      if(hall[5]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:4],roomd[1],hall[6:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[4]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:3],roomd[1],hall[5:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[3]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:2],roomd[1],hall[4:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[2]==&quot;.&quot;){
+              x&lt;-list(c(hall[1],roomd[1],hall[3:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*8)
+              outlist&lt;-c(outlist,list(x))
+              if(hall[1]==&quot;.&quot;){
+                x&lt;-list(c(roomd[1],hall[2:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*9)
+                outlist&lt;-c(outlist,list(x))}}}}}
+      if(hall[6]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:5],roomd[1],hall[7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[7]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:6],roomd[1]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[2]),oldcost+cost*3)
+          outlist&lt;-c(outlist,list(x))}}}}
+  outlist}
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NTYsIm5jb2wiOjMsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzU2IMOXIDNdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnMyVnpVN0NRQkNBaDVhaU5BRko5T0RCZ3pIR0dDT05DbW9WL3c3R0J6Q2FjRjJoSXJGdVNic29SeC9aSjBDMzJ4a2lrelNlQURkcHZwbnB6dTdNZG1aN2Y5dHV1RzBYQUd3bzJoYllqaGJCZVh5NHEvc0FSVXNyQlNoQ09lVklUMW8xTXdHcSt2RnYxc0dNaFhIam4zQXpoMXVNMjhnZHhsM2tIbklmNlNHYnlHUGtDZklVNlNQUGtPZklGdklDZVltOEFoclpkMXhET3o5WG5nZVAvNis0RDVDSHlDTmtnK1ZWUXk0Nmp1V2NlTGlkZE1qUmMzajlOUnNDZlVkZUovTW0xU1hWSWErL2VaSGlvVDdBZXAvMENla3ROcC9zMUZjOEQrcWZtZlhqMUlYclNQRVdKRnFvZ2JtZWpiR1VLQkdyRVdyV1JFcHY1eW52Y2h4OWVMUkNKWjM3bWUzQjczV25FNHFFdGlHajJ4VktlTSt4OXRmYW1Ma3NSUVBWajZSMnN0SWZRb2s1RjJKbVdCbktOSkp1dmZNeWxLLzFKbnR0RDJRdjNkT1lzbEZCMmY4bDIxa1UxamU2bCtoSUF0bnJ5NERTQ2NWVEVOTEszZUFkeGFvK0QzTWMzaUR1UzBWNWFtdmlxVWdKY25FN1VVZ1drem1NZndDZ2UwTHZKUWNBQUE9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["startx"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["tx"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"6","2":"5","3":"20"},{"1":"6","2":"6","3":"21"},{"1":"6","2":"7","3":"21"},{"1":"6","2":"8","3":"21"},{"1":"6","2":"9","3":"21"},{"1":"6","2":"10","3":"21"},{"1":"6","2":"11","3":"21"},{"1":"6","2":"12","3":"21"},{"1":"6","2":"13","3":"21"},{"1":"6","2":"14","3":"21"},{"1":"6","2":"15","3":"21"},{"1":"6","2":"16","3":"21"},{"1":"6","2":"17","3":"21"},{"1":"6","2":"18","3":"21"},{"1":"6","2":"19","3":"21"},{"1":"6","2":"20","3":"21"},{"1":"7","2":"4","3":"22"},{"1":"7","2":"5","3":"25"},{"1":"7","2":"6","3":"27"},{"1":"7","2":"7","3":"28"},{"1":"7","2":"8","3":"28"},{"1":"7","2":"9","3":"28"},{"1":"7","2":"10","3":"28"},{"1":"7","2":"11","3":"28"},{"1":"7","2":"12","3":"28"},{"1":"7","2":"13","3":"28"},{"1":"7","2":"14","3":"28"},{"1":"7","2":"15","3":"28"},{"1":"7","2":"16","3":"28"},{"1":"7","2":"17","3":"28"},{"1":"7","2":"18","3":"28"},{"1":"7","2":"19","3":"28"},{"1":"7","2":"20","3":"28"},{"1":"8","2":"3","3":"21"},{"1":"8","2":"4","3":"26"},{"1":"8","2":"5","3":"30"},{"1":"9","2":"3","3":"24"},{"1":"9","2":"4","3":"30"},{"1":"10","2":"3","3":"27"},{"1":"11","2":"2","3":"21"},{"1":"11","2":"3","3":"30"},{"1":"12","2":"2","3":"23"},{"1":"13","2":"2","3":"25"},{"1":"14","2":"2","3":"27"},{"1":"15","2":"2","3":"29"},{"1":"20","2":"1","3":"20"},{"1":"21","2":"1","3":"21"},{"1":"22","2":"1","3":"22"},{"1":"23","2":"1","3":"23"},{"1":"24","2":"1","3":"24"},{"1":"25","2":"1","3":"25"},{"1":"26","2":"1","3":"26"},{"1":"27","2":"1","3":"27"},{"1":"28","2":"1","3":"28"},{"1":"29","2":"1","3":"29"},{"1":"30","2":"1","3":"30"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[56]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Then join the two frames. Because x just stops going forward when it
-hits time, it’s a valid spot so long as ty&gt;=tx</p>
+<p>The full function makes one move at a time. Either a hallway move or
+one or more room moves.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxscGFzc2VzPC1jcm9zc19qb2luKHNpZGV3YXlzLHVwZG93bikgJT4lIFxuICBmaWx0ZXIodHk9PXR4KVxuYGBgIn0= -->
-<pre class="r"><code>allpasses&lt;-cross_join(sideways,updown) %&gt;% 
-  filter(ty==tx)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW1waGlwb2RzPC1mdW5jdGlvbihhLGIsYyxkKXtcbiAgcHE8LXByaW9yaXR5X3F1ZXVlKClcbiAgYmVlbnRoZXJlPC1kaWN0KClcbiAgc3RhcnQ8LWxpc3QocmVwKFwiLlwiLDcpLGMoYSksYyhiKSxjKGMpLGMoZCksMClcbiAgZmluYWxzdGF0ZTwtYyhyZXAoXCIuXCIsNyksYyhcIkFcIixcIkFcIiksYyhcIkJcIixcIkJcIiksYyhcIkNcIixcIkNcIiksYyhcIkRcIixcIkRcIikpXG4gIHBxJHB1c2goc3RhcnQsMClcbiAgY291bnRlcjwtMVxuICB3aGlsZShwcSRzaXplKCk+MCl7XG4gICAgbm93PC1wcSRwb3AoKVxuICAgICMjIyBpZiBkb25lLCBkb25lXG4gICAgaWYoYWxsKG5vd1tbMV1dPT1cIi5cIikmJmFsbChub3dbWzJdXT09XCJBXCIpKXtyZXR1cm4obm93KX1cbiAgICAjIyMgaWYgYmVlbiB0aGVyZSwgbmV4dFxuICAgIGlmKGJlZW50aGVyZSRoYXMobm93WzE6NV0pKXtcbiMgICAgICBjb3VudGVyPC1jb3VudGVyKzFcbiMgICAgICBpZihjb3VudGVyJSUxMDAwMD09MCl7Y2F0KGNvdW50ZXIsbm93W1s2XV0scHEkc2l6ZSgpLGJlZW50aGVyZSRzaXplKCksXCJcXG5cIil9XG4gICAgICBuZXh0fVxuICAgICMjIyBvdGhlcndpc2UsIGhlcmUgdG8gdGhlIGRpY3Rpb25hcnlcbiAgICBiZWVudGhlcmUkc2V0KG5vd1sxOjVdLG5vd1tbNl1dKVxuICAgICMjIyMgSGFsbHdheSBtb3Zlc1xuICAgIGlmKG5vd1tbMV1dWzFdIT1cIi5cIil7XG4gICAgICBoMTwtaGFsbDEobm93KVxuICAgICAgaWYoaDFbWzZdXT4wKXtwcSRwdXNoKGgxLC1oMVtbNl1dKX1cbiAgICB9XG4gICAgaWYobm93W1sxXV1bMl0hPVwiLlwiKXtcbiAgICAgIGgyPC1oYWxsMihub3cpXG4gICAgICBpZihoMltbNl1dPjApe3BxJHB1c2goaDIsLWgyW1s2XV0pfVxuICAgIH1cbiAgICBpZihub3dbWzFdXVszXSE9XCIuXCIpe1xuICAgICAgaDM8LWhhbGwzKG5vdylcbiAgICAgIGlmKGgzW1s2XV0+MCl7cHEkcHVzaChoMywtaDNbWzZdXSl9XG4gICAgfVxuICAgIGlmKG5vd1tbMV1dWzRdIT1cIi5cIil7XG4gICAgICBoNDwtaGFsbDQobm93KVxuICAgICAgaWYoaDRbWzZdXT4wKXtwcSRwdXNoKGg0LC1oNFtbNl1dKX1cbiAgICB9XG4gICAgaWYobm93W1sxXV1bNV0hPVwiLlwiKXtcbiAgICAgIGg1PC1oYWxsNShub3cpXG4gICAgICBpZihoNVtbNl1dPjApe3BxJHB1c2goaDUsLWg1W1s2XV0pfVxuICAgIH1cbiAgICBpZihub3dbWzFdXVs2XSE9XCIuXCIpe1xuICAgICAgaDY8LWhhbGw2KG5vdylcbiAgICAgIGlmKGg2W1s2XV0+MCl7cHEkcHVzaChoNiwtaDZbWzZdXSl9XG4gICAgfVxuICAgIGlmKG5vd1tbMV1dWzddIT1cIi5cIil7XG4gICAgICBoNzwtaGFsbDcobm93KVxuICAgICAgaWYoaDdbWzZdXT4wKXtwcSRwdXNoKGg3LC1oN1tbNl1dKX1cbiAgICB9XG4gICAgIyMjIHJvb20gbW92ZXNcbiAgICBpZihhbnkobm93W1syXV0hPVwiLlwiKSYmICFhbGwobm93W1syXV09PWMoXCIuXCIsXCJBXCIpKSl7XG4gICAgICByYTwtcm9vbWEobm93KVxuICAgICAgaWYobGVuZ3RoKHJhKT4wKXtcbiAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmEpKXtcbiAgICAgICAgICB4PC1yYVtbaV1dXG4gICAgICAgICAgcHEkcHVzaCh4LC14W1s2XV0pfX19XG4gICAgaWYoYW55KG5vd1tbM11dIT1cIi5cIikmJiAhYWxsKG5vd1tbM11dPT1jKFwiLlwiLFwiQlwiKSkpe1xuICAgICAgcmI8LXJvb21iKG5vdylcbiAgICAgIGlmKGxlbmd0aChyYik+MCl7XG4gICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJiKSl7XG4gICAgICAgICAgeDwtcmJbW2ldXVxuICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKVxuICAgICAgICAgIH19fVxuICAgIGlmKGFueShub3dbWzRdXSE9XCIuXCIpJiYgIWFsbChub3dbWzRdXT09YyhcIi5cIixcIkNcIikpKXtcbiAgICAgIHJjPC1yb29tYyhub3cpXG4gICAgICBpZihsZW5ndGgocmMpPjApe1xuICAgICAgICBmb3IoaSBpbiAxOmxlbmd0aChyYykpe1xuICAgICAgICAgIHg8LXJjW1tpXV1cbiAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSl9fX1cbiAgICBpZihhbnkobm93W1s1XV0hPVwiLlwiKSYmICFhbGwobm93W1s1XV09PWMoXCIuXCIsXCJEXCIpKSl7XG4gICAgICByZDwtcm9vbWQobm93KVxuICAgICAgaWYobGVuZ3RoKHJkKT4wKXtcbiAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmQpKXtcbiAgICAgICAgICB4PC1yZFtbaV1dXG4gICAgICAgICAgI2NhdChcImRcIixwYXN0ZSh4KSkgICAgXG4gICAgICAgICAgcHEkcHVzaCh4LC14W1s2XV0pXG4gICAgICAgICAgfX19XG4gICAgXG4gICAgXG4gICAgXG4gICAgXG4gIH1cbiAgcmV0dXJuKGJlZW50aGVyZSl9XG5gYGAifQ== -->
+<pre class="r"><code>amphipods&lt;-function(a,b,c,d){
+  pq&lt;-priority_queue()
+  beenthere&lt;-dict()
+  start&lt;-list(rep(&quot;.&quot;,7),c(a),c(b),c(c),c(d),0)
+  finalstate&lt;-c(rep(&quot;.&quot;,7),c(&quot;A&quot;,&quot;A&quot;),c(&quot;B&quot;,&quot;B&quot;),c(&quot;C&quot;,&quot;C&quot;),c(&quot;D&quot;,&quot;D&quot;))
+  pq$push(start,0)
+  counter&lt;-1
+  while(pq$size()&gt;0){
+    now&lt;-pq$pop()
+    ### if done, done
+    if(all(now[[1]]==&quot;.&quot;)&amp;&amp;all(now[[2]]==&quot;A&quot;)){return(now)}
+    ### if been there, next
+    if(beenthere$has(now[1:5])){
+#      counter&lt;-counter+1
+#      if(counter%%10000==0){cat(counter,now[[6]],pq$size(),beenthere$size(),&quot;\n&quot;)}
+      next}
+    ### otherwise, here to the dictionary
+    beenthere$set(now[1:5],now[[6]])
+    #### Hallway moves
+    if(now[[1]][1]!=&quot;.&quot;){
+      h1&lt;-hall1(now)
+      if(h1[[6]]&gt;0){pq$push(h1,-h1[[6]])}
+    }
+    if(now[[1]][2]!=&quot;.&quot;){
+      h2&lt;-hall2(now)
+      if(h2[[6]]&gt;0){pq$push(h2,-h2[[6]])}
+    }
+    if(now[[1]][3]!=&quot;.&quot;){
+      h3&lt;-hall3(now)
+      if(h3[[6]]&gt;0){pq$push(h3,-h3[[6]])}
+    }
+    if(now[[1]][4]!=&quot;.&quot;){
+      h4&lt;-hall4(now)
+      if(h4[[6]]&gt;0){pq$push(h4,-h4[[6]])}
+    }
+    if(now[[1]][5]!=&quot;.&quot;){
+      h5&lt;-hall5(now)
+      if(h5[[6]]&gt;0){pq$push(h5,-h5[[6]])}
+    }
+    if(now[[1]][6]!=&quot;.&quot;){
+      h6&lt;-hall6(now)
+      if(h6[[6]]&gt;0){pq$push(h6,-h6[[6]])}
+    }
+    if(now[[1]][7]!=&quot;.&quot;){
+      h7&lt;-hall7(now)
+      if(h7[[6]]&gt;0){pq$push(h7,-h7[[6]])}
+    }
+    ### room moves
+    if(any(now[[2]]!=&quot;.&quot;)&amp;&amp; !all(now[[2]]==c(&quot;.&quot;,&quot;A&quot;))){
+      ra&lt;-rooma(now)
+      if(length(ra)&gt;0){
+        for(i in 1:length(ra)){
+          x&lt;-ra[[i]]
+          pq$push(x,-x[[6]])}}}
+    if(any(now[[3]]!=&quot;.&quot;)&amp;&amp; !all(now[[3]]==c(&quot;.&quot;,&quot;B&quot;))){
+      rb&lt;-roomb(now)
+      if(length(rb)&gt;0){
+        for(i in 1:length(rb)){
+          x&lt;-rb[[i]]
+          pq$push(x,-x[[6]])
+          }}}
+    if(any(now[[4]]!=&quot;.&quot;)&amp;&amp; !all(now[[4]]==c(&quot;.&quot;,&quot;C&quot;))){
+      rc&lt;-roomc(now)
+      if(length(rc)&gt;0){
+        for(i in 1:length(rc)){
+          x&lt;-rc[[i]]
+          pq$push(x,-x[[6]])}}}
+    if(any(now[[5]]!=&quot;.&quot;)&amp;&amp; !all(now[[5]]==c(&quot;.&quot;,&quot;D&quot;))){
+      rd&lt;-roomd(now)
+      if(length(rd)&gt;0){
+        for(i in 1:length(rd)){
+          x&lt;-rd[[i]]
+          #cat(&quot;d&quot;,paste(x))    
+          pq$push(x,-x[[6]])
+          }}}
+    
+    
+    
+    
+  }
+  return(beenthere)}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>This gives the list of target crossing - the highest height for that
-target crossing.</p>
+<p>Run the function with input</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LW1heChhbGxwYXNzZXMkaClcbnBhcnQxXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-max(allpasses$h)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIFB1enpsZSBpbnB1dCBpcyBkb25lIG1hbnVhbGx5XG5cbmE8LWMoXCJCXCIsXCJBXCIpXG5iPC1jKFwiQ1wiLFwiRFwiKVxuYzwtYyhcIkJcIixcIkNcIilcbmQ8LWMoXCJEXCIsXCJBXCIpXG5cbnAxPC1hbXBoaXBvZHMoYSxiLGMsZClcbnBhcnQxPC1wMVtbNl1dXG5wYXJ0MVxuYGBgIn0= -->
+<pre class="r"><code>### Puzzle input is done manually
+
+a&lt;-c(&quot;B&quot;,&quot;A&quot;)
+b&lt;-c(&quot;C&quot;,&quot;D&quot;)
+c&lt;-c(&quot;B&quot;,&quot;C&quot;)
+d&lt;-c(&quot;D&quot;,&quot;A&quot;)
+
+p1&lt;-amphipods(a,b,c,d)
+part1&lt;-p1[[6]]
 part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ1XG4ifQ== -->
-<pre><code>[1] 45</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNTIxXG4ifQ== -->
+<pre><code>[1] 12521</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
 <div id="part-2" class="section level2">
 <h2>Part 2</h2>
-<p>Part 2 needs to find all of the potential starting x,y pairs - which
-can be had from part 1. But the in part 1 counted crossings. If the
-probe was in the target area two times, it is counted twice in part 1.
-So we need to pull the unique start combinations</p>
+<p>For the halls, nothing changes. They’re already set up to to be
+called &amp; to work no matter how long the rooms are.</p>
+<p>The rooms need to be split into three functions for my sanity.</p>
+<p>Nothing really changes in the room to hall - they are split apart
+from the other room functions</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDI8LXVuaXF1ZShhbGxwYXNzZXMlPiVzZWxlY3Qoc3RhcnR4LHN0YXJ0eSkpXG5wYXJ0MjwtbnJvdyhwYXJ0MilcbnBhcnQyXG5gYGAifQ== -->
-<pre class="r"><code>part2&lt;-unique(allpasses%&gt;%select(startx,starty))
-part2&lt;-nrow(part2)
-part2</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIGlmIHRoZXJlIGlzIHNvbWV0aGluZyBpbiByb29tWFsxXSYmaWYgdGhlcmUgaXMgc3BhY2UgaW4gdGhlIGhhbGwmJmlmIHRoZXJlIGlzIHNvbWV0aGluZyBpbiB0aGUgcm9vbSB0aGF0IGJlbG9uZ3MgaW4gYSBkaWZmZXJlbnQgcm9vbTpcbnJvb21vdXRhPC1mdW5jdGlvbihkaWFnKXtcbiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWRcbiAgb3V0bGlzdDwtbGlzdCgpXG4gIGhhbGw8LWRpYWdbWzFdXVxuICByb29tYTwtZGlhZ1tbMl1dXG4gIHJvb21iPC1kaWFnW1szXV1cbiAgcm9vbWM8LWRpYWdbWzRdXVxuICByb29tZDwtZGlhZ1tbNV1dXG4gIG9sZGNvc3Q8LWRpYWdbWzZdXVxuICAjIyMgbW92ZSB0byBoYWxsd2F5XG4gICMjIyB0byB0aGUgbGVmdFxuICMgY2F0KHBhc3RlKGRpYWcsXCJcXG5cIikpXG4gIHN3aXRjaChyb29tYVsxXSxcbiAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICBcIkJcIj1jb3N0PC0xMCxcbiAgICAgICAgIFwiQ1wiPWNvc3Q8LTEwMCxcbiAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICBjYXQoXCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21hXFxuXCIpKVxuICBpZihoYWxsWzJdPT1cIi5cIil7XG4gICAgeDwtbGlzdChjKGhhbGxbMV0scm9vbWFbMV0saGFsbFszOjddKSxjKFwiLlwiLHJvb21hWy0xXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjMpXG4gICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgaWYoaGFsbFsxXT09XCIuXCIpe1xuICAgICAgeDwtbGlzdChjKHJvb21hWzFdLGhhbGxbMjo3XSksYyhcIi5cIixyb29tYVstMV0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKVxuICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX1cbiAgaWYoaGFsbFszXT09XCIuXCIpe1xuICAgIHg8LWxpc3QoYyhoYWxsWzE6Ml0scm9vbWFbMV0saGFsbFs0OjddKSxjKFwiLlwiLHJvb21hWy0xXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjIpXG4gICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgaWYoaGFsbFs0XT09XCIuXCIpe1xuICAgICAgeDwtbGlzdChjKGhhbGxbMTozXSxyb29tYVsxXSxoYWxsWzU6N10pLGMoXCIuXCIscm9vbWFbLTFdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNClcbiAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgaWYoaGFsbFs1XT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21hWzFdLGhhbGxbNjo3XSksYyhcIi5cIixyb29tYVstMV0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo2KVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWFbMV0saGFsbFs3XSksYyhcIi5cIixyb29tYVstMV0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo4KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbN109PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWFbMV0pLGMoXCIuXCIscm9vbWFbLTFdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqOSlcbiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19XG5vdXRsaXN0fVxuXG4jIyNcblxucm9vbW91dGI8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1saXN0KClcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHN3aXRjaChyb29tYlsxXSxcbiAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICBcIkJcIj1jb3N0PC0xMCxcbiAgICAgICAgIFwiQ1wiPWNvc3Q8LTEwMCxcbiAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICBjYXQoXCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21iXFxuXCIpKVxuICBpZihoYWxsWzNdPT1cIi5cIil7XG4gICAgeDwtbGlzdChjKGhhbGxbMToyXSxyb29tYlsxXSxoYWxsWzQ6N10pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICBpZihoYWxsWzJdPT1cIi5cIil7XG4gICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tYlsxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNClcbiAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgaWYoaGFsbFsxXT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMocm9vbWJbMV0saGFsbFsyOjddKSxjKHJvb21hKSxjKFwiLlwiLHJvb21iWy0xXSksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjUpXG4gICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fVxuICBpZihoYWxsWzRdPT1cIi5cIil7XG4gICAgeDwtbGlzdChjKGhhbGxbMTozXSxyb29tYlsxXSxoYWxsWzU6N10pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICBpZihoYWxsWzVdPT1cIi5cIil7XG4gICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21iWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhcIi5cIixyb29tYlstMV0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICBpZihoYWxsWzZdPT1cIi5cIil7XG4gICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWJbMV0saGFsbFs3XSksYyhyb29tYSksYyhcIi5cIixyb29tYlstMV0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo2KVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWJbMV0pLGMocm9vbWEpLGMoXCIuXCIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNylcbiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19XG5vdXRsaXN0fVxuXG5cbiMjIyMjIyNcblxucm9vbW91dGM8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1saXN0KClcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gICAgIyMjIG1vdmUgdG8gaGFsbHdheVxuICAgICMjIyB0byB0aGUgbGVmdFxuICAgICAgc3dpdGNoKHJvb21jWzFdLFxuICAgICAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tY1xcblwiKSlcbiAgICAgIGlmKGhhbGxbNF09PVwiLlwiKXtcbiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTozXSxyb29tY1sxXSxoYWxsWzU6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoXCIuXCIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMilcbiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgIGlmKGhhbGxbM109PVwiLlwiKXtcbiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21jWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1stMV0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzFdLHJvb21jWzFdLGhhbGxbMzo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1stMV0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo2KVxuICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgICAgICBpZihoYWxsWzFdPT1cIi5cIil7XG4gICAgICAgICAgICAgIHg8LWxpc3QoYyhyb29tY1sxXSxoYWxsWzI6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoXCIuXCIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNylcbiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19fVxuICAgICAgaWYoaGFsbFs1XT09XCIuXCIpe1xuICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21jWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1stMV0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs2XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWNbMV0saGFsbFs3XSksYyhyb29tYSksYyhyb29tYiksYyhcIi5cIixyb29tY1stMV0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbN109PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWNbMV0pLGMocm9vbWEpLGMocm9vbWIpLGMoXCIuXCIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNSlcbiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fVxuICBvdXRsaXN0fVxuXG4jIyMjIyMjIyMjIyMjIyMjIyNcblxucm9vbW91dGQ8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1saXN0KClcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gICAgIyMjIG1vdmUgdG8gaGFsbHdheVxuICAgICMjIyB0byB0aGUgbGVmdFxuICAgICAgc3dpdGNoKHJvb21kWzFdLFxuICAgICAgICAgICAgIFwiQVwiPWNvc3Q8LTEsXG4gICAgICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgICAgIFwiRFwiPWNvc3Q8LTEwMDAsXG4gICAgICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBwMlxcblwiKSlcbiAgICAgIGlmKGhhbGxbNV09PVwiLlwiKXtcbiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tZFsxXSxoYWxsWzY6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoXCIuXCIscm9vbWRbLTFdKSxvbGRjb3N0K2Nvc3QqMilcbiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpXG4gICAgICAgIGlmKGhhbGxbNF09PVwiLlwiKXtcbiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21kWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhcIi5cIixyb29tZFstMV0pLG9sZGNvc3QrY29zdCo0KVxuICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgIGlmKGhhbGxbM109PVwiLlwiKXtcbiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Ml0scm9vbWRbMV0saGFsbFs0OjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKFwiLlwiLHJvb21kWy0xXSksb2xkY29zdCtjb3N0KjYpXG4gICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgICAgIGlmKGhhbGxbMl09PVwiLlwiKXtcbiAgICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMV0scm9vbWRbMV0saGFsbFszOjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKFwiLlwiLHJvb21kWy0xXSksb2xkY29zdCtjb3N0KjgpXG4gICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKVxuICAgICAgICAgICAgICBpZihoYWxsWzFdPT1cIi5cIil7XG4gICAgICAgICAgICAgICAgeDwtbGlzdChjKHJvb21kWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhcIi5cIixyb29tZFstMV0pLG9sZGNvc3QrY29zdCo5KVxuICAgICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19XG4gICAgICBpZihoYWxsWzZdPT1cIi5cIil7XG4gICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWRbMV0saGFsbFs3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhcIi5cIixyb29tZFstMV0pLG9sZGNvc3QrY29zdCoyKVxuICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSlcbiAgICAgICAgaWYoaGFsbFs3XT09XCIuXCIpe1xuICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Nl0scm9vbWRbMV0pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoXCIuXCIscm9vbWRbLTFdKSxvbGRjb3N0K2Nvc3QqMylcbiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fVxuICBvdXRsaXN0fVxuYGBgIn0= -->
+<pre class="r"><code>### if there is something in roomX[1]&amp;&amp;if there is space in the hall&amp;&amp;if there is something in the room that belongs in a different room:
+roomouta&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  ### move to hallway
+  ### to the left
+ # cat(paste(diag,&quot;\n&quot;))
+  switch(rooma[1],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in rooma\n&quot;))
+  if(hall[2]==&quot;.&quot;){
+    x&lt;-list(c(hall[1],rooma[1],hall[3:7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*3)
+    outlist&lt;-c(outlist,list(x))
+    if(hall[1]==&quot;.&quot;){
+      x&lt;-list(c(rooma[1],hall[2:7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+      outlist&lt;-c(outlist,list(x))}}
+  if(hall[3]==&quot;.&quot;){
+    x&lt;-list(c(hall[1:2],rooma[1],hall[4:7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*2)
+    outlist&lt;-c(outlist,list(x))
+    if(hall[4]==&quot;.&quot;){
+      x&lt;-list(c(hall[1:3],rooma[1],hall[5:7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*4)
+      outlist&lt;-c(outlist,list(x))
+      if(hall[5]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:4],rooma[1],hall[6:7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*6)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[6]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:5],rooma[1],hall[7]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*8)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[7]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:6],rooma[1]),c(&quot;.&quot;,rooma[-1]),c(roomb),c(roomc),c(roomd),oldcost+cost*9)
+            outlist&lt;-c(outlist,list(x))}}}}}
+outlist}
+
+###
+
+roomoutb&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  switch(roomb[1],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in roomb\n&quot;))
+  if(hall[3]==&quot;.&quot;){
+    x&lt;-list(c(hall[1:2],roomb[1],hall[4:7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*2)
+    outlist&lt;-c(outlist,list(x))
+    if(hall[2]==&quot;.&quot;){
+      x&lt;-list(c(hall[1],roomb[1],hall[3:7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*4)
+      outlist&lt;-c(outlist,list(x))
+      if(hall[1]==&quot;.&quot;){
+        x&lt;-list(c(roomb[1],hall[2:7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*5)
+        outlist&lt;-c(outlist,list(x))}}}
+  if(hall[4]==&quot;.&quot;){
+    x&lt;-list(c(hall[1:3],roomb[1],hall[5:7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*2)
+    outlist&lt;-c(outlist,list(x))
+    if(hall[5]==&quot;.&quot;){
+      x&lt;-list(c(hall[1:4],roomb[1],hall[6:7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*4)
+      outlist&lt;-c(outlist,list(x))
+      if(hall[6]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:5],roomb[1],hall[7]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*6)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[7]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:6],roomb[1]),c(rooma),c(&quot;.&quot;,roomb[-1]),c(roomc),c(roomd),oldcost+cost*7)
+          outlist&lt;-c(outlist,list(x))}}}}
+outlist}
+
+
+#######
+
+roomoutc&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+    ### move to hallway
+    ### to the left
+      switch(roomc[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in roomc\n&quot;))
+      if(hall[4]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:3],roomc[1],hall[5:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[3]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:2],roomc[1],hall[4:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[2]==&quot;.&quot;){
+            x&lt;-list(c(hall[1],roomc[1],hall[3:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[1]==&quot;.&quot;){
+              x&lt;-list(c(roomc[1],hall[2:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*7)
+              outlist&lt;-c(outlist,list(x))}}}}
+      if(hall[5]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:4],roomc[1],hall[6:7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[6]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:5],roomc[1],hall[7]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[7]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:6],roomc[1]),c(rooma),c(roomb),c(&quot;.&quot;,roomc[-1]),c(roomd),oldcost+cost*5)
+            outlist&lt;-c(outlist,list(x))}}}
+  outlist}
+
+##################
+
+roomoutd&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-list()
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+    ### move to hallway
+    ### to the left
+      switch(roomd[1],
+             &quot;A&quot;=cost&lt;-1,
+             &quot;B&quot;=cost&lt;-10,
+             &quot;C&quot;=cost&lt;-100,
+             &quot;D&quot;=cost&lt;-1000,
+             cat(&quot;somethings wrong in roomd p2\n&quot;))
+      if(hall[5]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:4],roomd[1],hall[6:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[4]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:3],roomd[1],hall[5:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*4)
+          outlist&lt;-c(outlist,list(x))
+          if(hall[3]==&quot;.&quot;){
+            x&lt;-list(c(hall[1:2],roomd[1],hall[4:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*6)
+            outlist&lt;-c(outlist,list(x))
+            if(hall[2]==&quot;.&quot;){
+              x&lt;-list(c(hall[1],roomd[1],hall[3:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*8)
+              outlist&lt;-c(outlist,list(x))
+              if(hall[1]==&quot;.&quot;){
+                x&lt;-list(c(roomd[1],hall[2:7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*9)
+                outlist&lt;-c(outlist,list(x))}}}}}
+      if(hall[6]==&quot;.&quot;){
+        x&lt;-list(c(hall[1:5],roomd[1],hall[7]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*2)
+        outlist&lt;-c(outlist,list(x))
+        if(hall[7]==&quot;.&quot;){
+          x&lt;-list(c(hall[1:6],roomd[1]),c(rooma),c(roomb),c(roomc),c(&quot;.&quot;,roomd[-1]),oldcost+cost*3)
+          outlist&lt;-c(outlist,list(x))}}
+  outlist}</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDExMlxuIn0= -->
-<pre><code>[1] 112</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>The room forward should be called if there’s nothing in space 1 and
+an incorrect amphipod somewhere further back. It moves the closest to
+the front all the way to the front. There they can be picked up by the
+room out function</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vbWFmb3J3YXJkPC1mdW5jdGlvbihkaWFnKXtcbiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWRcbiAgb3V0bGlzdDwtZGlhZ1xuICBoYWxsPC1kaWFnW1sxXV1cbiAgcm9vbWE8LWRpYWdbWzJdXVxuICByb29tYjwtZGlhZ1tbM11dXG4gIHJvb21jPC1kaWFnW1s0XV1cbiAgcm9vbWQ8LWRpYWdbWzVdXVxuICBvbGRjb3N0PC1kaWFnW1s2XV1cbiAgIyMjIGZpbmQgdGhlIGZpcnN0IG5vbiBlbXB0eSBzcGFjZVxuICB4PC1taW4od2hpY2gocm9vbWEhPVwiLlwiKSlcbiAgc3dpdGNoKHJvb21hW3hdLFxuICAgICAgICAgXCJBXCI9Y29zdDwtMSxcbiAgICAgICAgIFwiQlwiPWNvc3Q8LTEwLFxuICAgICAgICAgXCJDXCI9Y29zdDwtMTAwLFxuICAgICAgICAgXCJEXCI9Y29zdDwtMTAwMCxcbiAgICAgICAgIGNhdChcInNvbWV0aGluZ3Mgd3JvbmcgaW4gcm9vbWQgZm9yd2FyZFxcblwiKSlcbiAgIyMjIHB1dCBpdCBpbiBzcGFjZSAxIGFuZCBtYWtlIGl0cyBzcGFjZSBlbXB0eVxuICByb29tYVsxXTwtcm9vbWFbeF1cbiAgcm9vbWFbeF08LVwiLlwiXG4gICMjIyB1cGRhdGUgdGhlIGNvc3QgYmFzZWQgb24gd2hhdCB3YXMgYmVpbmcgbW92ZWQuXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KygoeC0xKSpjb3N0KSlcbiAgb3V0bGlzdH1cbiMjIyNcbnJvb21iZm9yd2FyZDwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWRpYWdcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHg8LW1pbih3aGljaChyb29tYiE9XCIuXCIpKVxuICBzd2l0Y2gocm9vbWJbeF0sXG4gICAgICAgICBcIkFcIj1jb3N0PC0xLFxuICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICBcIkRcIj1jb3N0PC0xMDAwLFxuICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBmb3J3YXJkXFxuXCIpKVxuICByb29tYlsxXTwtcm9vbWJbeF1cbiAgcm9vbWJbeF08LVwiLlwiXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KygoeC0xKSpjb3N0KSlcbiAgb3V0bGlzdH1cbiMjIyNcbnJvb21jZm9yd2FyZDwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWRpYWdcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHg8LW1pbih3aGljaChyb29tYyE9XCIuXCIpKVxuICBzd2l0Y2gocm9vbWNbeF0sXG4gICAgICAgICBcIkFcIj1jb3N0PC0xLFxuICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICBcIkRcIj1jb3N0PC0xMDAwLFxuICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBmb3J3YXJkXFxuXCIpKVxuICByb29tY1sxXTwtcm9vbWNbeF1cbiAgcm9vbWNbeF08LVwiLlwiXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KygoeC0xKSpjb3N0KSlcbiAgb3V0bGlzdH1cbiMjIyNcbnJvb21kZm9yd2FyZDwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWRpYWdcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHg8LW1pbih3aGljaChyb29tZCE9XCIuXCIpKVxuICBzd2l0Y2gocm9vbWRbeF0sXG4gICAgICAgICBcIkFcIj1jb3N0PC0xLFxuICAgICAgICAgXCJCXCI9Y29zdDwtMTAsXG4gICAgICAgICBcIkNcIj1jb3N0PC0xMDAsXG4gICAgICAgICBcIkRcIj1jb3N0PC0xMDAwLFxuICAgICAgICAgY2F0KFwic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBmb3J3YXJkXFxuXCIpKVxuICByb29tZFsxXTwtcm9vbWRbeF1cbiAgcm9vbWRbeF08LVwiLlwiXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KygoeC0xKSpjb3N0KSlcbiAgb3V0bGlzdH1cbmBgYCJ9 -->
+<pre class="r"><code>roomaforward&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  ### find the first non empty space
+  x&lt;-min(which(rooma!=&quot;.&quot;))
+  switch(rooma[x],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in roomd forward\n&quot;))
+  ### put it in space 1 and make its space empty
+  rooma[1]&lt;-rooma[x]
+  rooma[x]&lt;-&quot;.&quot;
+  ### update the cost based on what was being moved.
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roombforward&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-min(which(roomb!=&quot;.&quot;))
+  switch(roomb[x],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in roomd forward\n&quot;))
+  roomb[1]&lt;-roomb[x]
+  roomb[x]&lt;-&quot;.&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roomcforward&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-min(which(roomc!=&quot;.&quot;))
+  switch(roomc[x],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in roomd forward\n&quot;))
+  roomc[1]&lt;-roomc[x]
+  roomc[x]&lt;-&quot;.&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}
+####
+roomdforward&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-min(which(roomd!=&quot;.&quot;))
+  switch(roomd[x],
+         &quot;A&quot;=cost&lt;-1,
+         &quot;B&quot;=cost&lt;-10,
+         &quot;C&quot;=cost&lt;-100,
+         &quot;D&quot;=cost&lt;-1000,
+         cat(&quot;somethings wrong in roomd forward\n&quot;))
+  roomd[1]&lt;-roomd[x]
+  roomd[x]&lt;-&quot;.&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+((x-1)*cost))
+  outlist}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Room back moves correct amphipods from position 1 (where they were
+dropped off by the hallway function) to the first space in the back of
+the room.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm9vbWFiYWNrPC1mdW5jdGlvbihkaWFnKXtcbiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWRcbiAgb3V0bGlzdDwtZGlhZ1xuICBoYWxsPC1kaWFnW1sxXV1cbiAgcm9vbWE8LWRpYWdbWzJdXVxuICByb29tYjwtZGlhZ1tbM11dXG4gIHJvb21jPC1kaWFnW1s0XV1cbiAgcm9vbWQ8LWRpYWdbWzVdXVxuICBvbGRjb3N0PC1kaWFnW1s2XV1cbiAgIyMjIGZpbmQgdGhlIGZpcnN0IGVtcHR5IHNwYWNlXG4gIHg8LW1heCh3aGljaChyb29tYT09XCIuXCIpKVxuICAjIyMgc3dhcCBpdCB3aXRoIHRoZSBhbXBoaXBvZFxuICByb29tYVsxXTwtXCIuXCJcbiAgcm9vbWFbeF08LVwiQVwiXG4gICMjIyB1cGRhdGUgdGhlIGNvc3RcbiAgb3V0bGlzdDwtbGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrKHgtMSkpXG4gIG91dGxpc3R9XG4jIyMjXG5yb29tYmJhY2s8LWZ1bmN0aW9uKGRpYWcpe1xuICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZFxuICBvdXRsaXN0PC1kaWFnXG4gIGhhbGw8LWRpYWdbWzFdXVxuICByb29tYTwtZGlhZ1tbMl1dXG4gIHJvb21iPC1kaWFnW1szXV1cbiAgcm9vbWM8LWRpYWdbWzRdXVxuICByb29tZDwtZGlhZ1tbNV1dXG4gIG9sZGNvc3Q8LWRpYWdbWzZdXVxuICB4PC1tYXgod2hpY2gocm9vbWI9PVwiLlwiKSlcbiAgcm9vbWJbMV08LVwiLlwiXG4gIHJvb21iW3hdPC1cIkJcIlxuICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsxMCooeC0xKSlcbiAgb3V0bGlzdH1cbiMjIyNcbnJvb21jYmFjazwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWRpYWdcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHg8LW1heCh3aGljaChyb29tYz09XCIuXCIpKVxuICByb29tY1sxXTwtXCIuXCJcbiAgcm9vbWNbeF08LVwiQ1wiXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KzEwMCooeC0xKSlcbiAgb3V0bGlzdH1cbiMjIyNcbnJvb21kYmFjazwtZnVuY3Rpb24oZGlhZyl7XG4gICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkXG4gIG91dGxpc3Q8LWRpYWdcbiAgaGFsbDwtZGlhZ1tbMV1dXG4gIHJvb21hPC1kaWFnW1syXV1cbiAgcm9vbWI8LWRpYWdbWzNdXVxuICByb29tYzwtZGlhZ1tbNF1dXG4gIHJvb21kPC1kaWFnW1s1XV1cbiAgb2xkY29zdDwtZGlhZ1tbNl1dXG4gIHg8LW1heCh3aGljaChyb29tZD09XCIuXCIpKVxuICByb29tZFsxXTwtXCIuXCJcbiAgcm9vbWRbeF08LVwiRFwiXG4gIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0KzEwMDAqKHgtMSkpXG4gIG91dGxpc3R9XG5gYGAifQ== -->
+<pre class="r"><code>roomaback&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  ### find the first empty space
+  x&lt;-max(which(rooma==&quot;.&quot;))
+  ### swap it with the amphipod
+  rooma[1]&lt;-&quot;.&quot;
+  rooma[x]&lt;-&quot;A&quot;
+  ### update the cost
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+(x-1))
+  outlist}
+####
+roombback&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-max(which(roomb==&quot;.&quot;))
+  roomb[1]&lt;-&quot;.&quot;
+  roomb[x]&lt;-&quot;B&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+10*(x-1))
+  outlist}
+####
+roomcback&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-max(which(roomc==&quot;.&quot;))
+  roomc[1]&lt;-&quot;.&quot;
+  roomc[x]&lt;-&quot;C&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+100*(x-1))
+  outlist}
+####
+roomdback&lt;-function(diag){
+  #create the list of things to be returned
+  outlist&lt;-diag
+  hall&lt;-diag[[1]]
+  rooma&lt;-diag[[2]]
+  roomb&lt;-diag[[3]]
+  roomc&lt;-diag[[4]]
+  roomd&lt;-diag[[5]]
+  oldcost&lt;-diag[[6]]
+  x&lt;-max(which(roomd==&quot;.&quot;))
+  roomd[1]&lt;-&quot;.&quot;
+  roomd[x]&lt;-&quot;D&quot;
+  outlist&lt;-list(c(hall),c(rooma),c(roomb),c(roomc),c(roomd),oldcost+1000*(x-1))
+  outlist}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The whole function works the same way as it did before.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW1waGlwb2RzbG9uZzwtZnVuY3Rpb24oYSxiLGMsZCl7XG4gIHBxPC1wcmlvcml0eV9xdWV1ZSgpXG4gIGJlZW50aGVyZTwtZGljdCgpXG4gIHN0YXJ0PC0gbGlzdChyZXAoXCIuXCIsNyksYyhhKSxjKGIpLGMoYyksYyhkKSwwKVxuICBmaW5hbHN0YXRlPC1jKHJlcChcIi5cIiw3KSxjKFwiQVwiLFwiQVwiKSxjKFwiQlwiLFwiQlwiKSxjKFwiQ1wiLFwiQ1wiKSxjKFwiRFwiLFwiRFwiKSlcbiAgcHEkcHVzaChzdGFydCwwKVxuICBjb3VudGVyPC0xXG4gIHdoaWxlKHBxJHNpemUoKT4wKXtcbiAgICBub3c8LXBxJHBvcCgpXG4gICAgIyMjIGlmIGRvbmUsIGRvbmUgcmV0dXJuIHRoZSB3aG9sZSBkaWFncmFtIGZvciBjaGVja2luZ1xuICAgIGlmKGFsbChub3dbWzFdXT09XCIuXCIpJiZhbGwobm93W1syXV09PVwiQVwiKSYmYWxsKG5vd1tbM11dPT1cIkJcIikpe3JldHVybihub3cpfVxuICAgICMjIyBpZiBiZWVuIHRoZXJlLCBuZXh0XG4gICAgaWYoYmVlbnRoZXJlJGhhcyhub3dbMTo1XSkpe1xuICAgICAgbmV4dH1cbiAgICAjIyMgb3RoZXJ3aXNlLCBhZGQgdGhpcyB0byB0aGUgZGljdGlvbmFyeVxuICAgIGJlZW50aGVyZSRzZXQobm93WzE6NV0sbm93W1s2XV0pXG4gICAgIyMjIyBhZGQgaW4gdGhlIGhhbGx3YXkgbW92ZXNcbiAgICBpZihub3dbWzFdXVsxXSE9XCIuXCIpe1xuICAgICAgaDE8LWhhbGwxKG5vdylcbiAgICAgIHBxJHB1c2goaDEsLWgxW1s2XV0pfVxuICAgIGlmKG5vd1tbMV1dWzJdIT1cIi5cIil7XG4gICAgICBoMjwtaGFsbDIobm93KVxuICAgICAgcHEkcHVzaChoMiwtaDJbWzZdXSl9XG4gICAgaWYobm93W1sxXV1bM10hPVwiLlwiKXtcbiAgICAgIGgzPC1oYWxsMyhub3cpXG4gICAgICBwcSRwdXNoKGgzLC1oM1tbNl1dKX1cbiAgICBpZihub3dbWzFdXVs0XSE9XCIuXCIpe1xuICAgICAgaDQ8LWhhbGw0KG5vdylcbiAgICAgIHBxJHB1c2goaDQsLWg0W1s2XV0pfVxuICAgIGlmKG5vd1tbMV1dWzVdIT1cIi5cIil7XG4gICAgICBoNTwtaGFsbDUobm93KVxuICAgICAgcHEkcHVzaChoNSwtaDVbWzZdXSl9XG4gICAgaWYobm93W1sxXV1bNl0hPVwiLlwiKXtcbiAgICAgIGg2PC1oYWxsNihub3cpXG4gICAgICBwcSRwdXNoKGg2LC1oNltbNl1dKX1cbiAgICBpZihub3dbWzFdXVs3XSE9XCIuXCIpe1xuICAgICAgaDc8LWhhbGw3KG5vdylcbiAgICAgIHBxJHB1c2goaDcsLWg3W1s2XV0pfVxuICAgICMjIyBGaXJzdCwgUm9vbSBvdXRzXG4gICAgIyMjIGFkZCBpbiB0aGUgcm9vbSBvdXRzIGZvciBldmVyeXRoaW5nIGluIHBvc2l0aW9uIDEgd2hlcmUgdGhlcmUgaXMgYSBsb3N0IGFtcGhpcG9kXG4gICAgaWYoYW55KG5vd1tbMV1dPT1cIi5cIikpe1xuICAgICAgaWYobm93W1syXV1bMV0hPVwiLlwiJiYhYWxsKG5vd1tbMl1dJWluJWMoXCIuXCIsXCJBXCIpKSl7XG4gICAgICAgIHJhPC1yb29tb3V0YShub3cpXG4gICAgICAgIGlmKGxlbmd0aChyYSk+MCl7XG4gICAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmEpKXtcbiAgICAgICAgICAgIHg8LXJhW1tpXV1cbiAgICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKX19fVxuICAgICAgaWYobm93W1szXV1bMV0hPVwiLlwiJiYhYWxsKG5vd1tbM11dJWluJWMoXCIuXCIsXCJCXCIpKSl7XG4gICAgICAgIHJiPC1yb29tb3V0Yihub3cpXG4gICAgICAgIGlmKGxlbmd0aChyYik+MCl7XG4gICAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmIpKXtcbiAgICAgICAgICAgIHg8LXJiW1tpXV1cbiAgICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKX19fVxuICAgICAgaWYobm93W1s0XV1bMV0hPVwiLlwiJiYhYWxsKG5vd1tbNF1dJWluJWMoXCIuXCIsXCJDXCIpKSl7XG4gICAgICAgIHJjPC1yb29tb3V0Yyhub3cpXG4gICAgICAgIGlmKGxlbmd0aChyYyk+MCl7XG4gICAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmMpKXtcbiAgICAgICAgICAgIHg8LXJjW1tpXV1cbiAgICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKX19fVxuICAgICAgaWYobm93W1s1XV1bMV0hPVwiLlwiJiYhYWxsKG5vd1tbNV1dJWluJWMoXCIuXCIsXCJEXCIpKSl7XG4gICAgICAgIHJkPC1yb29tb3V0ZChub3cpXG4gICAgICAgIGlmKGxlbmd0aChyZCk+MCl7XG4gICAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmQpKXtcbiAgICAgICAgICAgIHg8LXJkW1tpXV1cbiAgICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKX19fX1cbiAgICAjIyMgc2h1ZmZsZSBhbXBoaXBvZHMgZm9yd2FyZCB0byBzcGFjZSAxXG4gICAgaWYobm93W1syXV1bMV09PVwiLlwiJiZhbnkoYyhcIkJcIixcIkNcIixcIkRcIiklaW4lbm93W1syXV0pKXtcbiAgICAgIHJhZjwtcm9vbWFmb3J3YXJkKG5vdylcbiAgICAgIHBxJHB1c2gocmFmLC1yYWZbWzZdXSl9XG4gICAgaWYobm93W1szXV1bMV09PVwiLlwiJiZhbnkoYyhcIkFcIixcIkNcIixcIkRcIiklaW4lbm93W1szXV0pKXtcbiAgICAgIHJiZjwtcm9vbWJmb3J3YXJkKG5vdylcbiAgICAgIHBxJHB1c2gocmJmLC1yYmZbWzZdXSl9XG4gICAgaWYobm93W1s0XV1bMV09PVwiLlwiJiZhbnkoYyhcIkFcIixcIkJcIixcIkRcIiklaW4lbm93W1s0XV0pKXtcbiAgICAgIHJjZjwtcm9vbWNmb3J3YXJkKG5vdylcbiAgICAgIHBxJHB1c2gocmNmLC1yY2ZbWzZdXSl9XG4gICAgaWYobm93W1s1XV1bMV09PVwiLlwiJiZhbnkoYyhcIkFcIixcIkJcIixcIkNcIiklaW4lbm93W1s1XV0pKXtcbiAgICAgIHJkZjwtcm9vbWRmb3J3YXJkKG5vdylcbiAgICAgIHBxJHB1c2gocmRmLC1yZGZbWzZdXSl9XG4gICAgIyMjIHNodWZmbGUgZm91bmQgYW1waGlwb2RzIGJhY2sgdG8gdGhlIGJhY2sgb2YgdGhlIHJvb20uXG4gICAgaWYobm93W1syXV1bMV09PVwiQVwiJiZhbGwoYyhcIi5cIixcIkFcIiklaW4lbm93W1syXV0pJiZhbGwobm93W1syXV0laW4lYyhcIi5cIixcIkFcIikpKXtcbiAgICAgIHJhYjwtcm9vbWFiYWNrKG5vdylcbiAgICAgIHBxJHB1c2gocmFiLC1yYWJbWzZdXSl9XG4gICAgaWYobm93W1szXV1bMV09PVwiQlwiJiZhbGwoYyhcIi5cIixcIkJcIiklaW4lbm93W1szXV0pJiZhbGwobm93W1szXV0laW4lYyhcIi5cIixcIkJcIikpKXtcbiAgICAgIHJiYjwtcm9vbWJiYWNrKG5vdylcbiAgICAgIHBxJHB1c2gocmJiLC1yYmJbWzZdXSl9XG4gICAgaWYobm93W1s0XV1bMV09PVwiQ1wiJiZhbGwoYyhcIi5cIixcIkNcIiklaW4lbm93W1s0XV0pJiZhbGwobm93W1s0XV0laW4lYyhcIi5cIixcIkNcIikpKXtcbiAgICAgIHJjYjwtcm9vbWNiYWNrKG5vdylcbiAgICAgIHBxJHB1c2gocmNiLC1yY2JbWzZdXSl9XG4gICAgaWYobm93W1s1XV1bMV09PVwiRFwiJiZhbGwoYyhcIi5cIixcIkRcIiklaW4lbm93W1s1XV0pJiZhbGwobm93W1s1XV0laW4lYyhcIi5cIixcIkRcIikpKXtcbiAgICAgIHJkYjwtcm9vbWRiYWNrKG5vdylcbiAgICAgIHBxJHB1c2gocmRiLC1yZGJbWzZdXSl9XG4gICAgfVxuICByZXR1cm4obGlzdChub3csYmVlbnRoZXJlKSl9XG5gYGAifQ== -->
+<pre class="r"><code>amphipodslong&lt;-function(a,b,c,d){
+  pq&lt;-priority_queue()
+  beenthere&lt;-dict()
+  start&lt;- list(rep(&quot;.&quot;,7),c(a),c(b),c(c),c(d),0)
+  finalstate&lt;-c(rep(&quot;.&quot;,7),c(&quot;A&quot;,&quot;A&quot;),c(&quot;B&quot;,&quot;B&quot;),c(&quot;C&quot;,&quot;C&quot;),c(&quot;D&quot;,&quot;D&quot;))
+  pq$push(start,0)
+  counter&lt;-1
+  while(pq$size()&gt;0){
+    now&lt;-pq$pop()
+    ### if done, done return the whole diagram for checking
+    if(all(now[[1]]==&quot;.&quot;)&amp;&amp;all(now[[2]]==&quot;A&quot;)&amp;&amp;all(now[[3]]==&quot;B&quot;)){return(now)}
+    ### if been there, next
+    if(beenthere$has(now[1:5])){
+      next}
+    ### otherwise, add this to the dictionary
+    beenthere$set(now[1:5],now[[6]])
+    #### add in the hallway moves
+    if(now[[1]][1]!=&quot;.&quot;){
+      h1&lt;-hall1(now)
+      pq$push(h1,-h1[[6]])}
+    if(now[[1]][2]!=&quot;.&quot;){
+      h2&lt;-hall2(now)
+      pq$push(h2,-h2[[6]])}
+    if(now[[1]][3]!=&quot;.&quot;){
+      h3&lt;-hall3(now)
+      pq$push(h3,-h3[[6]])}
+    if(now[[1]][4]!=&quot;.&quot;){
+      h4&lt;-hall4(now)
+      pq$push(h4,-h4[[6]])}
+    if(now[[1]][5]!=&quot;.&quot;){
+      h5&lt;-hall5(now)
+      pq$push(h5,-h5[[6]])}
+    if(now[[1]][6]!=&quot;.&quot;){
+      h6&lt;-hall6(now)
+      pq$push(h6,-h6[[6]])}
+    if(now[[1]][7]!=&quot;.&quot;){
+      h7&lt;-hall7(now)
+      pq$push(h7,-h7[[6]])}
+    ### First, Room outs
+    ### add in the room outs for everything in position 1 where there is a lost amphipod
+    if(any(now[[1]]==&quot;.&quot;)){
+      if(now[[2]][1]!=&quot;.&quot;&amp;&amp;!all(now[[2]]%in%c(&quot;.&quot;,&quot;A&quot;))){
+        ra&lt;-roomouta(now)
+        if(length(ra)&gt;0){
+          for(i in 1:length(ra)){
+            x&lt;-ra[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[3]][1]!=&quot;.&quot;&amp;&amp;!all(now[[3]]%in%c(&quot;.&quot;,&quot;B&quot;))){
+        rb&lt;-roomoutb(now)
+        if(length(rb)&gt;0){
+          for(i in 1:length(rb)){
+            x&lt;-rb[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[4]][1]!=&quot;.&quot;&amp;&amp;!all(now[[4]]%in%c(&quot;.&quot;,&quot;C&quot;))){
+        rc&lt;-roomoutc(now)
+        if(length(rc)&gt;0){
+          for(i in 1:length(rc)){
+            x&lt;-rc[[i]]
+            pq$push(x,-x[[6]])}}}
+      if(now[[5]][1]!=&quot;.&quot;&amp;&amp;!all(now[[5]]%in%c(&quot;.&quot;,&quot;D&quot;))){
+        rd&lt;-roomoutd(now)
+        if(length(rd)&gt;0){
+          for(i in 1:length(rd)){
+            x&lt;-rd[[i]]
+            pq$push(x,-x[[6]])}}}}
+    ### shuffle amphipods forward to space 1
+    if(now[[2]][1]==&quot;.&quot;&amp;&amp;any(c(&quot;B&quot;,&quot;C&quot;,&quot;D&quot;)%in%now[[2]])){
+      raf&lt;-roomaforward(now)
+      pq$push(raf,-raf[[6]])}
+    if(now[[3]][1]==&quot;.&quot;&amp;&amp;any(c(&quot;A&quot;,&quot;C&quot;,&quot;D&quot;)%in%now[[3]])){
+      rbf&lt;-roombforward(now)
+      pq$push(rbf,-rbf[[6]])}
+    if(now[[4]][1]==&quot;.&quot;&amp;&amp;any(c(&quot;A&quot;,&quot;B&quot;,&quot;D&quot;)%in%now[[4]])){
+      rcf&lt;-roomcforward(now)
+      pq$push(rcf,-rcf[[6]])}
+    if(now[[5]][1]==&quot;.&quot;&amp;&amp;any(c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;)%in%now[[5]])){
+      rdf&lt;-roomdforward(now)
+      pq$push(rdf,-rdf[[6]])}
+    ### shuffle found amphipods back to the back of the room.
+    if(now[[2]][1]==&quot;A&quot;&amp;&amp;all(c(&quot;.&quot;,&quot;A&quot;)%in%now[[2]])&amp;&amp;all(now[[2]]%in%c(&quot;.&quot;,&quot;A&quot;))){
+      rab&lt;-roomaback(now)
+      pq$push(rab,-rab[[6]])}
+    if(now[[3]][1]==&quot;B&quot;&amp;&amp;all(c(&quot;.&quot;,&quot;B&quot;)%in%now[[3]])&amp;&amp;all(now[[3]]%in%c(&quot;.&quot;,&quot;B&quot;))){
+      rbb&lt;-roombback(now)
+      pq$push(rbb,-rbb[[6]])}
+    if(now[[4]][1]==&quot;C&quot;&amp;&amp;all(c(&quot;.&quot;,&quot;C&quot;)%in%now[[4]])&amp;&amp;all(now[[4]]%in%c(&quot;.&quot;,&quot;C&quot;))){
+      rcb&lt;-roomcback(now)
+      pq$push(rcb,-rcb[[6]])}
+    if(now[[5]][1]==&quot;D&quot;&amp;&amp;all(c(&quot;.&quot;,&quot;D&quot;)%in%now[[5]])&amp;&amp;all(now[[5]]%in%c(&quot;.&quot;,&quot;D&quot;))){
+      rdb&lt;-roomdback(now)
+      pq$push(rdb,-rdb[[6]])}
+    }
+  return(list(now,beenthere))}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now run -</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIEZpcnN0IHNob3cgaXQgd29ya3Mgb24gdGhlIHByZXZpb3VzIGlucHV0IChyb29tcyBzaXplIDIpOlxuXG5hPC1jKFwiQlwiLFwiQVwiKVxuYjwtYyhcIkNcIixcIkRcIilcbmM8LWMoXCJCXCIsXCJDXCIpXG5kPC1jKFwiRFwiLFwiQVwiKVxucDE8LWFtcGhpcG9kc2xvbmcoYSxiLGMsZClcbnBhcnQxbG9uZzwtcDFbWzZdXVxucGFydDFsb25nXG5gYGAifQ== -->
+<pre class="r"><code>### First show it works on the previous input (rooms size 2):
+
+a&lt;-c(&quot;B&quot;,&quot;A&quot;)
+b&lt;-c(&quot;C&quot;,&quot;D&quot;)
+c&lt;-c(&quot;B&quot;,&quot;C&quot;)
+d&lt;-c(&quot;D&quot;,&quot;A&quot;)
+p1&lt;-amphipodslong(a,b,c,d)
+part1long&lt;-p1[[6]]
+part1long</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEyNTIxXG4ifQ== -->
+<pre><code>[1] 12521</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIHRoZW4gdGhhdCBpdCB3b3JrcyBvbiB0aGUgbG9uZyBpbnB1dCAocm9vbSBzaXplIDQpXG5cbmE8LWMoXCJCXCIsXCJEXCIsXCJEXCIsXCJBXCIpXG5iPC1jKFwiQ1wiLFwiQ1wiLFwiQlwiLFwiRFwiKVxuYzwtYyhcIkJcIixcIkJcIixcIkFcIixcIkNcIilcbmQ8LWMoXCJEXCIsXCJBXCIsXCJDXCIsXCJBXCIpXG5wMjwtYW1waGlwb2RzbG9uZyhhLGIsYyxkKVxucGFydDI8LXAyW1s2XV1cbnBhcnQyXG5gYGAifQ== -->
+<pre class="r"><code>### then that it works on the long input (room size 4)
+
+a&lt;-c(&quot;B&quot;,&quot;D&quot;,&quot;D&quot;,&quot;A&quot;)
+b&lt;-c(&quot;C&quot;,&quot;C&quot;,&quot;B&quot;,&quot;D&quot;)
+c&lt;-c(&quot;B&quot;,&quot;B&quot;,&quot;A&quot;,&quot;C&quot;)
+d&lt;-c(&quot;D&quot;,&quot;A&quot;,&quot;C&quot;,&quot;A&quot;)
+p2&lt;-amphipodslong(a,b,c,d)
+part2&lt;-p2[[6]]
+part2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ0MTY5XG4ifQ== -->
+<pre><code>[1] 44169</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0KbGlicmFyeShnZ3Bsb3QyKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQp0YXJnZXR4PC0yMDozMA0KdGFyZ2V0eTwtIC01Oi0xMA0KYGBgDQoNCiMjIFBhcnQgMQ0KSXMgYSBtYXRoIHByb2JsZW0gKHByb2JhYmx5PykuDQpBbmQgSSdtIGdvaW5nIHRvIGJydXRlIGZvcmNlIGl0IGFueXdheS4NCkJlY2F1c2UgdGhlIHRhcmdldCBpcyBiZWxvdyAwLCB0aGUgbG93ZXN0IHkgY2FuIGJlIGlzIG1pbih0YXJnZXQpIGFuZCB0aGUgaGlnaGVzdCBpdCBjYW4gYmUgaXMgbmVnYXRpdmUgbWluKHRhcmdldCksIGJlY2F1c2UgaXQgd2lsbCBnbyB1cCwgaXQgd2lsbCBjb21lIGRvd24gYXQgdGhlIHNhbWUgc3BlZWQgaXQgaGFkIGdvaW5nIHVwLCBhbmQgb3ZlcnNob290IHRoZSB0YXJnZXQuDQoNCmBgYHtyfQ0KdXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSkNCg0KZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXsNCiAgdDwtMQ0KICBkZWx0YXk8LWkNCiAgeTwtMA0KICBoPC0wDQogIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7DQogICAgeTwteStkZWx0YXkNCiAgICBpZihkZWx0YXk9PTApe2g8LXl9DQogICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpew0KICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9DQogICAgZGVsdGF5PC1kZWx0YXktMQ0KICAgIHQ8LXQrMX19DQpjb2xuYW1lcyh1cGRvd24pPC1jKCJzdGFydHkiLCJ0eSIsInkiLCJoIikNCnVwZG93bg0KYGBgDQoNCkFzICJoIiBpcyB0aGUgaGlnaGVzdCBwb2ludCBpbiB0aG9zZSB0cmFqZWN0b3JpZXMsIG1heChoKSBpcyB0aGUgaGlnaGVzdCBwb2ludA0KYGBge3J9DQp1cGRvd25bd2hpY2godXBkb3duJGg9PW1heCh1cGRvd24kaCkpLF0NCmBgYA0KQnV0IG9ubHkgaWYgdGhlcmUncyBzb21ldGhpbmcgdGhhdCB3aWxsIGJlIGluIHRoZSBYIHRhcmdldCByYW5nZSBhdCB0aW1lIHQuDQoNClNvLCBmaW5kIHZpYWJsZSBzdGFydGluZyB4cy4NClRoZSBtYXggdGhhdCBzdGFydHggY2FuIGJlIGlzIGdvaW5nIHRvIGJlIHRoZSBtYXgodGFyZ2V0eCkgLSBvdGhlcndpc2UsIGl0IHdpbGwganVzdCBvdmVyc2hvb3QgdGhlIHRhcmdldCBvbiB0aGUgZmlyc3Qgc3RlcC4NClNvLCAoYmVjYXVzZSB0aGUgdGFyZ2V0IGlzIGNsb3NlIGVub3VnaCksIGl0J3MgcG9zc2libGUgdG8gdHJ5IGV2ZXJ5IG51bWJlciBmcm9tIDEgdG8gdGhlIGZhciBlZGdlIG9mIHRoZSB0YXJnZXQNCg0KYGBge3J9DQpzaWRld2F5czwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0zLG5yb3c9MCkpDQoNCmZvcihpIGluIDE6bWF4KHRhcmdldHgpKXsNCiAgdDwtMQ0KICBkZWx0YXg8LWkNCiAgeDwtMA0KICB3aGlsZSh4PG1heCh0YXJnZXR4KSYmdDw9bWF4KHVwZG93biR0eSkpew0KICAgIHg8LXgrZGVsdGF4DQogICAgaWYoeD49bWluKHRhcmdldHgpJiZ4PD1tYXgodGFyZ2V0eCkpew0KICAgICAgc2lkZXdheXM8LXJiaW5kKHNpZGV3YXlzLGMoaSx0LHgpKX0NCiAgICBpZihkZWx0YXg+MCl7ZGVsdGF4PC1kZWx0YXgtMX0NCiAgICB0PC10KzF9fQ0KY29sbmFtZXMoc2lkZXdheXMpPC1jKCJzdGFydHgiLCJ0eCIsIngiKQ0Kc2lkZXdheXMNCmBgYA0KDQpUaGVuIGpvaW4gdGhlIHR3byBmcmFtZXMuICBCZWNhdXNlIHgganVzdCBzdG9wcyBnb2luZyBmb3J3YXJkIHdoZW4gaXQgaGl0cyB0aW1lLCBpdCdzIGEgdmFsaWQgc3BvdCBzbyBsb25nIGFzIHR5Pj10eA0KDQpgYGB7cn0NCmFsbHBhc3NlczwtY3Jvc3Nfam9pbihzaWRld2F5cyx1cGRvd24pICU+JSANCiAgZmlsdGVyKHR5PT10eCkNCmBgYA0KVGhpcyBnaXZlcyB0aGUgbGlzdCBvZiB0YXJnZXQgY3Jvc3NpbmcgLSB0aGUgaGlnaGVzdCBoZWlnaHQgZm9yIHRoYXQgdGFyZ2V0IGNyb3NzaW5nLg0KDQpgYGB7cn0NCnBhcnQxPC1tYXgoYWxscGFzc2VzJGgpDQpwYXJ0MQ0KYGBgDQoNCiMjIFBhcnQgMg0KUGFydCAyIG5lZWRzIHRvIGZpbmQgYWxsIG9mIHRoZSBwb3RlbnRpYWwgc3RhcnRpbmcgeCx5IHBhaXJzIC0gd2hpY2ggY2FuIGJlIGhhZCBmcm9tIHBhcnQgMS4gIEJ1dCB0aGUgaW4gcGFydCAxIGNvdW50ZWQgY3Jvc3NpbmdzLiAgSWYgdGhlIHByb2JlIHdhcyBpbiB0aGUgdGFyZ2V0IGFyZWEgdHdvIHRpbWVzLCBpdCBpcyBjb3VudGVkIHR3aWNlIGluIHBhcnQgMS4gIFNvIHdlIG5lZWQgdG8gcHVsbCB0aGUgdW5pcXVlIHN0YXJ0IGNvbWJpbmF0aW9ucw0KYGBge3J9DQpwYXJ0MjwtdW5pcXVlKGFsbHBhc3NlcyU+JXNlbGVjdChzdGFydHgsc3RhcnR5KSkNCnBhcnQyPC1ucm93KHBhcnQyKQ0KcGFydDINCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAyMyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KDQpBbGwgb2YgdGhlc2UgZnVuY3Rpb25zIHRha2UgaW4gYSBtYXAgYW5kIHJldHVybiBhIGxpc3Qgb2YgcG9zc2libGUgbWFwcyBhbmQgdGhlIGFkZGl0aW9uYWwgY29zdCBmb3Igb25lIG1vdmUgcGFzdCB0aGUgIG9uZSB0aGF0IHdhcyBicm91Z2h0IGluLg0KDQpUaGUgaGFsbCBmdW5jdGlvbnMgbW92ZSBzb21ldGhpbmcgaW4gdGhlIGhhbGwgdG8gaXRzIGFwcHJvcHJpYXRlIHJvb20gaW4gcG9zaXRpb24gMSAoaWYgcG9zaXRpb24gMSBpcyBlbXB0eSkNCg0KYGBge3J9DQpoYWxsMTwtZnVuY3Rpb24oZGlhZyl7DQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIGNvc3Q8LWRpYWdbWzZdXQ0KICAjIyMgbW92ZSBpZiBwb3NpdGlvbiAxIGluIHRoYXQgcm9vbSBpcyAwLiAgDQogIHN3aXRjaChoYWxsWzFdLA0KICAgICAgICAgIkEiPXsNCiAgICAgICAgICAgaWYocm9vbWFbMV09PSIuIiYmKGFsbChyb29tYVstMV0laW4lYygiLiIsIkEiKSkpJiZoYWxsWzJdPT0iLiIpe2Nvc3Q8LWNvc3QrMw0KICAgICAgICAgICBoYWxsWzFdPC0iLiINCiAgICAgICAgICAgcm9vbWFbMV08LSJBIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJCIj17DQogICAgICAgICAgIGlmKHJvb21iWzFdPT0iLiImJihhbGwocm9vbWJbLTFdJWluJWMoIi4iLCJCIikpKSYmaGFsbFsyXT09Ii4iJiZoYWxsWzNdPT0iLiIpe2Nvc3Q8LWNvc3QrNTANCiAgICAgICAgICAgaGFsbFsxXTwtIi4iDQogICAgICAgICAgIHJvb21iWzFdPC0iQiJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiQyI9ew0KICAgICAgICAgICBpZihyb29tY1sxXT09Ii4iJiYoYWxsKHJvb21jWy0xXSVpbiVjKCIuIiwiQyIpKSkmJmhhbGxbMl09PSIuIiYmaGFsbFszXT09Ii4iJiZoYWxsWzRdPT0iLiIpew0KICAgICAgICAgICAgIGNvc3Q8LWNvc3QrNzAwDQogICAgICAgICAgIGhhbGxbMV08LSIuIg0KICAgICAgICAgICByb29tY1sxXTwtIkMifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkQiPXsNCiAgICAgICAgICAgaWYocm9vbWRbMV09PSIuIiYmKGFsbChyb29tZFstMV0laW4lYygiLiIsIkQiKSkpJiZoYWxsWzJdPT0iLiImJmhhbGxbM109PSIuIiYmaGFsbFs0XT09Ii4iJiZoYWxsWzVdPT0iLiIpe2Nvc3Q8LWNvc3QrOTAwMA0KICAgICAgICAgICBoYWxsWzFdPC0iLiINCiAgICAgICAgICAgcm9vbWRbMV08LSJEIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgIGNhdCgic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDFcbiIpKQ0KICAjIyMgcmV0dXJuIHRoZSB1cGRhdGVkIGRpYWdyYW0gd2l0aCB0aGUgbmV3IGNvc3QNCiAgcmV0dXJuKGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxjb3N0KSl9DQojIyMjDQpoYWxsMjwtZnVuY3Rpb24oZGlhZyl7DQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIGNvc3Q8LWRpYWdbWzZdXQ0KICBzd2l0Y2goaGFsbFsyXSwNCiAgICAgICAgICJBIj17DQogICAgICAgICAgIGlmKHJvb21hWzFdPT0iLiImJihhbGwocm9vbWFbLTFdJWluJWMoIi4iLCJBIikpKSl7Y29zdDwtY29zdCsyDQogICAgICAgICAgIGhhbGxbMl08LSIuIg0KICAgICAgICAgICByb29tYVsxXTwtIkEifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkIiPXsNCiAgICAgICAgICAgaWYocm9vbWJbMV09PSIuIiYmKGFsbChyb29tYlstMV0laW4lYygiLiIsIkIiKSkpJiZoYWxsWzNdPT0iLiIpe2Nvc3Q8LWNvc3QrNDANCiAgICAgICAgICAgaGFsbFsyXTwtIi4iDQogICAgICAgICAgIHJvb21iWzFdPC0iQiJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiQyI9ew0KICAgICAgICAgICBpZihyb29tY1sxXT09Ii4iJiYoYWxsKHJvb21jWy0xXSVpbiVjKCIuIiwiQyIpKSkmJmhhbGxbM109PSIuIiYmaGFsbFs0XT09Ii4iKXtjb3N0PC1jb3N0KzYwMA0KICAgICAgICAgICBoYWxsWzJdPC0iLiINCiAgICAgICAgICAgcm9vbWNbMV08LSJDIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJEIj17DQogICAgICAgICAgIGlmKHJvb21kWzFdPT0iLiImJihhbGwocm9vbWRbLTFdJWluJWMoIi4iLCJEIikpKSYmaGFsbFszXT09Ii4iJiZoYWxsWzRdPT0iLiImJmhhbGxbNV09PSIuIil7Y29zdDwtY29zdCs4MDAwDQogICAgICAgICAgIGhhbGxbMl08LSIuIg0KICAgICAgICAgICByb29tZFsxXTwtIkQifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgY2F0KCJzb21ldGhpbmcgd2VudCB3cm9uZyBoYWxsMlxuIikpDQogIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfQ0KIyMjIw0KaGFsbDM8LWZ1bmN0aW9uKGRpYWcpew0KICBoYWxsPC1kaWFnW1sxXV0NCiAgcm9vbWE8LWRpYWdbWzJdXQ0KICByb29tYjwtZGlhZ1tbM11dDQogIHJvb21jPC1kaWFnW1s0XV0NCiAgcm9vbWQ8LWRpYWdbWzVdXQ0KICBjb3N0PC1kaWFnW1s2XV0NCiAgc3dpdGNoKGhhbGxbM10sDQogICAgICAgICAiQSI9ew0KICAgICAgICAgICBpZihyb29tYVsxXT09Ii4iJiYoYWxsKHJvb21hWy0xXSVpbiVjKCIuIiwiQSIpKSkpe2Nvc3Q8LWNvc3QrMg0KICAgICAgICAgICBoYWxsWzNdPC0iLiINCiAgICAgICAgICAgcm9vbWFbMV08LSJBIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJCIj17DQogICAgICAgICAgIGlmKHJvb21iWzFdPT0iLiImJihhbGwocm9vbWJbLTFdJWluJWMoIi4iLCJCIikpKSl7Y29zdDwtY29zdCsyMA0KICAgICAgICAgICBoYWxsWzNdPC0iLiINCiAgICAgICAgICAgcm9vbWJbMV08LSJCIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJDIj17DQogICAgICAgICAgIGlmKHJvb21jWzFdPT0iLiImJihhbGwocm9vbWNbLTFdJWluJWMoIi4iLCJDIikpKSAmJiBoYWxsWzRdPT0iLiIpe2Nvc3Q8LWNvc3QrNDAwDQogICAgICAgICAgIGhhbGxbM108LSIuIg0KICAgICAgICAgICByb29tY1sxXTwtIkMifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkQiPXsNCiAgICAgICAgICAgaWYocm9vbWRbMV09PSIuIiYmKGFsbChyb29tZFstMV0laW4lYygiLiIsIkQiKSkpICYmaGFsbFs0XT09Ii4iJiZoYWxsWzVdPT0iLiIpe2Nvc3Q8LWNvc3QrNjAwMA0KICAgICAgICAgICBoYWxsWzNdPC0iLiINCiAgICAgICAgICAgcm9vbWRbMV08LSJEIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgIGNhdCgic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDNcbiIpKQ0KICByZXR1cm4obGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLGNvc3QpKX0NCiMjIyMNCmhhbGw0PC1mdW5jdGlvbihkaWFnKXsNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgY29zdDwtZGlhZ1tbNl1dDQogIHN3aXRjaChoYWxsWzRdLA0KICAgICAgICAgIkEiPXsNCiAgICAgICAgICAgaWYocm9vbWFbMV09PSIuIiYmKGFsbChyb29tYVstMV0laW4lYygiLiIsIkEiKSkpJiZoYWxsWzNdPT0iLiIpe2Nvc3Q8LWNvc3QrNA0KICAgICAgICAgICBoYWxsWzRdPC0iLiINCiAgICAgICAgICAgcm9vbWFbMV08LSJBIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJCIj17DQogICAgICAgICAgIGlmKHJvb21iWzFdPT0iLiImJihhbGwocm9vbWJbLTFdJWluJWMoIi4iLCJCIikpKSl7Y29zdDwtY29zdCsyMA0KICAgICAgICAgICBoYWxsWzRdPC0iLiINCiAgICAgICAgICAgcm9vbWJbMV08LSJCIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJDIj17DQogICAgICAgICAgIGlmKHJvb21jWzFdPT0iLiImJihhbGwocm9vbWNbLTFdJWluJWMoIi4iLCJDIikpKSl7Y29zdDwtY29zdCsyMDANCiAgICAgICAgICAgaGFsbFs0XTwtIi4iDQogICAgICAgICAgIHJvb21jWzFdPC0iQyJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiRCI9ew0KICAgICAgICAgICBpZihyb29tZFsxXT09Ii4iJiYoYWxsKHJvb21kWy0xXSVpbiVjKCIuIiwiRCIpKSkmJmhhbGxbNV09PSIuIil7Y29zdDwtY29zdCs0MDAwDQogICAgICAgICAgIGhhbGxbNF08LSIuIg0KICAgICAgICAgICByb29tZFsxXTwtIkQifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgY2F0KCJzb21ldGhpbmcgd2VudCB3cm9uZyBoYWxsNFxuIikpDQogIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfQ0KIyMjIw0KaGFsbDU8LWZ1bmN0aW9uKGRpYWcpew0KICBoYWxsPC1kaWFnW1sxXV0NCiAgcm9vbWE8LWRpYWdbWzJdXQ0KICByb29tYjwtZGlhZ1tbM11dDQogIHJvb21jPC1kaWFnW1s0XV0NCiAgcm9vbWQ8LWRpYWdbWzVdXQ0KICBjb3N0PC1kaWFnW1s2XV0NCiAgc3dpdGNoKGhhbGxbNV0sDQogICAgICAgICAiQSI9ew0KICAgICAgICAgICBpZihyb29tYVsxXT09Ii4iJiYoYWxsKHJvb21hWy0xXSVpbiVjKCIuIiwiQSIpKSkmJmhhbGxbM109PSIuIiYmaGFsbFs0XT09Ii4iKXtjb3N0PC1jb3N0KzYNCiAgICAgICAgICAgaGFsbFs1XTwtIi4iDQogICAgICAgICAgIHJvb21hWzFdPC0iQSJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiQiI9ew0KICAgICAgICAgICBpZihyb29tYlsxXT09Ii4iJiYoYWxsKHJvb21iWy0xXSVpbiVjKCIuIiwiQiIpKSkmJmhhbGxbNF09PSIuIil7Y29zdDwtY29zdCs0MA0KICAgICAgICAgICBoYWxsWzVdPC0iLiINCiAgICAgICAgICAgcm9vbWJbMV08LSJCIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgICJDIj17DQogICAgICAgICAgIGlmKHJvb21jWzFdPT0iLiImJihhbGwocm9vbWNbLTFdJWluJWMoIi4iLCJDIikpKSl7Y29zdDwtY29zdCsyMDANCiAgICAgICAgICAgaGFsbFs1XTwtIi4iDQogICAgICAgICAgIHJvb21jWzFdPC0iQyJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiRCI9ew0KICAgICAgICAgICBpZihyb29tZFsxXT09Ii4iJiYoYWxsKHJvb21kWy0xXSVpbiVjKCIuIiwiRCIpKSkpe2Nvc3Q8LWNvc3QrMjAwMA0KICAgICAgICAgICBoYWxsWzVdPC0iLiINCiAgICAgICAgICAgcm9vbWRbMV08LSJEIn1lbHNle2Nvc3Q8LTB9fSwNCiAgICAgICAgIGNhdCgic29tZXRoaW5nIHdlbnQgd3JvbmcgaGFsbDVcbiIpKQ0KICByZXR1cm4obGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLGNvc3QpKX0NCiMjIyMNCmhhbGw2PC1mdW5jdGlvbihkaWFnKXsNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgY29zdDwtZGlhZ1tbNl1dDQogIHN3aXRjaChoYWxsWzZdLA0KICAgICAgICAgIkEiPXsNCiAgICAgICAgICAgaWYocm9vbWFbMV09PSIuIiYmKGFsbChyb29tYVstMV0laW4lYygiLiIsIkEiKSkpJiZoYWxsWzNdPT0iLiImJmhhbGxbNF09PSIuIiYmaGFsbFs1XT09Ii4iKXtjb3N0PC1jb3N0KzgNCiAgICAgICAgICAgaGFsbFs2XTwtIi4iDQogICAgICAgICAgIHJvb21hWzFdPC0iQSJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiQiI9ew0KICAgICAgICAgICBpZihyb29tYlsxXT09Ii4iJiYoYWxsKHJvb21iWy0xXSVpbiVjKCIuIiwiQiIpKSkmJmhhbGxbNF09PSIuIiYmaGFsbFs1XT09Ii4iKXtjb3N0PC1jb3N0KzYwDQogICAgICAgICAgIGhhbGxbNl08LSIuIg0KICAgICAgICAgICByb29tYlsxXTwtIkIifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkMiPXsNCiAgICAgICAgICAgaWYocm9vbWNbMV09PSIuIiYmKGFsbChyb29tY1stMV0laW4lYygiLiIsIkMiKSkpJiZoYWxsWzVdPT0iLiIpe2Nvc3Q8LWNvc3QrNDAwDQogICAgICAgICAgIGhhbGxbNl08LSIuIg0KICAgICAgICAgICByb29tY1sxXTwtIkMifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkQiPXsNCiAgICAgICAgICAgaWYocm9vbWRbMV09PSIuIiYmKGFsbChyb29tZFstMV0laW4lYygiLiIsIkQiKSkpKXtjb3N0PC1jb3N0KzIwMDANCiAgICAgICAgICAgaGFsbFs2XTwtIi4iDQogICAgICAgICAgIHJvb21kWzFdPC0iRCJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICBjYXQoInNvbWV0aGluZyB3ZW50IHdyb25nIGhhbGw2XG4iKSkNCiAgcmV0dXJuKGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxjb3N0KSl9DQojIyMjDQpoYWxsNzwtZnVuY3Rpb24oZGlhZyl7DQogIyBjYXQocGFzdGUodW5saXN0KGRpYWcpKSwiXG4iKQ0KICBoYWxsPC1kaWFnW1sxXV0NCiAgcm9vbWE8LWRpYWdbWzJdXQ0KICByb29tYjwtZGlhZ1tbM11dDQogIHJvb21jPC1kaWFnW1s0XV0NCiAgcm9vbWQ8LWRpYWdbWzVdXQ0KICBjb3N0PC1kaWFnW1s2XV0NCiAgc3dpdGNoKGhhbGxbN10sDQogICAgICAgICAiQSI9ew0KICAgICAgICAgICBpZihyb29tYVsxXT09Ii4iJiYoYWxsKHJvb21hWy0xXSVpbiVjKCIuIiwiQSIpKSkmJmhhbGxbM109PSIuIiYmaGFsbFs0XT09Ii4iJiZoYWxsWzVdPT0iLiImJmhhbGxbNl09PSIuIil7Y29zdDwtY29zdCs5DQogICAgICAgICAgIGhhbGxbN108LSIuIg0KICAgICAgICAgICByb29tYVsxXTwtIkEifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkIiPXsNCiAgICAgICAgICAgaWYocm9vbWJbMV09PSIuIiYmKGFsbChyb29tYlstMV0laW4lYygiLiIsIkIiKSkpJiZoYWxsWzRdPT0iLiImJmhhbGxbNV09PSIuIiYmaGFsbFs2XT09Ii4iKXtjb3N0PC1jb3N0KzcwDQogICAgICAgICAgIGhhbGxbN108LSIuIg0KICAgICAgICAgICByb29tYlsxXTwtIkIifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgIkMiPXsNCiAgICAgICAgICAgaWYocm9vbWNbMV09PSIuIiYmKGFsbChyb29tY1stMV0laW4lYygiLiIsIkMiKSkpJiZoYWxsWzVdPT0iLiImJmhhbGxbNl09PSIuIil7Y29zdDwtY29zdCs1MDANCiAgICAgICAgICAgaGFsbFs3XTwtIi4iDQogICAgICAgICAgIHJvb21jWzFdPC0iQyJ9ZWxzZXtjb3N0PC0wfX0sDQogICAgICAgICAiRCI9ew0KICAgICAgICAgICBpZihyb29tZFsxXT09Ii4iJiYoYWxsKHJvb21kWy0xXSVpbiVjKCIuIiwiRCIpKSkmJmhhbGxbNl09PSIuIil7Y29zdDwtY29zdCszMDAwDQogICAgICAgICAgIGhhbGxbN108LSIuIg0KICAgICAgICAgICByb29tZFsxXTwtIkQifWVsc2V7Y29zdDwtMH19LA0KICAgICAgICAgY2F0KCJzb21ldGhpbmcgd2VudCB3cm9uZyBoYWxsN1xuIikpDQogIHJldHVybihsaXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksY29zdCkpfQ0KYGBgDQoNCg0KVGhlIHJvb20gZnVuY3Rpb24gZG9lcyBmbGlwcyB0aGUgcm9vbSB0byBtb3ZlIGNvcnJlY3QgYW1waGlwb2RzIGRlZXBlciBvciBpbmNvcnJlY3QgYW1waGlwb2RzIHRvIHNwYWNlIDEuICBJdCBhbHNvIHB1dHMgYW1waGlwb2RzIGluIHNwYWNlIDEgaW50byBhbGwgb2YgdGhlIGhhbGx3YXkgcG9zaXRpb25zDQoNCmBgYHtyfQ0KIyMjIG9ubHkgZ28gdG8gdGhlIHJvb21zIGlmOg0KIyBuZWVkIHRvIG1vdmUgc29tZXRoaW5nIGRlZXBlciBpbiBlLmcuLCByb29tYSA9PSBjKCJBIiwiLiIpIG1vdmUgdG8gYygiLiIsIkEiKQ0KIyBuZWVkIHRvIG1vdmUgY2xvc2VyIG91dCwgZS5nLiwgcm9vbWE9PWMoIi4iLCJEIikgbW92ZSB0byBjKCJEIiwiLiIpDQojIG5lZWQgdG8gbW92ZSBzb21ldGhpbmcgaW50byB0aGUgaGFsbCBlLmcuIGMoIkQiLGRvZXNuJ3QgbWF0dGVyKSBtb3ZlIHRvIGMoIi4iLHN0aWxsIGRvZXNuJ3QgbWF0dGVyKSwgaGFsbCA9IHNvbWV0aGluZyBuZXcNCnJvb21hPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtbGlzdCgpDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICBpZihhbGwocm9vbWE9PWMoIkEiLCIuIikpKXsNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxyZXYocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrMSkpDQogIH1lbHNlIGlmKHJvb21hWzFdPT0iLiImJnJvb21hWzJdIT0iQSIpew0KICAgIHN3aXRjaChyb29tYVsyXSwNCiAgICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAiRCI9Y29zdDwtMTAwMCwNCiAgICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21hXG4iKSkNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxyZXYocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCkpDQogIH1lbHNlew0KICAgICMjIyBtb3ZlIHRvIGhhbGx3YXkNCiAgICAjIyMgdG8gdGhlIGxlZnQNCiAgICBpZihyb29tYVsxXSVpbiVjKCJBIiwiQiIsIkMiLCJEIikpew0KICAgICAgc3dpdGNoKHJvb21hWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tYVxuIikpDQogICAgICBpZihoYWxsWzJdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tYVsxXSxoYWxsWzM6N10pLGMoIi4iLHJvb21hWzJdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMykNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbMV09PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKHJvb21hWzFdLGhhbGxbMjo3XSksYygiLiIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19DQogICAgICBpZihoYWxsWzNdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21hWzFdLGhhbGxbNDo3XSksYygiLiIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFs0XT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21hWzFdLGhhbGxbNTo3XSksYygiLiIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgIGlmKGhhbGxbNV09PSIuIil7DQogICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21hWzFdLGhhbGxbNjo3XSksYygiLiIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo2KQ0KICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgICBpZihoYWxsWzZdPT0iLiIpew0KICAgICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21hWzFdLGhhbGxbN10pLGMoIi4iLHJvb21hWzJdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqOCkNCiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgICAgIGlmKGhhbGxbN109PSIuIil7DQogICAgICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tYVsxXSksYygiLiIscm9vbWFbMl0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo5KQ0KICAgICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19fX0NCiAgb3V0bGlzdH0NCg0KIyMjDQoNCnJvb21iPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtbGlzdCgpDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICBpZihhbGwocm9vbWI9PWMoIkIiLCIuIikpKXsNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxyZXYocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrMTApKQ0KICB9ZWxzZSBpZihyb29tYlsxXT09Ii4iJiZyb29tYlsyXSE9IkIiKXsNCiAgICBzd2l0Y2gocm9vbWJbMl0sDQogICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAiRCI9Y29zdDwtMTAwMCwNCiAgICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21iXG4iKSkNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxyZXYocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCkpDQogIH1lbHNlew0KICAgICMjIyBtb3ZlIHRvIGhhbGx3YXkNCiAgICAjIyMgdG8gdGhlIGxlZnQNCiAgICBpZihyb29tYlsxXSVpbiVjKCJBIiwiQiIsIkMiLCJEIikpew0KICAgICAgc3dpdGNoKHJvb21iWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tYlxuIikpDQogICAgICBpZihoYWxsWzNdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21iWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYygiLiIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFsyXT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tYlsxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMoIi4iLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNCkNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgICBpZihoYWxsWzFdPT0iLiIpew0KICAgICAgICAgICAgeDwtbGlzdChjKHJvb21iWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYygiLiIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo1KQ0KICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19DQogICAgICBpZihoYWxsWzRdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21iWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYygiLiIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFs1XT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21iWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYygiLiIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgIGlmKGhhbGxbNl09PSIuIil7DQogICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21iWzFdLGhhbGxbN10pLGMocm9vbWEpLGMoIi4iLHJvb21iWzJdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNikNCiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgICAgaWYoaGFsbFs3XT09Ii4iKXsNCiAgICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tYlsxXSksYyhyb29tYSksYygiLiIscm9vbWJbMl0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo3KQ0KICAgICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19fX0NCiAgb3V0bGlzdH0NCg0KDQojIyMjIyMjDQoNCnJvb21jPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtbGlzdCgpDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICBpZihhbGwocm9vbWM9PWMoIkMiLCIuIikpKXsNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxyZXYocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrMTAwKSkNCiAgfWVsc2UgaWYocm9vbWNbMV09PSIuIiYmcm9vbWNbMl0hPSJDIil7DQogICAgc3dpdGNoKHJvb21jWzJdLA0KICAgICAgICAgICAiQSI9Y29zdDwtMSwNCiAgICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgICAiRCI9Y29zdDwtMTAwMCwNCiAgICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21jXG4iKSkNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxyZXYocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCkpDQogIH1lbHNlew0KICAgICMjIyBtb3ZlIHRvIGhhbGx3YXkNCiAgICAjIyMgdG8gdGhlIGxlZnQNCiAgICBpZihyb29tY1sxXSVpbiVjKCJBIiwiQiIsIkMiLCJEIikpew0KICAgICAgc3dpdGNoKHJvb21jWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tY1xuIikpDQogICAgICBpZihoYWxsWzRdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21jWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFszXT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21jWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgIGlmKGhhbGxbMl09PSIuIil7DQogICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tY1sxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoIi4iLHJvb21jWzJdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNikNCiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgICAgaWYoaGFsbFsxXT09Ii4iKXsNCiAgICAgICAgICAgICAgeDwtbGlzdChjKHJvb21jWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo3KQ0KICAgICAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19DQogICAgICBpZihoYWxsWzVdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21jWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFs2XT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21jWzFdLGhhbGxbN10pLGMocm9vbWEpLGMocm9vbWIpLGMoIi4iLHJvb21jWzJdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNCkNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgICBpZihoYWxsWzddPT0iLiIpew0KICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tY1sxXSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbMl0pLGMocm9vbWQpLG9sZGNvc3QrY29zdCo1KQ0KICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19fX0NCiAgb3V0bGlzdH0NCg0KIyMjIyMjIyMjIyMjIyMjIyMjDQoNCnJvb21kPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtbGlzdCgpDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICBpZihhbGwocm9vbWQ9PWMoIkQiLCIuIikpKXsNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxyZXYocm9vbWQpLG9sZGNvc3QrMTAwMCkpDQogIH1lbHNlIGlmKHJvb21kWzFdPT0iLiImJnJvb21kWzJdIT0iQyIpew0KICAgIHN3aXRjaChyb29tZFsyXSwNCiAgICAgICAgICAgIkEiPWNvc3Q8LTEsDQogICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21kIHAxXG4iKSkNCiAgICBvdXRsaXN0PC1saXN0KGxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxyZXYocm9vbWQpLG9sZGNvc3QrY29zdCkpDQogIH1lbHNlew0KICAgICMjIyBtb3ZlIHRvIGhhbGx3YXkNCiAgICAjIyMgdG8gdGhlIGxlZnQNCiAgICBpZihyb29tZFsxXSVpbiVjKCJBIiwiQiIsIkMiLCJEIikpew0KICAgICAgc3dpdGNoKHJvb21kWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBwMlxuIikpDQogICAgICBpZihoYWxsWzVdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21kWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCoyKQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgaWYoaGFsbFs0XT09Ii4iKXsNCiAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21kWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCo0KQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgIGlmKGhhbGxbM109PSIuIil7DQogICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21kWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCo2KQ0KICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgICBpZihoYWxsWzJdPT0iLiIpew0KICAgICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tZFsxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoIi4iLHJvb21kWzJdKSxvbGRjb3N0K2Nvc3QqOCkNCiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgICAgIGlmKGhhbGxbMV09PSIuIil7DQogICAgICAgICAgICAgICAgeDwtbGlzdChjKHJvb21kWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCo5KQ0KICAgICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19DQogICAgICBpZihoYWxsWzZdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjVdLHJvb21kWzFdLGhhbGxbN10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoIi4iLHJvb21kWzJdKSxvbGRjb3N0K2Nvc3QqMikNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbN109PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tZFsxXSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbMl0pLG9sZGNvc3QrY29zdCozKQ0KICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX0NCiAgb3V0bGlzdH0NCg0KYGBgDQoNClRoZSBmdWxsIGZ1bmN0aW9uIG1ha2VzIG9uZSBtb3ZlIGF0IGEgdGltZS4gRWl0aGVyIGEgaGFsbHdheSBtb3ZlIG9yIG9uZSBvciBtb3JlIHJvb20gbW92ZXMuDQoNCmBgYHtyfQ0KYW1waGlwb2RzPC1mdW5jdGlvbihhLGIsYyxkKXsNCiAgcHE8LXByaW9yaXR5X3F1ZXVlKCkNCiAgYmVlbnRoZXJlPC1kaWN0KCkNCiAgc3RhcnQ8LWxpc3QocmVwKCIuIiw3KSxjKGEpLGMoYiksYyhjKSxjKGQpLDApDQogIGZpbmFsc3RhdGU8LWMocmVwKCIuIiw3KSxjKCJBIiwiQSIpLGMoIkIiLCJCIiksYygiQyIsIkMiKSxjKCJEIiwiRCIpKQ0KICBwcSRwdXNoKHN0YXJ0LDApDQogIGNvdW50ZXI8LTENCiAgd2hpbGUocHEkc2l6ZSgpPjApew0KICAgIG5vdzwtcHEkcG9wKCkNCiAgICAjIyMgaWYgZG9uZSwgZG9uZQ0KICAgIGlmKGFsbChub3dbWzFdXT09Ii4iKSYmYWxsKG5vd1tbMl1dPT0iQSIpKXtyZXR1cm4obm93KX0NCiAgICAjIyMgaWYgYmVlbiB0aGVyZSwgbmV4dA0KICAgIGlmKGJlZW50aGVyZSRoYXMobm93WzE6NV0pKXsNCiMgICAgICBjb3VudGVyPC1jb3VudGVyKzENCiMgICAgICBpZihjb3VudGVyJSUxMDAwMD09MCl7Y2F0KGNvdW50ZXIsbm93W1s2XV0scHEkc2l6ZSgpLGJlZW50aGVyZSRzaXplKCksIlxuIil9DQogICAgICBuZXh0fQ0KICAgICMjIyBvdGhlcndpc2UsIGhlcmUgdG8gdGhlIGRpY3Rpb25hcnkNCiAgICBiZWVudGhlcmUkc2V0KG5vd1sxOjVdLG5vd1tbNl1dKQ0KICAgICMjIyMgSGFsbHdheSBtb3Zlcw0KICAgIGlmKG5vd1tbMV1dWzFdIT0iLiIpew0KICAgICAgaDE8LWhhbGwxKG5vdykNCiAgICAgIGlmKGgxW1s2XV0+MCl7cHEkcHVzaChoMSwtaDFbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzJdIT0iLiIpew0KICAgICAgaDI8LWhhbGwyKG5vdykNCiAgICAgIGlmKGgyW1s2XV0+MCl7cHEkcHVzaChoMiwtaDJbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzNdIT0iLiIpew0KICAgICAgaDM8LWhhbGwzKG5vdykNCiAgICAgIGlmKGgzW1s2XV0+MCl7cHEkcHVzaChoMywtaDNbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzRdIT0iLiIpew0KICAgICAgaDQ8LWhhbGw0KG5vdykNCiAgICAgIGlmKGg0W1s2XV0+MCl7cHEkcHVzaChoNCwtaDRbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzVdIT0iLiIpew0KICAgICAgaDU8LWhhbGw1KG5vdykNCiAgICAgIGlmKGg1W1s2XV0+MCl7cHEkcHVzaChoNSwtaDVbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzZdIT0iLiIpew0KICAgICAgaDY8LWhhbGw2KG5vdykNCiAgICAgIGlmKGg2W1s2XV0+MCl7cHEkcHVzaChoNiwtaDZbWzZdXSl9DQogICAgfQ0KICAgIGlmKG5vd1tbMV1dWzddIT0iLiIpew0KICAgICAgaDc8LWhhbGw3KG5vdykNCiAgICAgIGlmKGg3W1s2XV0+MCl7cHEkcHVzaChoNywtaDdbWzZdXSl9DQogICAgfQ0KICAgICMjIyByb29tIG1vdmVzDQogICAgaWYoYW55KG5vd1tbMl1dIT0iLiIpJiYgIWFsbChub3dbWzJdXT09YygiLiIsIkEiKSkpew0KICAgICAgcmE8LXJvb21hKG5vdykNCiAgICAgIGlmKGxlbmd0aChyYSk+MCl7DQogICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJhKSl7DQogICAgICAgICAgeDwtcmFbW2ldXQ0KICAgICAgICAgIHBxJHB1c2goeCwteFtbNl1dKX19fQ0KICAgIGlmKGFueShub3dbWzNdXSE9Ii4iKSYmICFhbGwobm93W1szXV09PWMoIi4iLCJCIikpKXsNCiAgICAgIHJiPC1yb29tYihub3cpDQogICAgICBpZihsZW5ndGgocmIpPjApew0KICAgICAgICBmb3IoaSBpbiAxOmxlbmd0aChyYikpew0KICAgICAgICAgIHg8LXJiW1tpXV0NCiAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSkNCiAgICAgICAgICB9fX0NCiAgICBpZihhbnkobm93W1s0XV0hPSIuIikmJiAhYWxsKG5vd1tbNF1dPT1jKCIuIiwiQyIpKSl7DQogICAgICByYzwtcm9vbWMobm93KQ0KICAgICAgaWYobGVuZ3RoKHJjKT4wKXsNCiAgICAgICAgZm9yKGkgaW4gMTpsZW5ndGgocmMpKXsNCiAgICAgICAgICB4PC1yY1tbaV1dDQogICAgICAgICAgcHEkcHVzaCh4LC14W1s2XV0pfX19DQogICAgaWYoYW55KG5vd1tbNV1dIT0iLiIpJiYgIWFsbChub3dbWzVdXT09YygiLiIsIkQiKSkpew0KICAgICAgcmQ8LXJvb21kKG5vdykNCiAgICAgIGlmKGxlbmd0aChyZCk+MCl7DQogICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJkKSl7DQogICAgICAgICAgeDwtcmRbW2ldXQ0KICAgICAgICAgICNjYXQoImQiLHBhc3RlKHgpKSAgICANCiAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSkNCiAgICAgICAgICB9fX0NCiAgICANCiAgICANCiAgICANCiAgICANCiAgfQ0KICByZXR1cm4oYmVlbnRoZXJlKX0NCmBgYA0KDQoNClJ1biB0aGUgZnVuY3Rpb24gd2l0aCBpbnB1dA0KYGBge3J9DQojIyMgUHV6emxlIGlucHV0IGlzIGRvbmUgbWFudWFsbHkNCg0KYTwtYygiQiIsIkEiKQ0KYjwtYygiQyIsIkQiKQ0KYzwtYygiQiIsIkMiKQ0KZDwtYygiRCIsIkEiKQ0KDQpwMTwtYW1waGlwb2RzKGEsYixjLGQpDQpwYXJ0MTwtcDFbWzZdXQ0KcGFydDENCmBgYA0KDQoNCiMjIFBhcnQgMg0KDQpGb3IgdGhlIGhhbGxzLCBub3RoaW5nIGNoYW5nZXMuICBUaGV5J3JlIGFscmVhZHkgc2V0IHVwIHRvIHRvIGJlIGNhbGxlZCAmIHRvIHdvcmsgbm8gbWF0dGVyIGhvdyBsb25nIHRoZSByb29tcyBhcmUuDQoNClRoZSByb29tcyBuZWVkIHRvIGJlIHNwbGl0IGludG8gdGhyZWUgZnVuY3Rpb25zIGZvciBteSBzYW5pdHkuDQoNCk5vdGhpbmcgcmVhbGx5IGNoYW5nZXMgaW4gdGhlIHJvb20gdG8gaGFsbCAtIHRoZXkgYXJlIHNwbGl0IGFwYXJ0IGZyb20gdGhlIG90aGVyIHJvb20gZnVuY3Rpb25zDQoNCmBgYHtyfQ0KIyMjIGlmIHRoZXJlIGlzIHNvbWV0aGluZyBpbiByb29tWFsxXSYmaWYgdGhlcmUgaXMgc3BhY2UgaW4gdGhlIGhhbGwmJmlmIHRoZXJlIGlzIHNvbWV0aGluZyBpbiB0aGUgcm9vbSB0aGF0IGJlbG9uZ3MgaW4gYSBkaWZmZXJlbnQgcm9vbToNCnJvb21vdXRhPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtbGlzdCgpDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICAjIyMgbW92ZSB0byBoYWxsd2F5DQogICMjIyB0byB0aGUgbGVmdA0KICMgY2F0KHBhc3RlKGRpYWcsIlxuIikpDQogIHN3aXRjaChyb29tYVsxXSwNCiAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21hXG4iKSkNCiAgaWYoaGFsbFsyXT09Ii4iKXsNCiAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tYVsxXSxoYWxsWzM6N10pLGMoIi4iLHJvb21hWy0xXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjMpDQogICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgaWYoaGFsbFsxXT09Ii4iKXsNCiAgICAgIHg8LWxpc3QoYyhyb29tYVsxXSxoYWxsWzI6N10pLGMoIi4iLHJvb21hWy0xXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjIpDQogICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fQ0KICBpZihoYWxsWzNdPT0iLiIpew0KICAgIHg8LWxpc3QoYyhoYWxsWzE6Ml0scm9vbWFbMV0saGFsbFs0OjddKSxjKCIuIixyb29tYVstMV0pLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCoyKQ0KICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgIGlmKGhhbGxbNF09PSIuIil7DQogICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21hWzFdLGhhbGxbNTo3XSksYygiLiIscm9vbWFbLTFdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNCkNCiAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgaWYoaGFsbFs1XT09Ii4iKXsNCiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tYVsxXSxoYWxsWzY6N10pLGMoIi4iLHJvb21hWy0xXSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjYpDQogICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICBpZihoYWxsWzZdPT0iLiIpew0KICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWFbMV0saGFsbFs3XSksYygiLiIscm9vbWFbLTFdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqOCkNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgICBpZihoYWxsWzddPT0iLiIpew0KICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tYVsxXSksYygiLiIscm9vbWFbLTFdKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqOSkNCiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fX19DQpvdXRsaXN0fQ0KDQojIyMNCg0Kcm9vbW91dGI8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1saXN0KCkNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgb2xkY29zdDwtZGlhZ1tbNl1dDQogIHN3aXRjaChyb29tYlsxXSwNCiAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21iXG4iKSkNCiAgaWYoaGFsbFszXT09Ii4iKXsNCiAgICB4PC1saXN0KGMoaGFsbFsxOjJdLHJvb21iWzFdLGhhbGxbNDo3XSksYyhyb29tYSksYygiLiIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMikNCiAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICBpZihoYWxsWzJdPT0iLiIpew0KICAgICAgeDwtbGlzdChjKGhhbGxbMV0scm9vbWJbMV0saGFsbFszOjddKSxjKHJvb21hKSxjKCIuIixyb29tYlstMV0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo0KQ0KICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICBpZihoYWxsWzFdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMocm9vbWJbMV0saGFsbFsyOjddKSxjKHJvb21hKSxjKCIuIixyb29tYlstMV0pLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrY29zdCo1KQ0KICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX0NCiAgaWYoaGFsbFs0XT09Ii4iKXsNCiAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21iWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYygiLiIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMikNCiAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICBpZihoYWxsWzVdPT0iLiIpew0KICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tYlsxXSxoYWxsWzY6N10pLGMocm9vbWEpLGMoIi4iLHJvb21iWy0xXSksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCtjb3N0KjQpDQogICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgIGlmKGhhbGxbNl09PSIuIil7DQogICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWJbMV0saGFsbFs3XSksYyhyb29tYSksYygiLiIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNikNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbN109PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tYlsxXSksYyhyb29tYSksYygiLiIscm9vbWJbLTFdKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNykNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fX19DQpvdXRsaXN0fQ0KDQoNCiMjIyMjIyMNCg0Kcm9vbW91dGM8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1saXN0KCkNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgb2xkY29zdDwtZGlhZ1tbNl1dDQogICAgIyMjIG1vdmUgdG8gaGFsbHdheQ0KICAgICMjIyB0byB0aGUgbGVmdA0KICAgICAgc3dpdGNoKHJvb21jWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tY1xuIikpDQogICAgICBpZihoYWxsWzRdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjNdLHJvb21jWzFdLGhhbGxbNTo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqMikNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbM109PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKGhhbGxbMToyXSxyb29tY1sxXSxoYWxsWzQ6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoIi4iLHJvb21jWy0xXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjQpDQogICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgaWYoaGFsbFsyXT09Ii4iKXsNCiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzFdLHJvb21jWzFdLGhhbGxbMzo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNikNCiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgICAgaWYoaGFsbFsxXT09Ii4iKXsNCiAgICAgICAgICAgICAgeDwtbGlzdChjKHJvb21jWzFdLGhhbGxbMjo3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNykNCiAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19fQ0KICAgICAgaWYoaGFsbFs1XT09Ii4iKXsNCiAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo0XSxyb29tY1sxXSxoYWxsWzY6N10pLGMocm9vbWEpLGMocm9vbWIpLGMoIi4iLHJvb21jWy0xXSksYyhyb29tZCksb2xkY29zdCtjb3N0KjIpDQogICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICBpZihoYWxsWzZdPT0iLiIpew0KICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWNbMV0saGFsbFs3XSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNCkNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSkNCiAgICAgICAgICBpZihoYWxsWzddPT0iLiIpew0KICAgICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tY1sxXSksYyhyb29tYSksYyhyb29tYiksYygiLiIscm9vbWNbLTFdKSxjKHJvb21kKSxvbGRjb3N0K2Nvc3QqNSkNCiAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKX19fQ0KICBvdXRsaXN0fQ0KDQojIyMjIyMjIyMjIyMjIyMjIyMNCg0Kcm9vbW91dGQ8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1saXN0KCkNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgb2xkY29zdDwtZGlhZ1tbNl1dDQogICAgIyMjIG1vdmUgdG8gaGFsbHdheQ0KICAgICMjIyB0byB0aGUgbGVmdA0KICAgICAgc3dpdGNoKHJvb21kWzFdLA0KICAgICAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICAgICAiQyI9Y29zdDwtMTAwLA0KICAgICAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBwMlxuIikpDQogICAgICBpZihoYWxsWzVdPT0iLiIpew0KICAgICAgICB4PC1saXN0KGMoaGFsbFsxOjRdLHJvb21kWzFdLGhhbGxbNjo3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbLTFdKSxvbGRjb3N0K2Nvc3QqMikNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbNF09PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTozXSxyb29tZFsxXSxoYWxsWzU6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoIi4iLHJvb21kWy0xXSksb2xkY29zdCtjb3N0KjQpDQogICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgaWYoaGFsbFszXT09Ii4iKXsNCiAgICAgICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6Ml0scm9vbWRbMV0saGFsbFs0OjddKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKCIuIixyb29tZFstMV0pLG9sZGNvc3QrY29zdCo2KQ0KICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgICAgICBpZihoYWxsWzJdPT0iLiIpew0KICAgICAgICAgICAgICB4PC1saXN0KGMoaGFsbFsxXSxyb29tZFsxXSxoYWxsWzM6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoIi4iLHJvb21kWy0xXSksb2xkY29zdCtjb3N0KjgpDQogICAgICAgICAgICAgIG91dGxpc3Q8LWMob3V0bGlzdCxsaXN0KHgpKQ0KICAgICAgICAgICAgICBpZihoYWxsWzFdPT0iLiIpew0KICAgICAgICAgICAgICAgIHg8LWxpc3QoYyhyb29tZFsxXSxoYWxsWzI6N10pLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMoIi4iLHJvb21kWy0xXSksb2xkY29zdCtjb3N0KjkpDQogICAgICAgICAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpfX19fX0NCiAgICAgIGlmKGhhbGxbNl09PSIuIil7DQogICAgICAgIHg8LWxpc3QoYyhoYWxsWzE6NV0scm9vbWRbMV0saGFsbFs3XSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbLTFdKSxvbGRjb3N0K2Nvc3QqMikNCiAgICAgICAgb3V0bGlzdDwtYyhvdXRsaXN0LGxpc3QoeCkpDQogICAgICAgIGlmKGhhbGxbN109PSIuIil7DQogICAgICAgICAgeDwtbGlzdChjKGhhbGxbMTo2XSxyb29tZFsxXSksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYygiLiIscm9vbWRbLTFdKSxvbGRjb3N0K2Nvc3QqMykNCiAgICAgICAgICBvdXRsaXN0PC1jKG91dGxpc3QsbGlzdCh4KSl9fQ0KICBvdXRsaXN0fQ0KYGBgDQoNClRoZSByb29tIGZvcndhcmQgc2hvdWxkIGJlIGNhbGxlZCBpZiB0aGVyZSdzIG5vdGhpbmcgaW4gc3BhY2UgMSBhbmQgYW4gaW5jb3JyZWN0IGFtcGhpcG9kIHNvbWV3aGVyZSBmdXJ0aGVyIGJhY2suICBJdCBtb3ZlcyB0aGUgY2xvc2VzdCB0byB0aGUgZnJvbnQgYWxsIHRoZSB3YXkgdG8gdGhlIGZyb250LiAgVGhlcmUgdGhleSBjYW4gYmUgcGlja2VkIHVwIGJ5IHRoZSByb29tIG91dCBmdW5jdGlvbg0KDQpgYGB7cn0NCnJvb21hZm9yd2FyZDwtZnVuY3Rpb24oZGlhZyl7DQogICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkDQogIG91dGxpc3Q8LWRpYWcNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgb2xkY29zdDwtZGlhZ1tbNl1dDQogICMjIyBmaW5kIHRoZSBmaXJzdCBub24gZW1wdHkgc3BhY2UNCiAgeDwtbWluKHdoaWNoKHJvb21hIT0iLiIpKQ0KICBzd2l0Y2gocm9vbWFbeF0sDQogICAgICAgICAiQSI9Y29zdDwtMSwNCiAgICAgICAgICJCIj1jb3N0PC0xMCwNCiAgICAgICAgICJDIj1jb3N0PC0xMDAsDQogICAgICAgICAiRCI9Y29zdDwtMTAwMCwNCiAgICAgICAgIGNhdCgic29tZXRoaW5ncyB3cm9uZyBpbiByb29tZCBmb3J3YXJkXG4iKSkNCiAgIyMjIHB1dCBpdCBpbiBzcGFjZSAxIGFuZCBtYWtlIGl0cyBzcGFjZSBlbXB0eQ0KICByb29tYVsxXTwtcm9vbWFbeF0NCiAgcm9vbWFbeF08LSIuIg0KICAjIyMgdXBkYXRlIHRoZSBjb3N0IGJhc2VkIG9uIHdoYXQgd2FzIGJlaW5nIG1vdmVkLg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsoKHgtMSkqY29zdCkpDQogIG91dGxpc3R9DQojIyMjDQpyb29tYmZvcndhcmQ8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1kaWFnDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICB4PC1taW4od2hpY2gocm9vbWIhPSIuIikpDQogIHN3aXRjaChyb29tYlt4XSwNCiAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21kIGZvcndhcmRcbiIpKQ0KICByb29tYlsxXTwtcm9vbWJbeF0NCiAgcm9vbWJbeF08LSIuIg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsoKHgtMSkqY29zdCkpDQogIG91dGxpc3R9DQojIyMjDQpyb29tY2ZvcndhcmQ8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1kaWFnDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICB4PC1taW4od2hpY2gocm9vbWMhPSIuIikpDQogIHN3aXRjaChyb29tY1t4XSwNCiAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21kIGZvcndhcmRcbiIpKQ0KICByb29tY1sxXTwtcm9vbWNbeF0NCiAgcm9vbWNbeF08LSIuIg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsoKHgtMSkqY29zdCkpDQogIG91dGxpc3R9DQojIyMjDQpyb29tZGZvcndhcmQ8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1kaWFnDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICB4PC1taW4od2hpY2gocm9vbWQhPSIuIikpDQogIHN3aXRjaChyb29tZFt4XSwNCiAgICAgICAgICJBIj1jb3N0PC0xLA0KICAgICAgICAgIkIiPWNvc3Q8LTEwLA0KICAgICAgICAgIkMiPWNvc3Q8LTEwMCwNCiAgICAgICAgICJEIj1jb3N0PC0xMDAwLA0KICAgICAgICAgY2F0KCJzb21ldGhpbmdzIHdyb25nIGluIHJvb21kIGZvcndhcmRcbiIpKQ0KICByb29tZFsxXTwtcm9vbWRbeF0NCiAgcm9vbWRbeF08LSIuIg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsoKHgtMSkqY29zdCkpDQogIG91dGxpc3R9DQpgYGANClJvb20gYmFjayBtb3ZlcyBjb3JyZWN0IGFtcGhpcG9kcyBmcm9tIHBvc2l0aW9uIDEgKHdoZXJlIHRoZXkgd2VyZSBkcm9wcGVkIG9mZiBieSB0aGUgaGFsbHdheSBmdW5jdGlvbikgdG8gdGhlIGZpcnN0IHNwYWNlIGluIHRoZSBiYWNrIG9mIHRoZSByb29tLg0KDQpgYGB7cn0NCnJvb21hYmFjazwtZnVuY3Rpb24oZGlhZyl7DQogICNjcmVhdGUgdGhlIGxpc3Qgb2YgdGhpbmdzIHRvIGJlIHJldHVybmVkDQogIG91dGxpc3Q8LWRpYWcNCiAgaGFsbDwtZGlhZ1tbMV1dDQogIHJvb21hPC1kaWFnW1syXV0NCiAgcm9vbWI8LWRpYWdbWzNdXQ0KICByb29tYzwtZGlhZ1tbNF1dDQogIHJvb21kPC1kaWFnW1s1XV0NCiAgb2xkY29zdDwtZGlhZ1tbNl1dDQogICMjIyBmaW5kIHRoZSBmaXJzdCBlbXB0eSBzcGFjZQ0KICB4PC1tYXgod2hpY2gocm9vbWE9PSIuIikpDQogICMjIyBzd2FwIGl0IHdpdGggdGhlIGFtcGhpcG9kDQogIHJvb21hWzFdPC0iLiINCiAgcm9vbWFbeF08LSJBIg0KICAjIyMgdXBkYXRlIHRoZSBjb3N0DQogIG91dGxpc3Q8LWxpc3QoYyhoYWxsKSxjKHJvb21hKSxjKHJvb21iKSxjKHJvb21jKSxjKHJvb21kKSxvbGRjb3N0Kyh4LTEpKQ0KICBvdXRsaXN0fQ0KIyMjIw0Kcm9vbWJiYWNrPC1mdW5jdGlvbihkaWFnKXsNCiAgI2NyZWF0ZSB0aGUgbGlzdCBvZiB0aGluZ3MgdG8gYmUgcmV0dXJuZWQNCiAgb3V0bGlzdDwtZGlhZw0KICBoYWxsPC1kaWFnW1sxXV0NCiAgcm9vbWE8LWRpYWdbWzJdXQ0KICByb29tYjwtZGlhZ1tbM11dDQogIHJvb21jPC1kaWFnW1s0XV0NCiAgcm9vbWQ8LWRpYWdbWzVdXQ0KICBvbGRjb3N0PC1kaWFnW1s2XV0NCiAgeDwtbWF4KHdoaWNoKHJvb21iPT0iLiIpKQ0KICByb29tYlsxXTwtIi4iDQogIHJvb21iW3hdPC0iQiINCiAgb3V0bGlzdDwtbGlzdChjKGhhbGwpLGMocm9vbWEpLGMocm9vbWIpLGMocm9vbWMpLGMocm9vbWQpLG9sZGNvc3QrMTAqKHgtMSkpDQogIG91dGxpc3R9DQojIyMjDQpyb29tY2JhY2s8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1kaWFnDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICB4PC1tYXgod2hpY2gocm9vbWM9PSIuIikpDQogIHJvb21jWzFdPC0iLiINCiAgcm9vbWNbeF08LSJDIg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsxMDAqKHgtMSkpDQogIG91dGxpc3R9DQojIyMjDQpyb29tZGJhY2s8LWZ1bmN0aW9uKGRpYWcpew0KICAjY3JlYXRlIHRoZSBsaXN0IG9mIHRoaW5ncyB0byBiZSByZXR1cm5lZA0KICBvdXRsaXN0PC1kaWFnDQogIGhhbGw8LWRpYWdbWzFdXQ0KICByb29tYTwtZGlhZ1tbMl1dDQogIHJvb21iPC1kaWFnW1szXV0NCiAgcm9vbWM8LWRpYWdbWzRdXQ0KICByb29tZDwtZGlhZ1tbNV1dDQogIG9sZGNvc3Q8LWRpYWdbWzZdXQ0KICB4PC1tYXgod2hpY2gocm9vbWQ9PSIuIikpDQogIHJvb21kWzFdPC0iLiINCiAgcm9vbWRbeF08LSJEIg0KICBvdXRsaXN0PC1saXN0KGMoaGFsbCksYyhyb29tYSksYyhyb29tYiksYyhyb29tYyksYyhyb29tZCksb2xkY29zdCsxMDAwKih4LTEpKQ0KICBvdXRsaXN0fQ0KYGBgDQoNCg0KVGhlIHdob2xlIGZ1bmN0aW9uIHdvcmtzIHRoZSBzYW1lIHdheSBhcyBpdCBkaWQgYmVmb3JlLg0KDQpgYGB7cn0NCmFtcGhpcG9kc2xvbmc8LWZ1bmN0aW9uKGEsYixjLGQpew0KICBwcTwtcHJpb3JpdHlfcXVldWUoKQ0KICBiZWVudGhlcmU8LWRpY3QoKQ0KICBzdGFydDwtIGxpc3QocmVwKCIuIiw3KSxjKGEpLGMoYiksYyhjKSxjKGQpLDApDQogIGZpbmFsc3RhdGU8LWMocmVwKCIuIiw3KSxjKCJBIiwiQSIpLGMoIkIiLCJCIiksYygiQyIsIkMiKSxjKCJEIiwiRCIpKQ0KICBwcSRwdXNoKHN0YXJ0LDApDQogIGNvdW50ZXI8LTENCiAgd2hpbGUocHEkc2l6ZSgpPjApew0KICAgIG5vdzwtcHEkcG9wKCkNCiAgICAjIyMgaWYgZG9uZSwgZG9uZSByZXR1cm4gdGhlIHdob2xlIGRpYWdyYW0gZm9yIGNoZWNraW5nDQogICAgaWYoYWxsKG5vd1tbMV1dPT0iLiIpJiZhbGwobm93W1syXV09PSJBIikmJmFsbChub3dbWzNdXT09IkIiKSl7cmV0dXJuKG5vdyl9DQogICAgIyMjIGlmIGJlZW4gdGhlcmUsIG5leHQNCiAgICBpZihiZWVudGhlcmUkaGFzKG5vd1sxOjVdKSl7DQogICAgICBuZXh0fQ0KICAgICMjIyBvdGhlcndpc2UsIGFkZCB0aGlzIHRvIHRoZSBkaWN0aW9uYXJ5DQogICAgYmVlbnRoZXJlJHNldChub3dbMTo1XSxub3dbWzZdXSkNCiAgICAjIyMjIGFkZCBpbiB0aGUgaGFsbHdheSBtb3Zlcw0KICAgIGlmKG5vd1tbMV1dWzFdIT0iLiIpew0KICAgICAgaDE8LWhhbGwxKG5vdykNCiAgICAgIHBxJHB1c2goaDEsLWgxW1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzJdIT0iLiIpew0KICAgICAgaDI8LWhhbGwyKG5vdykNCiAgICAgIHBxJHB1c2goaDIsLWgyW1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzNdIT0iLiIpew0KICAgICAgaDM8LWhhbGwzKG5vdykNCiAgICAgIHBxJHB1c2goaDMsLWgzW1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzRdIT0iLiIpew0KICAgICAgaDQ8LWhhbGw0KG5vdykNCiAgICAgIHBxJHB1c2goaDQsLWg0W1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzVdIT0iLiIpew0KICAgICAgaDU8LWhhbGw1KG5vdykNCiAgICAgIHBxJHB1c2goaDUsLWg1W1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzZdIT0iLiIpew0KICAgICAgaDY8LWhhbGw2KG5vdykNCiAgICAgIHBxJHB1c2goaDYsLWg2W1s2XV0pfQ0KICAgIGlmKG5vd1tbMV1dWzddIT0iLiIpew0KICAgICAgaDc8LWhhbGw3KG5vdykNCiAgICAgIHBxJHB1c2goaDcsLWg3W1s2XV0pfQ0KICAgICMjIyBGaXJzdCwgUm9vbSBvdXRzDQogICAgIyMjIGFkZCBpbiB0aGUgcm9vbSBvdXRzIGZvciBldmVyeXRoaW5nIGluIHBvc2l0aW9uIDEgd2hlcmUgdGhlcmUgaXMgYSBsb3N0IGFtcGhpcG9kDQogICAgaWYoYW55KG5vd1tbMV1dPT0iLiIpKXsNCiAgICAgIGlmKG5vd1tbMl1dWzFdIT0iLiImJiFhbGwobm93W1syXV0laW4lYygiLiIsIkEiKSkpew0KICAgICAgICByYTwtcm9vbW91dGEobm93KQ0KICAgICAgICBpZihsZW5ndGgocmEpPjApew0KICAgICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJhKSl7DQogICAgICAgICAgICB4PC1yYVtbaV1dDQogICAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSl9fX0NCiAgICAgIGlmKG5vd1tbM11dWzFdIT0iLiImJiFhbGwobm93W1szXV0laW4lYygiLiIsIkIiKSkpew0KICAgICAgICByYjwtcm9vbW91dGIobm93KQ0KICAgICAgICBpZihsZW5ndGgocmIpPjApew0KICAgICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJiKSl7DQogICAgICAgICAgICB4PC1yYltbaV1dDQogICAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSl9fX0NCiAgICAgIGlmKG5vd1tbNF1dWzFdIT0iLiImJiFhbGwobm93W1s0XV0laW4lYygiLiIsIkMiKSkpew0KICAgICAgICByYzwtcm9vbW91dGMobm93KQ0KICAgICAgICBpZihsZW5ndGgocmMpPjApew0KICAgICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJjKSl7DQogICAgICAgICAgICB4PC1yY1tbaV1dDQogICAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSl9fX0NCiAgICAgIGlmKG5vd1tbNV1dWzFdIT0iLiImJiFhbGwobm93W1s1XV0laW4lYygiLiIsIkQiKSkpew0KICAgICAgICByZDwtcm9vbW91dGQobm93KQ0KICAgICAgICBpZihsZW5ndGgocmQpPjApew0KICAgICAgICAgIGZvcihpIGluIDE6bGVuZ3RoKHJkKSl7DQogICAgICAgICAgICB4PC1yZFtbaV1dDQogICAgICAgICAgICBwcSRwdXNoKHgsLXhbWzZdXSl9fX19DQogICAgIyMjIHNodWZmbGUgYW1waGlwb2RzIGZvcndhcmQgdG8gc3BhY2UgMQ0KICAgIGlmKG5vd1tbMl1dWzFdPT0iLiImJmFueShjKCJCIiwiQyIsIkQiKSVpbiVub3dbWzJdXSkpew0KICAgICAgcmFmPC1yb29tYWZvcndhcmQobm93KQ0KICAgICAgcHEkcHVzaChyYWYsLXJhZltbNl1dKX0NCiAgICBpZihub3dbWzNdXVsxXT09Ii4iJiZhbnkoYygiQSIsIkMiLCJEIiklaW4lbm93W1szXV0pKXsNCiAgICAgIHJiZjwtcm9vbWJmb3J3YXJkKG5vdykNCiAgICAgIHBxJHB1c2gocmJmLC1yYmZbWzZdXSl9DQogICAgaWYobm93W1s0XV1bMV09PSIuIiYmYW55KGMoIkEiLCJCIiwiRCIpJWluJW5vd1tbNF1dKSl7DQogICAgICByY2Y8LXJvb21jZm9yd2FyZChub3cpDQogICAgICBwcSRwdXNoKHJjZiwtcmNmW1s2XV0pfQ0KICAgIGlmKG5vd1tbNV1dWzFdPT0iLiImJmFueShjKCJBIiwiQiIsIkMiKSVpbiVub3dbWzVdXSkpew0KICAgICAgcmRmPC1yb29tZGZvcndhcmQobm93KQ0KICAgICAgcHEkcHVzaChyZGYsLXJkZltbNl1dKX0NCiAgICAjIyMgc2h1ZmZsZSBmb3VuZCBhbXBoaXBvZHMgYmFjayB0byB0aGUgYmFjayBvZiB0aGUgcm9vbS4NCiAgICBpZihub3dbWzJdXVsxXT09IkEiJiZhbGwoYygiLiIsIkEiKSVpbiVub3dbWzJdXSkmJmFsbChub3dbWzJdXSVpbiVjKCIuIiwiQSIpKSl7DQogICAgICByYWI8LXJvb21hYmFjayhub3cpDQogICAgICBwcSRwdXNoKHJhYiwtcmFiW1s2XV0pfQ0KICAgIGlmKG5vd1tbM11dWzFdPT0iQiImJmFsbChjKCIuIiwiQiIpJWluJW5vd1tbM11dKSYmYWxsKG5vd1tbM11dJWluJWMoIi4iLCJCIikpKXsNCiAgICAgIHJiYjwtcm9vbWJiYWNrKG5vdykNCiAgICAgIHBxJHB1c2gocmJiLC1yYmJbWzZdXSl9DQogICAgaWYobm93W1s0XV1bMV09PSJDIiYmYWxsKGMoIi4iLCJDIiklaW4lbm93W1s0XV0pJiZhbGwobm93W1s0XV0laW4lYygiLiIsIkMiKSkpew0KICAgICAgcmNiPC1yb29tY2JhY2sobm93KQ0KICAgICAgcHEkcHVzaChyY2IsLXJjYltbNl1dKX0NCiAgICBpZihub3dbWzVdXVsxXT09IkQiJiZhbGwoYygiLiIsIkQiKSVpbiVub3dbWzVdXSkmJmFsbChub3dbWzVdXSVpbiVjKCIuIiwiRCIpKSl7DQogICAgICByZGI8LXJvb21kYmFjayhub3cpDQogICAgICBwcSRwdXNoKHJkYiwtcmRiW1s2XV0pfQ0KICAgIH0NCiAgcmV0dXJuKGxpc3Qobm93LGJlZW50aGVyZSkpfQ0KYGBgDQoNCg0KTm93IHJ1biAtIA0KYGBge3J9DQojIyMgRmlyc3Qgc2hvdyBpdCB3b3JrcyBvbiB0aGUgcHJldmlvdXMgaW5wdXQgKHJvb21zIHNpemUgMik6DQoNCmE8LWMoIkIiLCJBIikNCmI8LWMoIkMiLCJEIikNCmM8LWMoIkIiLCJDIikNCmQ8LWMoIkQiLCJBIikNCnAxPC1hbXBoaXBvZHNsb25nKGEsYixjLGQpDQpwYXJ0MWxvbmc8LXAxW1s2XV0NCnBhcnQxbG9uZw0KDQojIyMgdGhlbiB0aGF0IGl0IHdvcmtzIG9uIHRoZSBsb25nIGlucHV0IChyb29tIHNpemUgNCkNCg0KYTwtYygiQiIsIkQiLCJEIiwiQSIpDQpiPC1jKCJDIiwiQyIsIkIiLCJEIikNCmM8LWMoIkIiLCJCIiwiQSIsIkMiKQ0KZDwtYygiRCIsIkEiLCJDIiwiQSIpDQpwMjwtYW1waGlwb2RzbG9uZyhhLGIsYyxkKQ0KcGFydDI8LXAyW1s2XV0NCnBhcnQyDQpgYGA=</div>
 
 
 
@@ -1939,7 +2817,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day17.Rmd");
+  window.initializeSourceEmbed("Day23.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

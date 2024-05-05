@@ -11,7 +11,7 @@
 
 
 
-<title>Day 17 Notebook</title>
+<title>Day 19 Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Day 17 Notebook</h1>
+<h1 class="title toc-ignore">Day 19 Notebook</h1>
 
 </div>
 
@@ -1756,143 +1756,249 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFyZ2V0eDwtMjA6MzBcbnRhcmdldHk8LSAtNTotMTBcbmBgYCJ9 -->
-<pre class="r"><code>targetx&lt;-20:30
-targety&lt;- -5:-10</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5wdXQ8LXJlYWRfbGluZXMoXCJEYXkxOVNhbXBsZS50eHRcIilcbmJsPC1jKDAsd2hpY2goaW5wdXQ9PVwiXCIpLGxlbmd0aChpbnB1dCkrMSlcbm1lZ2FzY2FubmVybGlzdDwtbGlzdCgpXG5mb3IoaSBpbiAxOihsZW5ndGgoYmwpLTEpKXtcbiAgc2Nhbm5lcmxpc3Q8LWxpc3QoKVxuICBmb3IoaiBpbiAoYmxbaV0rMik6KGJsW2krMV0tMSkpe1xuICAgIGJlYWNvbjwtYXMubnVtZXJpYyh1bmxpc3Qoc3RyX3NwbGl0KGlucHV0W2pdLFwiLFwiKSkpXG4gICAgc2Nhbm5lcmxpc3Q8LWMoc2Nhbm5lcmxpc3QsbGlzdChiZWFjb24pKX1cbiAgbWVnYXNjYW5uZXJsaXN0PC1jKG1lZ2FzY2FubmVybGlzdCxsaXN0KHNjYW5uZXJsaXN0KSl9XG5gYGAifQ== -->
+<pre class="r"><code>input&lt;-read_lines(&quot;Day19Sample.txt&quot;)
+bl&lt;-c(0,which(input==&quot;&quot;),length(input)+1)
+megascannerlist&lt;-list()
+for(i in 1:(length(bl)-1)){
+  scannerlist&lt;-list()
+  for(j in (bl[i]+2):(bl[i+1]-1)){
+    beacon&lt;-as.numeric(unlist(str_split(input[j],&quot;,&quot;)))
+    scannerlist&lt;-c(scannerlist,list(beacon))}
+  megascannerlist&lt;-c(megascannerlist,list(scannerlist))}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="part-1" class="section level2">
 <h2>Part 1</h2>
-<p>Is a math problem (probably?). And I’m going to brute force it
-anyway. Because the target is below 0, the lowest y can be is
-min(target) and the highest it can be is negative min(target), because
-it will go up, it will come down at the same speed it had going up, and
-overshoot the target.</p>
+<p>First, this function gives me a list of the differences between all
+of the beacons for a scanner</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSlcblxuZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXtcbiAgdDwtMVxuICBkZWx0YXk8LWlcbiAgeTwtMFxuICBoPC0wXG4gIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7XG4gICAgeTwteStkZWx0YXlcbiAgICBpZihkZWx0YXk9PTApe2g8LXl9XG4gICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpe1xuICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9XG4gICAgZGVsdGF5PC1kZWx0YXktMVxuICAgIHQ8LXQrMX19XG5jb2xuYW1lcyh1cGRvd24pPC1jKFwic3RhcnR5XCIsXCJ0eVwiLFwieVwiLFwiaFwiKVxudXBkb3duXG5gYGAifQ== -->
-<pre class="r"><code>updown&lt;-as.data.frame(matrix(ncol=4,nrow=0))
-
-for(i in min(targety):(-min(targety)+1)){
-  t&lt;-1
-  deltay&lt;-i
-  y&lt;-0
-  h&lt;-0
-  while(y&gt;=min(targety)){
-    y&lt;-y+deltay
-    if(deltay==0){h&lt;-y}
-    if(y&gt;=min(targety)&amp;&amp;y&lt;=max(targety)){
-      updown&lt;-rbind(updown,c(i,t,y,h))}
-    deltay&lt;-deltay-1
-    t&lt;-t+1}}
-colnames(updown)&lt;-c(&quot;starty&quot;,&quot;ty&quot;,&quot;y&quot;,&quot;h&quot;)
-updown</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MjQsIm5jb2wiOjQsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzI0IMOXIDRdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnIyVHpVckRRQkRIdDBsYTIwQnJ3UjV5OEZCQ0R4NXNrS3JnUVhBUjZRT0lRcTlyRzl0aTNKUmsvYnI1WnZhUitnVFZUZnJmWUVhS2VIRmgrYzNPN0h6dHNOZFhvMk4zNURMR2JPYllGck9yV21UVjI1dGgvNHd4eDlLSENuTllJK09ydnJTbkJVZnZsdDdlc3NmeXRmVEJMcmdQZW1BSGJJTjFrSlg1c1NxVHJvdFZtUng2am5nYzhUbnljZVRucUllalB1NFhJZk0rYU56ZldPU2xyQk8yQ1R1RXREN1V4Zkd1L0FBOEJJL0FBWGhTN3VQUDgvQ0puZXJOL2Q2Vzg3WTRQckY3eE40bDkzcmxQdGcvcngvek5mTXo4ekh6Q01CVDhCeThCSWZ2aUZqNk9GVXBIc05VQyszTUFtVXRWU0pSYnpoWmhWUXBoQmtKMDBqaWw4Q0VhbVpPeU9iUmZPTklwQ2FmVWJvVG9VUnduMmgvZlZvVGw1MTRvZWF4MUU1VzlzTnJ4TG1TRU1YdWs4d3FtZlRIc3lmNTBCOFFzNzJRMHl4bnJ0cXNKbVR2bSt4c3FyQSs0VjR6YnhQSzZWeUdwcDFJM0lXUmlUd0pueUcyOUh2a3p4RXNrcmxVcGsrdFRRTVZLMkZjM0hFY0dVM2VPVnQvQVlLYzBWSDJCQUFBIn0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"-10","2":"1","3":"-10","4":"0"},{"1":"-9","2":"1","3":"-9","4":"0"},{"1":"-8","2":"1","3":"-8","4":"0"},{"1":"-7","2":"1","3":"-7","4":"0"},{"1":"-6","2":"1","3":"-6","4":"0"},{"1":"-5","2":"1","3":"-5","4":"0"},{"1":"-4","2":"2","3":"-9","4":"0"},{"1":"-3","2":"2","3":"-7","4":"0"},{"1":"-2","2":"2","3":"-5","4":"0"},{"1":"-2","2":"3","3":"-9","4":"0"},{"1":"-1","2":"3","3":"-6","4":"0"},{"1":"-1","2":"4","3":"-10","4":"0"},{"1":"0","2":"4","3":"-6","4":"0"},{"1":"0","2":"5","3":"-10","4":"0"},{"1":"1","2":"5","3":"-5","4":"1"},{"1":"1","2":"6","3":"-9","4":"1"},{"1":"2","2":"7","3":"-7","4":"3"},{"1":"3","2":"9","3":"-9","4":"6"},{"1":"4","2":"10","3":"-5","4":"10"},{"1":"5","2":"12","3":"-6","4":"15"},{"1":"6","2":"14","3":"-7","4":"21"},{"1":"7","2":"16","3":"-8","4":"28"},{"1":"8","2":"18","3":"-9","4":"36"},{"1":"9","2":"20","3":"-10","4":"45"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[24]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>As “h” is the highest point in those trajectories, max(h) is the
-highest point</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudXBkb3duW3doaWNoKHVwZG93biRoPT1tYXgodXBkb3duJGgpKSxdXG5gYGAifQ== -->
-<pre class="r"><code>updown[which(updown$h==max(updown$h)),]</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVF5MjdDTUJEY09FNHFJcFVpY2VtNTZqVzUwRU9QUFZSOFFFVWxyaVp4SVdwcVI0NXA0Y2FuOFdYUWRlSkY0RWhSWm1ZenM0K1A5K1VzVzJZQUVBT1BHY1FKUWtnK0YvUDhGWUF6SkJGd0dMbnZEbithSXVENGpwM3c5Z1QwRFB6bGxoK2ZnL3I4NE9sTmNLTEVqK3dRVFByd1FVdzdLNHpkZThZdUtMcUFUUkF6TXZxdm9Lajd2Z0R3R1BZcUc5RlJMeEt6U2xoUmZCbjBJanNGbGp2ZDJsb3JOREczZlJxWUl4TUlEMXZscHFqeWNyTlYzL2tzS01ldFdydWVmc0RvYXRocnpJY3AyTm5iVTdxTFZPdGFTVnFuRVN2WlVISWxmejBjNHkzNlV4U3RxWldsUFZIdENxdXRJRXRXNm9hVWZuTTQvUU96TnA2R0VnSUFBQT09In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["starty"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["ty"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["y"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["h"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"20","3":"-10","4":"45","_rn_":"24"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>But only if there’s something that will be in the X target range at
-time t.</p>
-<p>So, find viable starting xs. The max that startx can be is going to
-be the max(targetx) - otherwise, it will just overshoot the target on
-the first step. So, (because the target is close enough), it’s possible
-to try every number from 1 to the far edge of the target</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2lkZXdheXM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9Myxucm93PTApKVxuXG5mb3IoaSBpbiAxOm1heCh0YXJnZXR4KSl7XG4gIHQ8LTFcbiAgZGVsdGF4PC1pXG4gIHg8LTBcbiAgd2hpbGUoeDxtYXgodGFyZ2V0eCkmJnQ8PW1heCh1cGRvd24kdHkpKXtcbiAgICB4PC14K2RlbHRheFxuICAgIGlmKHg+PW1pbih0YXJnZXR4KSYmeDw9bWF4KHRhcmdldHgpKXtcbiAgICAgIHNpZGV3YXlzPC1yYmluZChzaWRld2F5cyxjKGksdCx4KSl9XG4gICAgaWYoZGVsdGF4PjApe2RlbHRheDwtZGVsdGF4LTF9XG4gICAgdDwtdCsxfX1cbmNvbG5hbWVzKHNpZGV3YXlzKTwtYyhcInN0YXJ0eFwiLFwidHhcIixcInhcIilcbnNpZGV3YXlzXG5gYGAifQ== -->
-<pre class="r"><code>sideways&lt;-as.data.frame(matrix(ncol=3,nrow=0))
-
-for(i in 1:max(targetx)){
-  t&lt;-1
-  deltax&lt;-i
-  x&lt;-0
-  while(x&lt;max(targetx)&amp;&amp;t&lt;=max(updown$ty)){
-    x&lt;-x+deltax
-    if(x&gt;=min(targetx)&amp;&amp;x&lt;=max(targetx)){
-      sideways&lt;-rbind(sideways,c(i,t,x))}
-    if(deltax&gt;0){deltax&lt;-deltax-1}
-    t&lt;-t+1}}
-colnames(sideways)&lt;-c(&quot;startx&quot;,&quot;tx&quot;,&quot;x&quot;)
-sideways</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NTYsIm5jb2wiOjMsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzU2IMOXIDNdIl19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnMyVnpVN0NRQkNBaDVhaU5BRko5T0RCZ3pIR0dDT05DbW9WL3c3R0J6Q2FjRjJoSXJGdVNic29SeC9aSjBDMzJ4a2lrelNlQURkcHZwbnB6dTdNZG1aN2Y5dHV1RzBYQUd3bzJoYllqaGJCZVh5NHEvc0FSVXNyQlNoQ09lVklUMW8xTXdHcSt2RnYxc0dNaFhIam4zQXpoMXVNMjhnZHhsM2tIbklmNlNHYnlHUGtDZklVNlNQUGtPZklGdklDZVltOEFoclpkMXhET3o5WG5nZVAvNis0RDVDSHlDTmtnK1ZWUXk0Nmp1V2NlTGlkZE1qUmMzajlOUnNDZlVkZUovTW0xU1hWSWErL2VaSGlvVDdBZXAvMENla3ROcC9zMUZjOEQrcWZtZlhqMUlYclNQRVdKRnFvZ2JtZWpiR1VLQkdyRVdyV1JFcHY1eW52Y2h4OWVMUkNKWjM3bWUzQjczV25FNHFFdGlHajJ4VktlTSt4OXRmYW1Ma3NSUVBWajZSMnN0SWZRb2s1RjJKbVdCbktOSkp1dmZNeWxLLzFKbnR0RDJRdjNkT1lzbEZCMmY4bDIxa1UxamU2bCtoSUF0bnJ5NERTQ2NWVEVOTEszZUFkeGFvK0QzTWMzaUR1UzBWNWFtdmlxVWdKY25FN1VVZ1drem1NZndDZ2UwTHZKUWNBQUE9PSJ9 -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["startx"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["tx"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["x"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"6","2":"5","3":"20"},{"1":"6","2":"6","3":"21"},{"1":"6","2":"7","3":"21"},{"1":"6","2":"8","3":"21"},{"1":"6","2":"9","3":"21"},{"1":"6","2":"10","3":"21"},{"1":"6","2":"11","3":"21"},{"1":"6","2":"12","3":"21"},{"1":"6","2":"13","3":"21"},{"1":"6","2":"14","3":"21"},{"1":"6","2":"15","3":"21"},{"1":"6","2":"16","3":"21"},{"1":"6","2":"17","3":"21"},{"1":"6","2":"18","3":"21"},{"1":"6","2":"19","3":"21"},{"1":"6","2":"20","3":"21"},{"1":"7","2":"4","3":"22"},{"1":"7","2":"5","3":"25"},{"1":"7","2":"6","3":"27"},{"1":"7","2":"7","3":"28"},{"1":"7","2":"8","3":"28"},{"1":"7","2":"9","3":"28"},{"1":"7","2":"10","3":"28"},{"1":"7","2":"11","3":"28"},{"1":"7","2":"12","3":"28"},{"1":"7","2":"13","3":"28"},{"1":"7","2":"14","3":"28"},{"1":"7","2":"15","3":"28"},{"1":"7","2":"16","3":"28"},{"1":"7","2":"17","3":"28"},{"1":"7","2":"18","3":"28"},{"1":"7","2":"19","3":"28"},{"1":"7","2":"20","3":"28"},{"1":"8","2":"3","3":"21"},{"1":"8","2":"4","3":"26"},{"1":"8","2":"5","3":"30"},{"1":"9","2":"3","3":"24"},{"1":"9","2":"4","3":"30"},{"1":"10","2":"3","3":"27"},{"1":"11","2":"2","3":"21"},{"1":"11","2":"3","3":"30"},{"1":"12","2":"2","3":"23"},{"1":"13","2":"2","3":"25"},{"1":"14","2":"2","3":"27"},{"1":"15","2":"2","3":"29"},{"1":"20","2":"1","3":"20"},{"1":"21","2":"1","3":"21"},{"1":"22","2":"1","3":"22"},{"1":"23","2":"1","3":"23"},{"1":"24","2":"1","3":"24"},{"1":"25","2":"1","3":"25"},{"1":"26","2":"1","3":"26"},{"1":"27","2":"1","3":"27"},{"1":"28","2":"1","3":"28"},{"1":"29","2":"1","3":"29"},{"1":"30","2":"1","3":"30"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[56]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Then join the two frames. Because x just stops going forward when it
-hits time, it’s a valid spot so long as ty&gt;=tx</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWxscGFzc2VzPC1jcm9zc19qb2luKHNpZGV3YXlzLHVwZG93bikgJT4lIFxuICBmaWx0ZXIodHk9PXR4KVxuYGBgIn0= -->
-<pre class="r"><code>allpasses&lt;-cross_join(sideways,updown) %&gt;% 
-  filter(ty==tx)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluZGJkPC1mdW5jdGlvbih4LG5tKXtcbiAgYmVhY29uZGlzdHM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9MTMsbnJvdz0wKSlcbiAgY29sbmFtZXMoYmVhY29uZGlzdHMpPC1jKFwiYmVhY29uMVwiLFwiYmVhY29uMlwiLFwieDFcIixcInkxXCIsXCJ6MVwiLFwieDJcIixcInkyXCIsXCJ6MVwiLFwiZFwiKVxuICBmb3IoaSBpbiAxOihsZW5ndGgoeCktMSkpe1xuICAgIGZvcihqIGluIChpKzEpOmxlbmd0aCh4KSl7XG4gICAgICBhPC1saXN0KGJlYWNvbjE9c3RyX2Mobm0sXCJiXCIsaSksXG4gICAgICAgICAgICAgIGJlYWNvbjI9c3RyX2Mobm0sXCJiXCIsaiksXG4gICAgICAgICAgICAgIHgxPXhbW2ldXVsxXSxcbiAgICAgICAgICAgICAgeTE9eFtbaV1dWzJdLFxuICAgICAgICAgICAgICB6MT14W1tpXV1bM10sXG4gICAgICAgICAgICAgIHgyPXhbW2pdXVsxXSxcbiAgICAgICAgICAgICAgeTI9eFtbal1dWzJdLFxuICAgICAgICAgICAgICB6Mj14W1tqXV1bM10sXG4gICAgICAgICAgICAgIGR4PWFicyh4W1tpXV1bMV0teFtbal1dWzFdKSxcbiAgICAgICAgICAgICAgZHk9YWJzKHhbW2ldXVsyXS14W1tqXV1bMl0pLFxuICAgICAgICAgICAgICBkej1hYnMoeFtbaV1dWzNdLXhbW2pdXVszXSksXG4gICAgICAgICAgICAgIGQ9c3VtKGFicyh4W1tpXV0teFtbal1dKSkpXG4gICAgICBiZWFjb25kaXN0czwtcmJpbmQoYmVhY29uZGlzdHMsYSl9fVxuYmVhY29uZGlzdHN9XG5gYGAifQ== -->
+<pre class="r"><code>findbd&lt;-function(x,nm){
+  beacondists&lt;-as.data.frame(matrix(ncol=13,nrow=0))
+  colnames(beacondists)&lt;-c(&quot;beacon1&quot;,&quot;beacon2&quot;,&quot;x1&quot;,&quot;y1&quot;,&quot;z1&quot;,&quot;x2&quot;,&quot;y2&quot;,&quot;z1&quot;,&quot;d&quot;)
+  for(i in 1:(length(x)-1)){
+    for(j in (i+1):length(x)){
+      a&lt;-list(beacon1=str_c(nm,&quot;b&quot;,i),
+              beacon2=str_c(nm,&quot;b&quot;,j),
+              x1=x[[i]][1],
+              y1=x[[i]][2],
+              z1=x[[i]][3],
+              x2=x[[j]][1],
+              y2=x[[j]][2],
+              z2=x[[j]][3],
+              dx=abs(x[[i]][1]-x[[j]][1]),
+              dy=abs(x[[i]][2]-x[[j]][2]),
+              dz=abs(x[[i]][3]-x[[j]][3]),
+              d=sum(abs(x[[i]]-x[[j]])))
+      beacondists&lt;-rbind(beacondists,a)}}
+beacondists}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>This gives the list of target crossing - the highest height for that
-target crossing.</p>
+<p>Then, findtrans takes a list of overlapping distances and finds the
+transform from one to other</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDE8LW1heChhbGxwYXNzZXMkaClcbnBhcnQxXG5gYGAifQ== -->
-<pre class="r"><code>part1&lt;-max(allpasses$h)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5maW5kdHJhbnM8LWZ1bmN0aW9uKG92KXtcbiAgdDE8LW92WzEsXVxuICAjIyMgZmlndXJlIG91dCBpZiBpdCBtYXRjaGVzIHRoZSBmaXJzdCBvciBzZWNvbmQgXG4gIGlzMSA8LSBucm93KG92ICU+JSByb3d3aXNlICU+JSBmaWx0ZXIoYmVhY29uMS54PT10MSRiZWFjb24xLnh8fCBiZWFjb24yLng9PXQxJGJlYWNvbjEueCkgJT4lIGZpbHRlcihiZWFjb24xLnk9PXQxJGJlYWNvbjEueXx8YmVhY29uMi55PT10MSRiZWFjb24xLnkpKVxuICAjIyMgaWYgaXMxPjEsIHRoZW4gYmVhY29uMS54IG1hdGNoZXMgdG8gYmVhY29uMS55XG4gICMjIyBpZiBpMT09MSwgdGhlbiBiZWFjb24xLnggbWF0Y2hlcyB0byBiZWFjb24yLnlcbiAgXG4gICMjIyBzbyB3ZSdyZSBjaGFuZ2luZyB0aGUgbGFiZWxzIHNvIEkgZG9uJ3QgZ28gY3JhenkuLi4gIHgxIG1hdGNoZXMgeDEuICBhIGlzIHRoZSBvbmVzIHdlIGFyZW4ndCB0cmFuc2Zvcm1pbmcuICBiIGlzIHRoZSBvbmUgd2UgYXJlXG4gIHgxYSA8LXQxJHgxLnhcbiAgeTFhIDwtdDEkeTEueFxuICB6MWEgPC10MSR6MS54XG4gIHgyYSA8LXQxJHgyLnhcbiAgeTJhIDwtdDEkeTIueFxuICB6MmEgPC10MSR6Mi54XG4gIGlmKGlzMT4xKXtcbiAgICB4MWIgPC10MSR4MS55XG4gICAgeTFiIDwtdDEkeTEueVxuICAgIHoxYiA8LXQxJHoxLnlcbiAgICB4MmIgPC10MSR4Mi55XG4gICAgeTJiIDwtdDEkeTIueVxuICAgIHoyYiA8LXQxJHoyLnlcbiAgfWVsc2V7XG4gICAgeDFiIDwtdDEkeDIueVxuICAgIHkxYiA8LXQxJHkyLnlcbiAgICB6MWIgPC10MSR6Mi55XG4gICAgeDJiIDwtdDEkeDEueSBcbiAgICB5MmIgPC10MSR5MS55XG4gICAgejJiIDwtdDEkejEueX1cbiAgIyMjIGZpcnN0IGZpbmQgdGhlIHRyYW5zZm9ybVxuICBydDwtbWF0cml4KE5BLG5yb3c9MyxuY29sPTMpXG4gIHRyPC1jKE5BLE5BLE5BKVxuICAjIyMgeCBmaXJzdFxuICAjIyMgeCh0cmFuc2Zvcm0pIHRvIHgoc3RhYmxlKVxuICBpZih0MSRkeC55PT10MSRkeC54KXtcbiAgICBpZigoeDFiLXgxYSk9PSh4MmIteDJhKSl7XG4gICAgICBydFsxLF08LWMoMSwwLDApXG4gICAgICB0clsxXTwteDFhLXgxYlxuICAgIH1lbHNle1xuICAgICAgcnRbMSxdPC1jKC0xLDAsMClcbiAgICAgIHRyWzFdPC0oeDJhK3gyYil9fVxuICAjIyMgeCh0cmFuc2Zvcm0pIHRvIHkoc3RhYmxlKVxuICBpZih0MSRkeC55PT10MSRkeS54KXtcbiAgICBpZigoeDFiLXkxYSk9PSh4MmIteTJhKSl7XG4gICAgICBydFsxLF08LWMoMCwxLDApXG4gICAgICB0clsyXTwteTFhLXgxYlxuICAgIH1lbHNle1xuICAgICAgcnRbMSxdPC1jKDAsLTEsMClcbiAgICAgIHRyWzJdPC15MmEreDJifX1cbiAgIyMjIHgodHJhbnNmb3JtKSB0byB6KHN0YWJsZSlcbiAgaWYodDEkZHgueT09dDEkZHoueCl7XG4gICAgaWYoKHgxYi16MWEpPT0oeDJiLXoyYSkpe1xuICAgICAgcnRbMSxdPC1jKDAsMCwxKVxuICAgICAgdHJbM108LXoxYS14MWJcbiAgICB9ZWxzZXtcbiAgICAgIHJ0WzEsXTwtYygwLDAsLTEpXG4gICAgICB0clszXTwtejJhK3gyYn19XG4gIFxuICAjIyMgdGhlbiB5XG4gICMjIyB5KHRyYW5zZm9ybSkgdG8geChzdGFibGUpXG4gIGlmKHQxJGR5Lnk9PXQxJGR4Lngpe1xuICAgIGlmKCh5MWIteDFhKT09KHkyYi14MmEpKXtcbiAgICAgIHJ0WzIsXTwtYygxLDAsMClcbiAgICAgIHRyWzFdPC14MWEteTFiXG4gICAgfWVsc2V7XG4gICAgICBydFsyLF08LWMoLTEsMCwwKVxuICAgICAgdHJbMV08LSh4MmEreTJiKX19XG4gICMjIyB5KHRyYW5zZm9ybSkgdG8geShzdGFibGUpXG4gIGlmKHQxJGR5Lnk9PXQxJGR5Lngpe1xuICAgIGlmKCh5MWIteTFhKT09KHkyYi15MmEpKXtcbiAgICAgIHJ0WzIsXTwtYygwLDEsMClcbiAgICAgIHRyWzJdPC15MWEteTFiXG4gICAgfWVsc2V7XG4gICAgICBydFsyLF08LWMoMCwtMSwwKVxuICAgICAgdHJbMl08LXkyYSt5MmJ9fVxuICAjIyMgeSh0cmFuc2Zvcm0pIHRvIHooc3RhYmxlKVxuICBpZih0MSRkeS55PT10MSRkei54KXtcbiAgICBpZigoeTFiLXoxYSk9PSh5MmItejJhKSl7XG4gICAgICBydFsyLF08LWMoMCwwLDEpXG4gICAgICB0clszXTwtejFhLXkxYlxuICAgIH1lbHNle1xuICAgICAgcnRbMixdPC1jKDAsMCwtMSlcbiAgICAgIHRyWzNdPC16MmEreTJifX1cbiAgXG4gICMjIyB0aGVuIHpcbiAgIyMjIHoodHJhbnNmb3JtKSB0byB4KHN0YWJsZSlcbiAgaWYodDEkZHoueT09dDEkZHgueCl7XG4gICAgaWYoKHoxYi14MWEpPT0oejJiLXgyYSkpe1xuICAgICAgcnRbMyxdPC1jKDEsMCwwKVxuICAgICAgdHJbMV08LXgxYS16MWJcbiAgICB9ZWxzZXtcbiAgICAgIHJ0WzMsXTwtYygtMSwwLDApXG4gICAgICB0clsxXTwtKHgyYSt6MmIpfX1cbiAgIyMjIHoodHJhbnNmb3JtKSB0byB5KHN0YWJsZSlcbiAgaWYodDEkZHoueT09dDEkZHkueCl7XG4gICAgaWYoKHoxYi15MWEpPT0oejJiLXkyYSkpe1xuICAgICAgcnRbMyxdPC1jKDAsMSwwKVxuICAgICAgdHJbMl08LXkxYS16MWJcbiAgICB9ZWxzZXtcbiAgICAgIHJ0WzMsXTwtYygwLC0xLDApXG4gICAgICB0clsyXTwteTJhK3oyYn19XG4gICMjIyB6KHRyYW5zZm9ybSkgdG8geihzdGFibGUpXG4gIGlmKHQxJGR6Lnk9PXQxJGR6Lngpe1xuICAgIGlmKCh6MWItejFhKT09KHoyYi16MmEpKXtcbiAgICAgIHJ0WzMsXTwtYygwLDAsMSlcbiAgICAgIHRyWzNdPC16MWEtejFiXG4gICAgfWVsc2V7XG4gICAgICBydFszLF08LWMoMCwwLC0xKVxuICAgICAgdHJbM108LXoyYSt6MmJ9fVxubGlzdChydCx0cil9XG5cbmBgYCJ9 -->
+<pre class="r"><code>
+findtrans&lt;-function(ov){
+  t1&lt;-ov[1,]
+  ### figure out if it matches the first or second 
+  is1 &lt;- nrow(ov %&gt;% rowwise %&gt;% filter(beacon1.x==t1$beacon1.x|| beacon2.x==t1$beacon1.x) %&gt;% filter(beacon1.y==t1$beacon1.y||beacon2.y==t1$beacon1.y))
+  ### if is1&gt;1, then beacon1.x matches to beacon1.y
+  ### if i1==1, then beacon1.x matches to beacon2.y
+  
+  ### so we&#39;re changing the labels so I don&#39;t go crazy...  x1 matches x1.  a is the ones we aren&#39;t transforming.  b is the one we are
+  x1a &lt;-t1$x1.x
+  y1a &lt;-t1$y1.x
+  z1a &lt;-t1$z1.x
+  x2a &lt;-t1$x2.x
+  y2a &lt;-t1$y2.x
+  z2a &lt;-t1$z2.x
+  if(is1&gt;1){
+    x1b &lt;-t1$x1.y
+    y1b &lt;-t1$y1.y
+    z1b &lt;-t1$z1.y
+    x2b &lt;-t1$x2.y
+    y2b &lt;-t1$y2.y
+    z2b &lt;-t1$z2.y
+  }else{
+    x1b &lt;-t1$x2.y
+    y1b &lt;-t1$y2.y
+    z1b &lt;-t1$z2.y
+    x2b &lt;-t1$x1.y 
+    y2b &lt;-t1$y1.y
+    z2b &lt;-t1$z1.y}
+  ### first find the transform
+  rt&lt;-matrix(NA,nrow=3,ncol=3)
+  tr&lt;-c(NA,NA,NA)
+  ### x first
+  ### x(transform) to x(stable)
+  if(t1$dx.y==t1$dx.x){
+    if((x1b-x1a)==(x2b-x2a)){
+      rt[1,]&lt;-c(1,0,0)
+      tr[1]&lt;-x1a-x1b
+    }else{
+      rt[1,]&lt;-c(-1,0,0)
+      tr[1]&lt;-(x2a+x2b)}}
+  ### x(transform) to y(stable)
+  if(t1$dx.y==t1$dy.x){
+    if((x1b-y1a)==(x2b-y2a)){
+      rt[1,]&lt;-c(0,1,0)
+      tr[2]&lt;-y1a-x1b
+    }else{
+      rt[1,]&lt;-c(0,-1,0)
+      tr[2]&lt;-y2a+x2b}}
+  ### x(transform) to z(stable)
+  if(t1$dx.y==t1$dz.x){
+    if((x1b-z1a)==(x2b-z2a)){
+      rt[1,]&lt;-c(0,0,1)
+      tr[3]&lt;-z1a-x1b
+    }else{
+      rt[1,]&lt;-c(0,0,-1)
+      tr[3]&lt;-z2a+x2b}}
+  
+  ### then y
+  ### y(transform) to x(stable)
+  if(t1$dy.y==t1$dx.x){
+    if((y1b-x1a)==(y2b-x2a)){
+      rt[2,]&lt;-c(1,0,0)
+      tr[1]&lt;-x1a-y1b
+    }else{
+      rt[2,]&lt;-c(-1,0,0)
+      tr[1]&lt;-(x2a+y2b)}}
+  ### y(transform) to y(stable)
+  if(t1$dy.y==t1$dy.x){
+    if((y1b-y1a)==(y2b-y2a)){
+      rt[2,]&lt;-c(0,1,0)
+      tr[2]&lt;-y1a-y1b
+    }else{
+      rt[2,]&lt;-c(0,-1,0)
+      tr[2]&lt;-y2a+y2b}}
+  ### y(transform) to z(stable)
+  if(t1$dy.y==t1$dz.x){
+    if((y1b-z1a)==(y2b-z2a)){
+      rt[2,]&lt;-c(0,0,1)
+      tr[3]&lt;-z1a-y1b
+    }else{
+      rt[2,]&lt;-c(0,0,-1)
+      tr[3]&lt;-z2a+y2b}}
+  
+  ### then z
+  ### z(transform) to x(stable)
+  if(t1$dz.y==t1$dx.x){
+    if((z1b-x1a)==(z2b-x2a)){
+      rt[3,]&lt;-c(1,0,0)
+      tr[1]&lt;-x1a-z1b
+    }else{
+      rt[3,]&lt;-c(-1,0,0)
+      tr[1]&lt;-(x2a+z2b)}}
+  ### z(transform) to y(stable)
+  if(t1$dz.y==t1$dy.x){
+    if((z1b-y1a)==(z2b-y2a)){
+      rt[3,]&lt;-c(0,1,0)
+      tr[2]&lt;-y1a-z1b
+    }else{
+      rt[3,]&lt;-c(0,-1,0)
+      tr[2]&lt;-y2a+z2b}}
+  ### z(transform) to z(stable)
+  if(t1$dz.y==t1$dz.x){
+    if((z1b-z1a)==(z2b-z2a)){
+      rt[3,]&lt;-c(0,0,1)
+      tr[3]&lt;-z1a-z1b
+    }else{
+      rt[3,]&lt;-c(0,0,-1)
+      tr[3]&lt;-z2a+z2b}}
+list(rt,tr)}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29uY2F0YmVhY29uczwtZnVuY3Rpb24oYmwpe1xuICAjIyMgbGlzdCBvZiBhbGwgYmVhY29uc1xuICBldmVyeWJlYWNvbjwtYmxbWzFdXVxuICAjIyMgaW4gbGlzdCBzaG93cyB3aGljaCAoaWYgYW55KSBoYXZlIGJlZW4gYWRkZWQgdG8gb3VyIGxpc3QuICBUIHN0aWxsIGlzbid0IGRvbmUuXG4gIHN0aWxsbGVmdDwtYyhGLHJlcChULChsZW5ndGgoYmwpLTEpKSlcbiAgIyMjIGxpc3Qgb2YgYWxsIHNlbnNvcnNcbiAgc2RmPC1saXN0KClcbiAgc2RmPC1jKHNkZixsaXN0KGMoMCwwLDApKSlcbiAgIyMjIHNvIHdlIGRvbid0IGhhdmUgdG8gZG8gdGhpcyBxdWl0ZSBhcyBtdWNoXG4gIGFsbGRpc3RzPC1sYXBwbHkoMTpsZW5ndGgoYmwpLGZ1bmN0aW9uKHgpe2ZpbmRiZChibFtbeF1dLHN0cl9jKFwic1wiLHgpKX0pXG4gICMjIyB0aGlzIGlzIHRoZSBsaXN0IG9mIGFsbCBvZiB0aGUgZGlzdGFuY2VzXG4gIGJpZ2Rpc3Q8LWZpbmRiZChldmVyeWJlYWNvbixcInMxXCIpXG4gICMjIyBzbyBsb25nIGFzIG5vdCBldmVyeXRoaW5nIGlzIGRvbmUgLSBrZWVwIGdvaW5nXG4gIHdoaWxlKGFueShzdGlsbGxlZnQpKXtcbiAgICAjIyMgYWdhaW4sIHRvIGN1dCBkb3duIG9uIHRoaXMgYSBiaXRcbiAgICBmb3IoaSBpbiB3aGljaChzdGlsbGxlZnQ9PVQpKXtcbiAgICAgICMjIyBmaW5kIG92ZXJsYXBzIGJldHdlZW4gdGhlIG9uZSB0aGF0IGlzbid0IGRvbmUgYW5kIHRoZSBtYWluIGxpc3RcbiAgICAgIG92ZXJsYXBzPC1pbm5lcl9qb2luKGJpZ2Rpc3QsYWxsZGlzdHNbW2ldXSxiPVwiZFwiLHJlbGF0aW9uc2hpcD1cIm1hbnktdG8tbWFueVwiKSAlPiVcbiAgICAgICAgcm93d2lzZSU+JWZpbHRlcihkeC54PT1keC55fHxkeC54PT1keS55fHxkeC54PT1kei55KSU+JVxuICAgICAgICBmaWx0ZXIoZHkueD09ZHgueXx8ZHkueD09ZHkueXx8ZHkueD09ZHoueSlcbiAgICAgICMjIyBpZiB0aGVyZSBhcmUgbW9yZSB0aGFuIDY2IG92ZXJsYXBzIC0gdGhlbiB3ZSBoYXZlIG91ciAxMiBwb2ludHMuXG4gICAgICBpZihucm93KG92ZXJsYXBzPj02Nikpe1xuICAgICAgICAjIyMgZmluZCB0aGUgdHJhbnNmb3JtXG4gICAgICAgIHRvYmFzZTwtZmluZHRyYW5zKG92ZXJsYXBzKVxuICAgICAgICAjIyMgdHJhbnNsYXRlXG4gICAgICAgIG1vdmVkPC1sYXBwbHkoYmxbW2ldXSxmdW5jdGlvbih4KXtcbiAgICAgICAgICB4PC1hcy52ZWN0b3IoeCUqJXRvYmFzZVtbMV1dK3RvYmFzZVtbMl1dKVxuICAgICAgICAgIHh9KVxuICAgICAgICAjIyMgcmVkbyBcImZpbmQgZGlzdGFuY2VzXCIgd2l0aCB0aGUgdHJhbnNsYXRlZCB2YWx1ZVxuICAgICAgICBmYjwtZmluZGJkKG1vdmVkLHN0cl9jKFwiYlwiLGkpKVxuICAgICAgICAjIyMgYWRkIHRoYXQgdG8gdGhlIGRpc3RhbmNlIGxpc3RcbiAgICAgICAgYmlnZGlzdDwtcmJpbmQoYmlnZGlzdCxmYilcbiAgICAgICAgIyMjIGFkZCB0aGlzIHRvIHRoZSBsaXN0IG9mIGV2ZXJ5IGJlYWNvbiBhbmQgcmVtb3ZlIHRoZSBvbmVzIHRoYXQgaGF2ZSBhbHJlYWR5IGJlZW4gbW92ZWQuXG4gICAgICAgIGV2ZXJ5YmVhY29uPC1jKGV2ZXJ5YmVhY29uLG1vdmVkKVxuICAgICAgICBldmVyeWJlYWNvbjwtdW5pcXVlKGV2ZXJ5YmVhY29uKVxuICAgICAgICAjIyMgYWRkIHRoZSBzZW5zb3IgKHRyYW5zZm9ybWluZyAwLDAsMCkgLSB3aGljaCBpcyBlZmZlY3RpdmVseSBcInRvYmFzZVtbMl1dXCJcbiAgICAgICAgc2RmPC1jKHNkZixsaXN0KHRvYmFzZVtbMl1dKSlcbiAgICAgICAgIyMjIG1hcmsgdGhhdCB0aGlzIGhhcyBiZWVuIGRvbmVcbiAgICAgICAgc3RpbGxsZWZ0W2ldPC1GfVxuICAgICAgfVxuICB9XG4gICMjIyByZXR1cm4gdGhlIGxpc3RzIG9mIGV2ZXJ5IGJlYWNvbiAmIHRoZSBsaXN0IG9mIHNlbnNvcnNcbiAgbGlzdChldmVyeWJlYWNvbixzZGYpfVxuXG5gYGAifQ== -->
+<pre class="r"><code>concatbeacons&lt;-function(bl){
+  ### list of all beacons
+  everybeacon&lt;-bl[[1]]
+  ### in list shows which (if any) have been added to our list.  T still isn&#39;t done.
+  stillleft&lt;-c(F,rep(T,(length(bl)-1)))
+  ### list of all sensors
+  sdf&lt;-list()
+  sdf&lt;-c(sdf,list(c(0,0,0)))
+  ### so we don&#39;t have to do this quite as much
+  alldists&lt;-lapply(1:length(bl),function(x){findbd(bl[[x]],str_c(&quot;s&quot;,x))})
+  ### this is the list of all of the distances
+  bigdist&lt;-findbd(everybeacon,&quot;s1&quot;)
+  ### so long as not everything is done - keep going
+  while(any(stillleft)){
+    ### again, to cut down on this a bit
+    for(i in which(stillleft==T)){
+      ### find overlaps between the one that isn&#39;t done and the main list
+      overlaps&lt;-inner_join(bigdist,alldists[[i]],b=&quot;d&quot;,relationship=&quot;many-to-many&quot;) %&gt;%
+        rowwise%&gt;%filter(dx.x==dx.y||dx.x==dy.y||dx.x==dz.y)%&gt;%
+        filter(dy.x==dx.y||dy.x==dy.y||dy.x==dz.y)
+      ### if there are more than 66 overlaps - then we have our 12 points.
+      if(nrow(overlaps&gt;=66)){
+        ### find the transform
+        tobase&lt;-findtrans(overlaps)
+        ### translate
+        moved&lt;-lapply(bl[[i]],function(x){
+          x&lt;-as.vector(x%*%tobase[[1]]+tobase[[2]])
+          x})
+        ### redo &quot;find distances&quot; with the translated value
+        fb&lt;-findbd(moved,str_c(&quot;b&quot;,i))
+        ### add that to the distance list
+        bigdist&lt;-rbind(bigdist,fb)
+        ### add this to the list of every beacon and remove the ones that have already been moved.
+        everybeacon&lt;-c(everybeacon,moved)
+        everybeacon&lt;-unique(everybeacon)
+        ### add the sensor (transforming 0,0,0) - which is effectively &quot;tobase[[2]]&quot;
+        sdf&lt;-c(sdf,list(tobase[[2]]))
+        ### mark that this has been done
+        stillleft[i]&lt;-F}
+      }
+  }
+  ### return the lists of every beacon &amp; the list of sensors
+  list(everybeacon,sdf)}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucDE8LWNvbmNhdGJlYWNvbnMobWVnYXNjYW5uZXJsaXN0KVxucGFydDE8LWxlbmd0aChwMVtbMV1dKVxucGFydDFcbmBgYCJ9 -->
+<pre class="r"><code>p1&lt;-concatbeacons(megascannerlist)
+part1&lt;-length(p1[[1]])
 part1</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDQ1XG4ifQ== -->
-<pre><code>[1] 45</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDc5XG4ifQ== -->
+<pre><code>[1] 79</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="part-2" class="section level2">
-<h2>Part 2</h2>
-<p>Part 2 needs to find all of the potential starting x,y pairs - which
-can be had from part 1. But the in part 1 counted crossings. If the
-probe was in the target area two times, it is counted twice in part 1.
-So we need to pull the unique start combinations</p>
+<p>##Part 2</p>
+<p>Because I have a list of the sensors from the above function AND a
+function that takes a list of points and spits out their manhattan
+distances - this is trivial.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFydDI8LXVuaXF1ZShhbGxwYXNzZXMlPiVzZWxlY3Qoc3RhcnR4LHN0YXJ0eSkpXG5wYXJ0MjwtbnJvdyhwYXJ0MilcbnBhcnQyXG5gYGAifQ== -->
-<pre class="r"><code>part2&lt;-unique(allpasses%&gt;%select(startx,starty))
-part2&lt;-nrow(part2)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucDI8LWZpbmRiZChwMVtbMl1dLFwic1wiKVxucGFydDI8LW1heChwMiRkKVxucGFydDJcbmBgYCJ9 -->
+<pre class="r"><code>p2&lt;-findbd(p1[[2]],&quot;s&quot;)
+part2&lt;-max(p2$d)
 part2</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDExMlxuIn0= -->
-<pre><code>[1] 112</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM2MjFcbiJ9 -->
+<pre><code>[1] 3621</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxNyBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0KbGlicmFyeShnZ3Bsb3QyKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KYGBge3J9DQp0YXJnZXR4PC0yMDozMA0KdGFyZ2V0eTwtIC01Oi0xMA0KYGBgDQoNCiMjIFBhcnQgMQ0KSXMgYSBtYXRoIHByb2JsZW0gKHByb2JhYmx5PykuDQpBbmQgSSdtIGdvaW5nIHRvIGJydXRlIGZvcmNlIGl0IGFueXdheS4NCkJlY2F1c2UgdGhlIHRhcmdldCBpcyBiZWxvdyAwLCB0aGUgbG93ZXN0IHkgY2FuIGJlIGlzIG1pbih0YXJnZXQpIGFuZCB0aGUgaGlnaGVzdCBpdCBjYW4gYmUgaXMgbmVnYXRpdmUgbWluKHRhcmdldCksIGJlY2F1c2UgaXQgd2lsbCBnbyB1cCwgaXQgd2lsbCBjb21lIGRvd24gYXQgdGhlIHNhbWUgc3BlZWQgaXQgaGFkIGdvaW5nIHVwLCBhbmQgb3ZlcnNob290IHRoZSB0YXJnZXQuDQoNCmBgYHtyfQ0KdXBkb3duPC1hcy5kYXRhLmZyYW1lKG1hdHJpeChuY29sPTQsbnJvdz0wKSkNCg0KZm9yKGkgaW4gbWluKHRhcmdldHkpOigtbWluKHRhcmdldHkpKzEpKXsNCiAgdDwtMQ0KICBkZWx0YXk8LWkNCiAgeTwtMA0KICBoPC0wDQogIHdoaWxlKHk+PW1pbih0YXJnZXR5KSl7DQogICAgeTwteStkZWx0YXkNCiAgICBpZihkZWx0YXk9PTApe2g8LXl9DQogICAgaWYoeT49bWluKHRhcmdldHkpJiZ5PD1tYXgodGFyZ2V0eSkpew0KICAgICAgdXBkb3duPC1yYmluZCh1cGRvd24sYyhpLHQseSxoKSl9DQogICAgZGVsdGF5PC1kZWx0YXktMQ0KICAgIHQ8LXQrMX19DQpjb2xuYW1lcyh1cGRvd24pPC1jKCJzdGFydHkiLCJ0eSIsInkiLCJoIikNCnVwZG93bg0KYGBgDQoNCkFzICJoIiBpcyB0aGUgaGlnaGVzdCBwb2ludCBpbiB0aG9zZSB0cmFqZWN0b3JpZXMsIG1heChoKSBpcyB0aGUgaGlnaGVzdCBwb2ludA0KYGBge3J9DQp1cGRvd25bd2hpY2godXBkb3duJGg9PW1heCh1cGRvd24kaCkpLF0NCmBgYA0KQnV0IG9ubHkgaWYgdGhlcmUncyBzb21ldGhpbmcgdGhhdCB3aWxsIGJlIGluIHRoZSBYIHRhcmdldCByYW5nZSBhdCB0aW1lIHQuDQoNClNvLCBmaW5kIHZpYWJsZSBzdGFydGluZyB4cy4NClRoZSBtYXggdGhhdCBzdGFydHggY2FuIGJlIGlzIGdvaW5nIHRvIGJlIHRoZSBtYXgodGFyZ2V0eCkgLSBvdGhlcndpc2UsIGl0IHdpbGwganVzdCBvdmVyc2hvb3QgdGhlIHRhcmdldCBvbiB0aGUgZmlyc3Qgc3RlcC4NClNvLCAoYmVjYXVzZSB0aGUgdGFyZ2V0IGlzIGNsb3NlIGVub3VnaCksIGl0J3MgcG9zc2libGUgdG8gdHJ5IGV2ZXJ5IG51bWJlciBmcm9tIDEgdG8gdGhlIGZhciBlZGdlIG9mIHRoZSB0YXJnZXQNCg0KYGBge3J9DQpzaWRld2F5czwtYXMuZGF0YS5mcmFtZShtYXRyaXgobmNvbD0zLG5yb3c9MCkpDQoNCmZvcihpIGluIDE6bWF4KHRhcmdldHgpKXsNCiAgdDwtMQ0KICBkZWx0YXg8LWkNCiAgeDwtMA0KICB3aGlsZSh4PG1heCh0YXJnZXR4KSYmdDw9bWF4KHVwZG93biR0eSkpew0KICAgIHg8LXgrZGVsdGF4DQogICAgaWYoeD49bWluKHRhcmdldHgpJiZ4PD1tYXgodGFyZ2V0eCkpew0KICAgICAgc2lkZXdheXM8LXJiaW5kKHNpZGV3YXlzLGMoaSx0LHgpKX0NCiAgICBpZihkZWx0YXg+MCl7ZGVsdGF4PC1kZWx0YXgtMX0NCiAgICB0PC10KzF9fQ0KY29sbmFtZXMoc2lkZXdheXMpPC1jKCJzdGFydHgiLCJ0eCIsIngiKQ0Kc2lkZXdheXMNCmBgYA0KDQpUaGVuIGpvaW4gdGhlIHR3byBmcmFtZXMuICBCZWNhdXNlIHgganVzdCBzdG9wcyBnb2luZyBmb3J3YXJkIHdoZW4gaXQgaGl0cyB0aW1lLCBpdCdzIGEgdmFsaWQgc3BvdCBzbyBsb25nIGFzIHR5Pj10eA0KDQpgYGB7cn0NCmFsbHBhc3NlczwtY3Jvc3Nfam9pbihzaWRld2F5cyx1cGRvd24pICU+JSANCiAgZmlsdGVyKHR5PT10eCkNCmBgYA0KVGhpcyBnaXZlcyB0aGUgbGlzdCBvZiB0YXJnZXQgY3Jvc3NpbmcgLSB0aGUgaGlnaGVzdCBoZWlnaHQgZm9yIHRoYXQgdGFyZ2V0IGNyb3NzaW5nLg0KDQpgYGB7cn0NCnBhcnQxPC1tYXgoYWxscGFzc2VzJGgpDQpwYXJ0MQ0KYGBgDQoNCiMjIFBhcnQgMg0KUGFydCAyIG5lZWRzIHRvIGZpbmQgYWxsIG9mIHRoZSBwb3RlbnRpYWwgc3RhcnRpbmcgeCx5IHBhaXJzIC0gd2hpY2ggY2FuIGJlIGhhZCBmcm9tIHBhcnQgMS4gIEJ1dCB0aGUgaW4gcGFydCAxIGNvdW50ZWQgY3Jvc3NpbmdzLiAgSWYgdGhlIHByb2JlIHdhcyBpbiB0aGUgdGFyZ2V0IGFyZWEgdHdvIHRpbWVzLCBpdCBpcyBjb3VudGVkIHR3aWNlIGluIHBhcnQgMS4gIFNvIHdlIG5lZWQgdG8gcHVsbCB0aGUgdW5pcXVlIHN0YXJ0IGNvbWJpbmF0aW9ucw0KYGBge3J9DQpwYXJ0MjwtdW5pcXVlKGFsbHBhc3NlcyU+JXNlbGVjdChzdGFydHgsc3RhcnR5KSkNCnBhcnQyPC1ucm93KHBhcnQyKQ0KcGFydDINCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkRheSAxOSBOb3RlYm9vayINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQ0KbGlicmFyeShrbml0cikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHN0cmluZ3IpDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGNvbGxlY3Rpb25zKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KbGlicmFyeShyZ2wpDQpvcHRpb25zKHNjaXBlbiA9IDk5OSkNCmBgYA0KDQpgYGB7cn0NCmlucHV0PC1yZWFkX2xpbmVzKCJEYXkxOVNhbXBsZS50eHQiKQ0KYmw8LWMoMCx3aGljaChpbnB1dD09IiIpLGxlbmd0aChpbnB1dCkrMSkNCm1lZ2FzY2FubmVybGlzdDwtbGlzdCgpDQpmb3IoaSBpbiAxOihsZW5ndGgoYmwpLTEpKXsNCiAgc2Nhbm5lcmxpc3Q8LWxpc3QoKQ0KICBmb3IoaiBpbiAoYmxbaV0rMik6KGJsW2krMV0tMSkpew0KICAgIGJlYWNvbjwtYXMubnVtZXJpYyh1bmxpc3Qoc3RyX3NwbGl0KGlucHV0W2pdLCIsIikpKQ0KICAgIHNjYW5uZXJsaXN0PC1jKHNjYW5uZXJsaXN0LGxpc3QoYmVhY29uKSl9DQogIG1lZ2FzY2FubmVybGlzdDwtYyhtZWdhc2Nhbm5lcmxpc3QsbGlzdChzY2FubmVybGlzdCkpfQ0KYGBgDQoNCiMjIFBhcnQgMQ0KDQpGaXJzdCwgdGhpcyBmdW5jdGlvbiBnaXZlcyBtZSBhIGxpc3Qgb2YgdGhlIGRpZmZlcmVuY2VzIGJldHdlZW4gYWxsIG9mIHRoZSBiZWFjb25zIGZvciBhIHNjYW5uZXINCmBgYHtyfQ0KZmluZGJkPC1mdW5jdGlvbih4LG5tKXsNCiAgYmVhY29uZGlzdHM8LWFzLmRhdGEuZnJhbWUobWF0cml4KG5jb2w9MTMsbnJvdz0wKSkNCiAgY29sbmFtZXMoYmVhY29uZGlzdHMpPC1jKCJiZWFjb24xIiwiYmVhY29uMiIsIngxIiwieTEiLCJ6MSIsIngyIiwieTIiLCJ6MSIsImQiKQ0KICBmb3IoaSBpbiAxOihsZW5ndGgoeCktMSkpew0KICAgIGZvcihqIGluIChpKzEpOmxlbmd0aCh4KSl7DQogICAgICBhPC1saXN0KGJlYWNvbjE9c3RyX2Mobm0sImIiLGkpLA0KICAgICAgICAgICAgICBiZWFjb24yPXN0cl9jKG5tLCJiIixqKSwNCiAgICAgICAgICAgICAgeDE9eFtbaV1dWzFdLA0KICAgICAgICAgICAgICB5MT14W1tpXV1bMl0sDQogICAgICAgICAgICAgIHoxPXhbW2ldXVszXSwNCiAgICAgICAgICAgICAgeDI9eFtbal1dWzFdLA0KICAgICAgICAgICAgICB5Mj14W1tqXV1bMl0sDQogICAgICAgICAgICAgIHoyPXhbW2pdXVszXSwNCiAgICAgICAgICAgICAgZHg9YWJzKHhbW2ldXVsxXS14W1tqXV1bMV0pLA0KICAgICAgICAgICAgICBkeT1hYnMoeFtbaV1dWzJdLXhbW2pdXVsyXSksDQogICAgICAgICAgICAgIGR6PWFicyh4W1tpXV1bM10teFtbal1dWzNdKSwNCiAgICAgICAgICAgICAgZD1zdW0oYWJzKHhbW2ldXS14W1tqXV0pKSkNCiAgICAgIGJlYWNvbmRpc3RzPC1yYmluZChiZWFjb25kaXN0cyxhKX19DQpiZWFjb25kaXN0c30NCmBgYA0KDQoNCg0KVGhlbiwgZmluZHRyYW5zIHRha2VzIGEgbGlzdCBvZiBvdmVybGFwcGluZyBkaXN0YW5jZXMgYW5kIGZpbmRzIHRoZSB0cmFuc2Zvcm0gZnJvbSBvbmUgdG8gb3RoZXINCg0KYGBge3J9DQoNCmZpbmR0cmFuczwtZnVuY3Rpb24ob3Ypew0KICB0MTwtb3ZbMSxdDQogICMjIyBmaWd1cmUgb3V0IGlmIGl0IG1hdGNoZXMgdGhlIGZpcnN0IG9yIHNlY29uZCANCiAgaXMxIDwtIG5yb3cob3YgJT4lIHJvd3dpc2UgJT4lIGZpbHRlcihiZWFjb24xLng9PXQxJGJlYWNvbjEueHx8IGJlYWNvbjIueD09dDEkYmVhY29uMS54KSAlPiUgZmlsdGVyKGJlYWNvbjEueT09dDEkYmVhY29uMS55fHxiZWFjb24yLnk9PXQxJGJlYWNvbjEueSkpDQogICMjIyBpZiBpczE+MSwgdGhlbiBiZWFjb24xLnggbWF0Y2hlcyB0byBiZWFjb24xLnkNCiAgIyMjIGlmIGkxPT0xLCB0aGVuIGJlYWNvbjEueCBtYXRjaGVzIHRvIGJlYWNvbjIueQ0KICANCiAgIyMjIHNvIHdlJ3JlIGNoYW5naW5nIHRoZSBsYWJlbHMgc28gSSBkb24ndCBnbyBjcmF6eS4uLiAgeDEgbWF0Y2hlcyB4MS4gIGEgaXMgdGhlIG9uZXMgd2UgYXJlbid0IHRyYW5zZm9ybWluZy4gIGIgaXMgdGhlIG9uZSB3ZSBhcmUNCiAgeDFhIDwtdDEkeDEueA0KICB5MWEgPC10MSR5MS54DQogIHoxYSA8LXQxJHoxLngNCiAgeDJhIDwtdDEkeDIueA0KICB5MmEgPC10MSR5Mi54DQogIHoyYSA8LXQxJHoyLngNCiAgaWYoaXMxPjEpew0KICAgIHgxYiA8LXQxJHgxLnkNCiAgICB5MWIgPC10MSR5MS55DQogICAgejFiIDwtdDEkejEueQ0KICAgIHgyYiA8LXQxJHgyLnkNCiAgICB5MmIgPC10MSR5Mi55DQogICAgejJiIDwtdDEkejIueQ0KICB9ZWxzZXsNCiAgICB4MWIgPC10MSR4Mi55DQogICAgeTFiIDwtdDEkeTIueQ0KICAgIHoxYiA8LXQxJHoyLnkNCiAgICB4MmIgPC10MSR4MS55IA0KICAgIHkyYiA8LXQxJHkxLnkNCiAgICB6MmIgPC10MSR6MS55fQ0KICAjIyMgZmlyc3QgZmluZCB0aGUgdHJhbnNmb3JtDQogIHJ0PC1tYXRyaXgoTkEsbnJvdz0zLG5jb2w9MykNCiAgdHI8LWMoTkEsTkEsTkEpDQogICMjIyB4IGZpcnN0DQogICMjIyB4KHRyYW5zZm9ybSkgdG8geChzdGFibGUpDQogIGlmKHQxJGR4Lnk9PXQxJGR4Lngpew0KICAgIGlmKCh4MWIteDFhKT09KHgyYi14MmEpKXsNCiAgICAgIHJ0WzEsXTwtYygxLDAsMCkNCiAgICAgIHRyWzFdPC14MWEteDFiDQogICAgfWVsc2V7DQogICAgICBydFsxLF08LWMoLTEsMCwwKQ0KICAgICAgdHJbMV08LSh4MmEreDJiKX19DQogICMjIyB4KHRyYW5zZm9ybSkgdG8geShzdGFibGUpDQogIGlmKHQxJGR4Lnk9PXQxJGR5Lngpew0KICAgIGlmKCh4MWIteTFhKT09KHgyYi15MmEpKXsNCiAgICAgIHJ0WzEsXTwtYygwLDEsMCkNCiAgICAgIHRyWzJdPC15MWEteDFiDQogICAgfWVsc2V7DQogICAgICBydFsxLF08LWMoMCwtMSwwKQ0KICAgICAgdHJbMl08LXkyYSt4MmJ9fQ0KICAjIyMgeCh0cmFuc2Zvcm0pIHRvIHooc3RhYmxlKQ0KICBpZih0MSRkeC55PT10MSRkei54KXsNCiAgICBpZigoeDFiLXoxYSk9PSh4MmItejJhKSl7DQogICAgICBydFsxLF08LWMoMCwwLDEpDQogICAgICB0clszXTwtejFhLXgxYg0KICAgIH1lbHNlew0KICAgICAgcnRbMSxdPC1jKDAsMCwtMSkNCiAgICAgIHRyWzNdPC16MmEreDJifX0NCiAgDQogICMjIyB0aGVuIHkNCiAgIyMjIHkodHJhbnNmb3JtKSB0byB4KHN0YWJsZSkNCiAgaWYodDEkZHkueT09dDEkZHgueCl7DQogICAgaWYoKHkxYi14MWEpPT0oeTJiLXgyYSkpew0KICAgICAgcnRbMixdPC1jKDEsMCwwKQ0KICAgICAgdHJbMV08LXgxYS15MWINCiAgICB9ZWxzZXsNCiAgICAgIHJ0WzIsXTwtYygtMSwwLDApDQogICAgICB0clsxXTwtKHgyYSt5MmIpfX0NCiAgIyMjIHkodHJhbnNmb3JtKSB0byB5KHN0YWJsZSkNCiAgaWYodDEkZHkueT09dDEkZHkueCl7DQogICAgaWYoKHkxYi15MWEpPT0oeTJiLXkyYSkpew0KICAgICAgcnRbMixdPC1jKDAsMSwwKQ0KICAgICAgdHJbMl08LXkxYS15MWINCiAgICB9ZWxzZXsNCiAgICAgIHJ0WzIsXTwtYygwLC0xLDApDQogICAgICB0clsyXTwteTJhK3kyYn19DQogICMjIyB5KHRyYW5zZm9ybSkgdG8geihzdGFibGUpDQogIGlmKHQxJGR5Lnk9PXQxJGR6Lngpew0KICAgIGlmKCh5MWItejFhKT09KHkyYi16MmEpKXsNCiAgICAgIHJ0WzIsXTwtYygwLDAsMSkNCiAgICAgIHRyWzNdPC16MWEteTFiDQogICAgfWVsc2V7DQogICAgICBydFsyLF08LWMoMCwwLC0xKQ0KICAgICAgdHJbM108LXoyYSt5MmJ9fQ0KICANCiAgIyMjIHRoZW4geg0KICAjIyMgeih0cmFuc2Zvcm0pIHRvIHgoc3RhYmxlKQ0KICBpZih0MSRkei55PT10MSRkeC54KXsNCiAgICBpZigoejFiLXgxYSk9PSh6MmIteDJhKSl7DQogICAgICBydFszLF08LWMoMSwwLDApDQogICAgICB0clsxXTwteDFhLXoxYg0KICAgIH1lbHNlew0KICAgICAgcnRbMyxdPC1jKC0xLDAsMCkNCiAgICAgIHRyWzFdPC0oeDJhK3oyYil9fQ0KICAjIyMgeih0cmFuc2Zvcm0pIHRvIHkoc3RhYmxlKQ0KICBpZih0MSRkei55PT10MSRkeS54KXsNCiAgICBpZigoejFiLXkxYSk9PSh6MmIteTJhKSl7DQogICAgICBydFszLF08LWMoMCwxLDApDQogICAgICB0clsyXTwteTFhLXoxYg0KICAgIH1lbHNlew0KICAgICAgcnRbMyxdPC1jKDAsLTEsMCkNCiAgICAgIHRyWzJdPC15MmErejJifX0NCiAgIyMjIHoodHJhbnNmb3JtKSB0byB6KHN0YWJsZSkNCiAgaWYodDEkZHoueT09dDEkZHoueCl7DQogICAgaWYoKHoxYi16MWEpPT0oejJiLXoyYSkpew0KICAgICAgcnRbMyxdPC1jKDAsMCwxKQ0KICAgICAgdHJbM108LXoxYS16MWINCiAgICB9ZWxzZXsNCiAgICAgIHJ0WzMsXTwtYygwLDAsLTEpDQogICAgICB0clszXTwtejJhK3oyYn19DQpsaXN0KHJ0LHRyKX0NCg0KYGBgDQoNCg0KYGBge3J9DQpjb25jYXRiZWFjb25zPC1mdW5jdGlvbihibCl7DQogICMjIyBsaXN0IG9mIGFsbCBiZWFjb25zDQogIGV2ZXJ5YmVhY29uPC1ibFtbMV1dDQogICMjIyBpbiBsaXN0IHNob3dzIHdoaWNoIChpZiBhbnkpIGhhdmUgYmVlbiBhZGRlZCB0byBvdXIgbGlzdC4gIFQgc3RpbGwgaXNuJ3QgZG9uZS4NCiAgc3RpbGxsZWZ0PC1jKEYscmVwKFQsKGxlbmd0aChibCktMSkpKQ0KICAjIyMgbGlzdCBvZiBhbGwgc2Vuc29ycw0KICBzZGY8LWxpc3QoKQ0KICBzZGY8LWMoc2RmLGxpc3QoYygwLDAsMCkpKQ0KICAjIyMgc28gd2UgZG9uJ3QgaGF2ZSB0byBkbyB0aGlzIHF1aXRlIGFzIG11Y2gNCiAgYWxsZGlzdHM8LWxhcHBseSgxOmxlbmd0aChibCksZnVuY3Rpb24oeCl7ZmluZGJkKGJsW1t4XV0sc3RyX2MoInMiLHgpKX0pDQogICMjIyB0aGlzIGlzIHRoZSBsaXN0IG9mIGFsbCBvZiB0aGUgZGlzdGFuY2VzDQogIGJpZ2Rpc3Q8LWZpbmRiZChldmVyeWJlYWNvbiwiczEiKQ0KICAjIyMgc28gbG9uZyBhcyBub3QgZXZlcnl0aGluZyBpcyBkb25lIC0ga2VlcCBnb2luZw0KICB3aGlsZShhbnkoc3RpbGxsZWZ0KSl7DQogICAgIyMjIGFnYWluLCB0byBjdXQgZG93biBvbiB0aGlzIGEgYml0DQogICAgZm9yKGkgaW4gd2hpY2goc3RpbGxsZWZ0PT1UKSl7DQogICAgICAjIyMgZmluZCBvdmVybGFwcyBiZXR3ZWVuIHRoZSBvbmUgdGhhdCBpc24ndCBkb25lIGFuZCB0aGUgbWFpbiBsaXN0DQogICAgICBvdmVybGFwczwtaW5uZXJfam9pbihiaWdkaXN0LGFsbGRpc3RzW1tpXV0sYj0iZCIscmVsYXRpb25zaGlwPSJtYW55LXRvLW1hbnkiKSAlPiUNCiAgICAgICAgcm93d2lzZSU+JWZpbHRlcihkeC54PT1keC55fHxkeC54PT1keS55fHxkeC54PT1kei55KSU+JQ0KICAgICAgICBmaWx0ZXIoZHkueD09ZHgueXx8ZHkueD09ZHkueXx8ZHkueD09ZHoueSkNCiAgICAgICMjIyBpZiB0aGVyZSBhcmUgbW9yZSB0aGFuIDY2IG92ZXJsYXBzIC0gdGhlbiB3ZSBoYXZlIG91ciAxMiBwb2ludHMuDQogICAgICBpZihucm93KG92ZXJsYXBzPj02Nikpew0KICAgICAgICAjIyMgZmluZCB0aGUgdHJhbnNmb3JtDQogICAgICAgIHRvYmFzZTwtZmluZHRyYW5zKG92ZXJsYXBzKQ0KICAgICAgICAjIyMgdHJhbnNsYXRlDQogICAgICAgIG1vdmVkPC1sYXBwbHkoYmxbW2ldXSxmdW5jdGlvbih4KXsNCiAgICAgICAgICB4PC1hcy52ZWN0b3IoeCUqJXRvYmFzZVtbMV1dK3RvYmFzZVtbMl1dKQ0KICAgICAgICAgIHh9KQ0KICAgICAgICAjIyMgcmVkbyAiZmluZCBkaXN0YW5jZXMiIHdpdGggdGhlIHRyYW5zbGF0ZWQgdmFsdWUNCiAgICAgICAgZmI8LWZpbmRiZChtb3ZlZCxzdHJfYygiYiIsaSkpDQogICAgICAgICMjIyBhZGQgdGhhdCB0byB0aGUgZGlzdGFuY2UgbGlzdA0KICAgICAgICBiaWdkaXN0PC1yYmluZChiaWdkaXN0LGZiKQ0KICAgICAgICAjIyMgYWRkIHRoaXMgdG8gdGhlIGxpc3Qgb2YgZXZlcnkgYmVhY29uIGFuZCByZW1vdmUgdGhlIG9uZXMgdGhhdCBoYXZlIGFscmVhZHkgYmVlbiBtb3ZlZC4NCiAgICAgICAgZXZlcnliZWFjb248LWMoZXZlcnliZWFjb24sbW92ZWQpDQogICAgICAgIGV2ZXJ5YmVhY29uPC11bmlxdWUoZXZlcnliZWFjb24pDQogICAgICAgICMjIyBhZGQgdGhlIHNlbnNvciAodHJhbnNmb3JtaW5nIDAsMCwwKSAtIHdoaWNoIGlzIGVmZmVjdGl2ZWx5ICJ0b2Jhc2VbWzJdXSINCiAgICAgICAgc2RmPC1jKHNkZixsaXN0KHRvYmFzZVtbMl1dKSkNCiAgICAgICAgIyMjIG1hcmsgdGhhdCB0aGlzIGhhcyBiZWVuIGRvbmUNCiAgICAgICAgc3RpbGxsZWZ0W2ldPC1GfQ0KICAgICAgfQ0KICB9DQogICMjIyByZXR1cm4gdGhlIGxpc3RzIG9mIGV2ZXJ5IGJlYWNvbiAmIHRoZSBsaXN0IG9mIHNlbnNvcnMNCiAgbGlzdChldmVyeWJlYWNvbixzZGYpfQ0KDQpgYGANCg0KDQpgYGB7cn0NCnAxPC1jb25jYXRiZWFjb25zKG1lZ2FzY2FubmVybGlzdCkNCnBhcnQxPC1sZW5ndGgocDFbWzFdXSkNCnBhcnQxDQpgYGANCg0KDQojI1BhcnQgMg0KDQpCZWNhdXNlIEkgaGF2ZSBhIGxpc3Qgb2YgdGhlIHNlbnNvcnMgZnJvbSB0aGUgYWJvdmUgZnVuY3Rpb24gQU5EIGEgZnVuY3Rpb24gdGhhdCB0YWtlcyBhIGxpc3Qgb2YgcG9pbnRzIGFuZCBzcGl0cyBvdXQgdGhlaXIgbWFuaGF0dGFuIGRpc3RhbmNlcyAtIHRoaXMgaXMgdHJpdmlhbC4NCg0KYGBge3J9DQpwMjwtZmluZGJkKHAxW1syXV0sInMiKQ0KcGFydDI8LW1heChwMiRkKQ0KcGFydDINCg0KYGBgDQoNCg0K</div>
 
 
 
@@ -1939,7 +2045,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Day17.Rmd");
+  window.initializeSourceEmbed("Day19.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

@@ -1,5 +1,5 @@
 ---
-title: "Day XX Notebook"
+title: "Day 25 Notebook"
 output: html_notebook
 ---
 
@@ -10,23 +10,96 @@ library(stringr)
 library(tidyverse)
 library(readr)
 library(collections)
-library(igraph)
 library(ggplot2)
-library(rgl)
-library(ggraph)
+library(reshape2)
 options(scipen = 999)
 ```
 
 ```{r}
-input<-read_lines("DayXXSample.txt")
-#input<-read_lines("../../AoCData/AOC2021/DayXX.txt")
+input<-read_lines("Day25Sample.txt")
+### Seacucumbers
+seacucumbers<-matrix(NA,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){seacucumbers[i,]<-(unlist(str_split(input[i],"")))}
 
 ```
 
 
 
+With the seacucumber matrix, start moving them
+
+```{r}
+scmover<-function(scs){
+  stepcounter<-0
+  ### flag to show if things are moving
+  stillmoving<-T
+  while(stillmoving){
+    ### reset the flag
+    stillmoving<-F
+    ### create a second matrix and move everything (that can move) to the right
+    moveright<-matrix(ncol=ncol(scs),nrow=nrow(scs))
+    for(r in 1:nrow(scs)){
+      c<-1
+      while(c<ncol(scs)){
+        if(scs[r,c]==">"&&scs[r,(c+1)]=="."){
+          moveright[r,c]<-"."
+          moveright[r,(c+1)]<-">"
+          c<-c+2
+          stillmoving<-T
+        }else{
+          moveright[r,c]<-scs[r,c]
+          c<-c+1}}
+      ###handle the edge.  If something has already moved there, keep it - otherwise, check the left edge
+      if(is.na(moveright[r,ncol(scs)])){
+        if(scs[r,ncol(scs)]==">"&&scs[r,1]=="."){
+          moveright[r,ncol(scs)]<-"."
+          moveright[r,1]<-">"
+          stillmoving<-T
+        }else{moveright[r,ncol(scs)]<-scs[r,ncol(scs)]}}}
+    
+    ####
+    ### create a *third* matrix and move everything that can move down
+    movedown<-matrix(ncol=ncol(scs),nrow=nrow(scs))
+    for(c in 1:ncol(scs)){
+      r<-1
+      while(r<nrow(scs)){
+        if(moveright[r,c]=="v"&&moveright[(r+1),c]=="."){
+          movedown[(r+1),c]<-"v"
+          movedown[r,c]<-"."
+          r<-r+2
+          stillmoving<-T
+        }else{
+          movedown[r,c]<-moveright[r,c]
+          r<-r+1}}
+      ### again, check the bottom row.
+      if(is.na(movedown[nrow(scs),c])){
+        if(moveright[nrow(scs),c]=="v"&&moveright[1,c]=="."){
+          movedown[nrow(moveright),c]<-"."
+          movedown[1,c]<-"v"
+          stillmoving<-T
+        }else{movedown[nrow(moveright),c]<-moveright[nrow(moveright),c]}}}
+    ### copy over the  third matrix.  If nothing has changed stop
+    ### otherwise, repeat.
+    scs<-movedown
+    stepcounter<-stepcounter+1}
+  return(list(stepcounter,scs))}
+
+
+
+
+
+```
+
+```{r}
+answer<-scmover(seacucumbers)
+answer[[1]]
+```
 ```{r,echo=FALSE}
-basicgraph<-ggplot()+
+for(i in 1:length(input)){seacucumbers[i,]<-(unlist(str_split(input[i],"")))}
+answer<-scmover(seacucumbers)
+
+gr<-melt(answer[[2]])
+basicgraph<-ggplot(data=gr,aes(x=Var2,y=Var1,color=value))+
+  geom_point()+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -38,5 +111,32 @@ basicgraph<-ggplot()+
         legend.position="none")+
   scale_y_reverse()+
   coord_fixed()
+basicgraph
+```
+
+```{r,echo=FALSE}
+
+input<-read_lines("../../AoCData/AOC2021/Day25.txt")
+### Seacucumbers
+seacucumbers<-matrix(NA,nrow=length(input),ncol=nchar(input[1]))
+for(i in 1:length(input)){seacucumbers[i,]<-(unlist(str_split(input[i],"")))}
+
+answer<-scmover(seacucumbers)
+
+gr<-melt(answer[[2]])
+basicgraph<-ggplot(data=gr,aes(x=Var2,y=Var1,color=value))+
+  geom_point()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position="none")+
+  scale_y_reverse()+
+  coord_fixed()
+basicgraph
 ```
 
